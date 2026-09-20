@@ -1,0 +1,32 @@
+# Python and virtual environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Research artefacts: keep data, outputs and checkpoints out of source control
+outputs/
+data/
+datasets/
+checkpoints/
+*.npy
+*.npz
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.mp4
+*.gif
+
+# Credentials, caches and logs
+.env
+*.token
+.cache/
+.huggingface/
+wandb/
+*.log
+
+# Platform files
+.DS_Store
+Thumbs.db

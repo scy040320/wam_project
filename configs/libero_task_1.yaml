@@ -1,0 +1,27 @@
+task_id: libero_10_task_1
+libero_task_id: 1
+language: put both the cream cheese box and the butter in the basket
+intervention_object_joint_hint: butter
+phase_steps: {phase_approach: 10, phase_grasp: 70, phase_transport: 150}
+nodes:
+  - {id: phase_approach, kind: task_phase}
+  - {id: phase_grasp, kind: task_phase}
+  - {id: phase_transport, kind: task_phase}
+  - {id: camera_primary, kind: observation}
+  - {id: camera_wrist, kind: observation}
+  - {id: effector_gripper, kind: effector_gripper}
+  - {id: object_cream_cheese, kind: object}
+  - {id: object_butter, kind: object}
+  - {id: target_basket, kind: target_region}
+  - {id: action_segment_4, kind: action_segment}
+edges:
+  - {source: camera_primary, target: object_cream_cheese, kind: observation_supports_state}
+  - {source: camera_primary, target: object_butter, kind: observation_supports_state}
+  - {source: camera_wrist, target: effector_gripper, kind: observation_supports_state}
+  - {source: action_segment_4, target: effector_gripper, kind: action_acts_on_effector}
+  - {source: effector_gripper, target: object_cream_cheese, kind: effector_interacts_object}
+  - {source: effector_gripper, target: object_butter, kind: effector_interacts_object}
+  - {source: object_cream_cheese, target: target_basket, kind: object_serves_target}
+  - {source: object_butter, target: target_basket, kind: object_serves_target}
+  - {source: phase_approach, target: phase_grasp, kind: phase_depends_on_predecessor}
+  - {source: phase_grasp, target: phase_transport, kind: phase_depends_on_predecessor}
