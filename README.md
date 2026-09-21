@@ -20,19 +20,6 @@ Simulator truth is written only as an **offline** cause and affected-node label 
 
 The lightweight two-layer graph-attention prototype predicts a cause, an affected-node mask, and per-cause residual explanations. The recovery router then applies a transparent rule table. “Local rollback” means invalidating the affected **belief/provenance** subgraph and changing the next decision; it never claims to undo a physical simulator action.
 
-## Gate 1 status
-
-| Component | Status | Scope / caveat |
-| --- | --- | --- |
-| Task graph, online record contract, recovery router, and unit tests | Implemented | Four reviewed LIBERO task specifications. |
-| Four-step paired collection interface | Implemented | Formal 2,400-record development collection is running separately; records are intentionally not versioned here. |
-| Three controlled mismatch mechanisms | Implemented | Occlusion, object shift, and action noise; `unknown` is a mixed/OOD condition. |
-| Frozen DINOv2-S feature extraction | Implemented | Offline only; configured to avoid concurrent WAM/DINO GPU residency. |
-| Attribution GAT and loss | Prototype implemented | No trained checkpoint or performance claim is released yet. |
-| D12 binary diagnostic baseline | Implemented, pending full evaluation | This is a custom diagnostic wrapper, **not** Cosmos Policy's native control logic. |
-| Object-centric online state | In progress | The included slot/ROI audit is an engineering bridge, not a general detector or segmenter. |
-| A/B/C/D end-to-end comparison | Not started | Requires the frozen development set and trained/calibrated model. |
-
 ## Repository layout
 
 ```text
