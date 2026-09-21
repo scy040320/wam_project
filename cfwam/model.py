@@ -22,7 +22,7 @@ class TypedGraphAttention(nn.Module):
         self.relation_value = nn.Embedding(edge_type_count, width)
         self.output = nn.Sequential(nn.Linear(width, width), nn.ReLU(), nn.LayerNorm(width))
 
-    def forward(self, nodes: Tensor, edge_index: Tensor, edge_type: Tensor) -> Tensor:
+    def forward(self, nodes: Tensor, edge_index: Tensor, edge_type: Tensor, edge_mask: Tensor | None = None) -> Tensor:
         # nodes [batch, nodes, width]; edge_index [2, edges]
         batch, count, width = nodes.shape
         query, key, value = self.query(nodes), self.key(nodes), self.value(nodes)
@@ -33,6 +33,8 @@ class TypedGraphAttention(nn.Module):
             score = (query[:, target] * key[:, source]).sum(-1, keepdim=True) / math.sqrt(width)
             score = score + self.edge_bias(edge_type[index])
             weight = score.sigmoid()
+            if edge_mask is not None:
+                weight = weight * edge_mask[:, index].reshape(batch, 1)
             message = value[:, source] + self.relation_value(edge_type[index])
             aggregate[:, target] += weight * message
             normalizer[:, target] += weight
@@ -55,13 +57,20 @@ class CounterfactualAttributor(nn.Module):
         self.cause_count = cause_count
         self.residual_dim = residual_dim
 
-    def forward(self, residual: Tensor, node_features: Tensor, edge_index: Tensor, edge_type: Tensor) -> dict[str, Tensor]:
+    def forward(
+        self, residual: Tensor, node_features: Tensor, edge_index: Tensor, edge_type: Tensor,
+        edge_mask: Tensor | None = None, node_valid: Tensor | None = None,
+    ) -> dict[str, Tensor]:
         encoded_residual = self.residual(residual)
         broadcast = encoded_residual.unsqueeze(1).expand(-1, node_features.shape[1], -1)
         nodes = self.node_input(torch.cat((node_features, broadcast), dim=-1))
-        nodes = self.gat1(nodes, edge_index, edge_type)
-        nodes = self.gat2(nodes, edge_index, edge_type)
-        pooled = nodes.mean(dim=1)
+        nodes = self.gat1(nodes, edge_index, edge_type, edge_mask)
+        nodes = self.gat2(nodes, edge_index, edge_type, edge_mask)
+        if node_valid is None:
+            pooled = nodes.mean(dim=1)
+        else:
+            valid = node_valid.to(nodes.dtype).unsqueeze(-1)
+            pooled = (nodes * valid).sum(dim=1) / valid.sum(dim=1).clamp_min(1.0)
         return {
             "cause_logits": self.cause_head(pooled),
             "mask_logits": self.mask_head(nodes).squeeze(-1),
