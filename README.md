@@ -65,6 +65,16 @@ python scripts/collect_libero_counterfactuals.py \
   --output outputs/cfwam_v1_records
 ```
 
+For the controlled action-execution diagnostic, retain the intervention scale
+in the record name and offline metadata:
+
+```bash
+python scripts/collect_libero_counterfactuals.py \
+  --task-config configs/libero_task_0.yaml \
+  --episode-id 0 --phase approach --condition action_noise \
+  --noise-scale 0.5 --output outputs/d09_noise_strength_audit_v1
+```
+
 Before scaling up, validate a complete 15-record task-0 smoke batch:
 
 ```bash
@@ -75,9 +85,29 @@ python scripts/audit_small_batch.py \
 
 ## Training and evaluation boundary
 
-`scripts/train_attributor.py` is a prototype trainer. It enforces that a matched initial state cannot appear in both train and validation inputs, but the training-tensor builder and final evaluation suite are intentionally not represented as completed results. Thresholds for `unknown/abstain` must be selected once on validation states 24–31 and then frozen before held-out testing.
+`scripts/train_attributor.py` is a prototype trainer. It enforces that a matched initial state cannot appear in both train and validation inputs. Thresholds for `unknown/abstain` must be selected once on validation states 24–31 and then frozen before held-out testing.
 
 The repository includes a paired-bootstrap summary utility, but it does not choose thresholds or alter raw records.
+
+## Diagnostic and online-repair runners
+
+The full-episode diagnostic uses a frozen image-MAE threshold to record the
+explicit custom decision `continue` or `global_refresh`. It stops on a LIBERO
+terminal event, including an unsuccessful termination, so it never fabricates
+post-terminal action blocks. This is a measurement baseline rather than a
+claim about Cosmos Policy's native controller.
+
+```bash
+python scripts/run_d12_full_episode_binary.py
+```
+
+`scripts/run_d26_online_local_repair.py` is the first integration runner for
+the frozen WAM, DINOv2-S residuals, attribution GAT, task graph and recovery
+router. It queries every four executed actions and writes current/predicted/
+actual images, actions, attribution probabilities, invalidated nodes,
+recovery decisions and two videos. Use only thresholds that were frozen on a
+separate validation set. `unknown/abstain` is a safety stop, not a successful
+recovery.
 
 ## What is deliberately not released
 

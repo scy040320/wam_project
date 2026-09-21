@@ -42,6 +42,8 @@ def parse_args():
     parser.add_argument("--episode-id", type=int, default=0)
     parser.add_argument("--phase", choices=["approach", "grasp", "transport"], default="approach")
     parser.add_argument("--condition", choices=[item.value for item in Cause], default="normal")
+    parser.add_argument("--noise-scale", type=float, default=1.0,
+                        help="Deterministic multiplier for action-noise diagnostics; must be positive.")
     parser.add_argument("--output", default="outputs/cfwam_v1_records")
     return parser.parse_args()
 
@@ -89,12 +91,25 @@ def occlude(model_input):
 
 
 def build_config():
+    # A local HF snapshot is required for reliable offline/cloud collection;
+    # otherwise the official helper interprets the model-relative asset paths
+    # as Hub URLs even when the checkpoint itself is already cached.
+    snapshot = os.environ.get("CFWAM_POLICY_SNAPSHOT")
+    if snapshot:
+        root = Path(snapshot)
+        ckpt_path = str(root / "Cosmos-Policy-LIBERO-Predict2-2B.pt")
+        dataset_stats_path = str(root / "libero_dataset_statistics.json")
+        t5_text_embeddings_path = str(root / "libero_t5_embeddings.pkl")
+    else:
+        ckpt_path = "nvidia/Cosmos-Policy-LIBERO-Predict2-2B"
+        dataset_stats_path = "nvidia/Cosmos-Policy-LIBERO-Predict2-2B/libero_dataset_statistics.json"
+        t5_text_embeddings_path = "nvidia/Cosmos-Policy-LIBERO-Predict2-2B/libero_t5_embeddings.pkl"
     return PolicyEvalConfig(
         config="cosmos_predict2_2b_480p_libero__inference_only",
-        ckpt_path="nvidia/Cosmos-Policy-LIBERO-Predict2-2B",
+        ckpt_path=ckpt_path,
         config_file="cosmos_policy/config/config.py",
-        dataset_stats_path="nvidia/Cosmos-Policy-LIBERO-Predict2-2B/libero_dataset_statistics.json",
-        t5_text_embeddings_path="nvidia/Cosmos-Policy-LIBERO-Predict2-2B/libero_t5_embeddings.pkl",
+        dataset_stats_path=dataset_stats_path,
+        t5_text_embeddings_path=t5_text_embeddings_path,
         use_wrist_image=True, use_proprio=True, normalize_proprio=True,
         unnormalize_actions=True, chunk_size=PREFIX, num_open_loop_steps=PREFIX,
         trained_with_image_aug=True, use_jpeg_compression=True, flip_images=True,
@@ -105,6 +120,8 @@ def build_config():
 
 def main():
     args = parse_args()
+    if args.noise_scale <= 0:
+        raise ValueError("--noise-scale must be positive")
     raw = json.loads(json.dumps({}))  # explicit: semantic config is read below, not simulator GT
     spec = TaskGraphSpec.from_yaml(args.task_config)
     import yaml
@@ -164,7 +181,7 @@ def main():
 
     executed = planned.copy()
     if args.condition in {Cause.ACTION_NOISE.value, Cause.UNKNOWN.value}:
-        executed[:, :3] = np.clip(executed[:, :3] + NOISE_DELTA, -1.0, 1.0)
+        executed[:, :3] = np.clip(executed[:, :3] + NOISE_DELTA * args.noise_scale, -1.0, 1.0)
     for action in executed:
         observation, _, done, info = env.step(action.tolist())
         if done or info.get("success", False):
@@ -172,7 +189,8 @@ def main():
     primary_real, wrist_real = images_from_observation(observation)
     proprio_real = proprio_from_observation(observation)
 
-    output = Path(args.output) / f"task{task_id}_seed{args.episode_id:02d}_{args.phase}_{args.condition}"
+    suffix = f"_noise{args.noise_scale:g}" if args.condition == Cause.ACTION_NOISE.value else ""
+    output = Path(args.output) / f"task{task_id}_seed{args.episode_id:02d}_{args.phase}_{args.condition}{suffix}"
     output.mkdir(parents=True, exist_ok=True)
     files = {
         "primary_current": save_image(primary_current, output / "primary_current.png"),
@@ -212,7 +230,8 @@ def main():
         run_id=output.name, cause=cause.value,
         affected_nodes=offline_mask_for_cause(cause, shifted_object, target_node),
         intervention_parameters={"shift_delta": SHIFT_DELTA.tolist() if args.condition in {"object_shift", "unknown"} else None,
-                                 "noise_delta": NOISE_DELTA.tolist() if args.condition in {"action_noise", "unknown"} else None,
+                                 "noise_delta": (NOISE_DELTA * args.noise_scale).tolist() if args.condition == "action_noise" else (NOISE_DELTA.tolist() if args.condition == "unknown" else None),
+                                 "noise_scale": args.noise_scale if args.condition == "action_noise" else None,
                                  "occlusion": args.condition in {"visual_occlusion", "unknown"}},
     )
     write_aligned_record(output, online, offline)
