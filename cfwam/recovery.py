@@ -20,6 +20,18 @@ class RecoveryDecision:
 class RecoveryRouter:
     """Maps causes to auditable recovery decisions, never physical rollback."""
 
+    def guarded_reobserve(self, timestamp: int) -> RecoveryDecision:
+        """Pause execution, refresh camera evidence, and require a fresh WAM query."""
+        cameras = [node.node_id for node in self.graph.spec.nodes if node.kind is NodeKind.OBSERVATION]
+        self.graph.refresh(cameras, timestamp, "guarded_reobserve")
+        return RecoveryDecision(
+            RecoveryAction.GUARDED_REOBSERVE,
+            frozenset(cameras),
+            True,
+            False,
+            "first weak unknown evidence: hold, reobserve, and refresh WAM",
+        )
+
     def __init__(self, graph: BeliefGraph):
         self.graph = graph
 

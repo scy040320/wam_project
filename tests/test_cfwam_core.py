@@ -1,8 +1,13 @@
 from cfwam.graph import BeliefGraph, TaskGraphSpec
 from cfwam.recovery import RecoveryRouter
-from cfwam.types import AttributionResult, Cause
+from cfwam.types import AttributionResult, Cause, RecoveryAction
 from cfwam.protocol import DevelopmentSplit, expected_short_trajectory_count
-from cfwam.runtime import AbstainPolicy
+from cfwam.runtime import (
+    AbstainPolicy,
+    CausalConsistencyGuard,
+    GuardLevel,
+    TemporalAbstainGate,
+)
 from pathlib import Path
 
 
@@ -82,3 +87,113 @@ def test_all_reviewed_development_graphs_are_valid():
     root = Path(__file__).parents[1] / "configs"
     for task_id in range(4):
         TaskGraphSpec.from_yaml(root / f"libero_task_{task_id}.yaml")
+
+
+def guard_result(unknown_probability: float, abstained: bool) -> AttributionResult:
+    probabilities = {
+        Cause.NORMAL: 1.0 - unknown_probability,
+        Cause.VISUAL_OCCLUSION: 0.0,
+        Cause.OBJECT_SHIFT: 0.0,
+        Cause.ACTION_NOISE: 0.0,
+        Cause.UNKNOWN: unknown_probability,
+    }
+    return AttributionResult(
+        Cause.UNKNOWN if abstained else Cause.NORMAL,
+        probabilities,
+        frozenset(),
+        0.0,
+        0.0,
+        abstained,
+    )
+
+
+def test_temporal_gate_strong_unknown_requires_confirmation():
+    gate = TemporalAbstainGate(strong_unknown_probability=0.995)
+    first = gate.update(guard_result(0.999, True))
+    second = gate.update(guard_result(0.999, True))
+    assert first.level is GuardLevel.STRONG
+    assert first.guarded_reobserve
+    assert not first.force_safe_stop
+    assert first.weak_streak == 1
+    assert second.level is GuardLevel.STRONG
+    assert second.force_safe_stop
+    assert not second.guarded_reobserve
+    assert second.weak_streak == 2
+
+
+def test_temporal_gate_causal_unknown_stops_immediately():
+    gate = TemporalAbstainGate(strong_unknown_probability=0.995)
+    outcome = gate.update(guard_result(0.8, True), immediate_safe_stop=True)
+    assert outcome.level is GuardLevel.STRONG
+    assert outcome.force_safe_stop
+    assert not outcome.guarded_reobserve
+
+
+def test_temporal_gate_first_weak_reobserves_then_confirms():
+    gate = TemporalAbstainGate(strong_unknown_probability=0.995)
+    first = gate.update(guard_result(0.8, True))
+    second = gate.update(guard_result(0.7, True))
+    assert first.level is GuardLevel.WEAK
+    assert first.guarded_reobserve
+    assert first.weak_streak == 1
+    assert second.force_safe_stop
+    assert second.weak_streak == 2
+
+
+def test_temporal_gate_clear_evidence_resets_streak_and_episode():
+    gate = TemporalAbstainGate(strong_unknown_probability=0.995)
+    gate.update(guard_result(0.8, True))
+    clear = gate.update(guard_result(0.1, False))
+    assert clear.level is GuardLevel.CLEAR
+    assert clear.weak_streak == 0
+    gate.update(guard_result(0.8, True))
+    gate.reset_episode()
+    assert gate.weak_streak == 0
+
+
+def test_guarded_reobserve_refreshes_only_camera_evidence():
+    graph = BeliefGraph(spec())
+    decision = RecoveryRouter(graph).guarded_reobserve(8)
+    assert decision.action is RecoveryAction.GUARDED_REOBSERVE
+    assert decision.refresh_wam
+    assert not decision.preserve_next_segment
+    assert decision.invalidated_nodes == {"primary", "wrist"}
+
+
+def test_causal_guard_uses_observed_action_delta_for_action_noise():
+    guard = CausalConsistencyGuard(0.3, 0.2)
+    outcome = guard.apply(result(Cause.NORMAL), 0.7, 0.0, {"object", "target"})
+    assert outcome.attribution.cause is Cause.ACTION_NOISE
+    assert outcome.reason == "observed_action_execution_delta"
+    assert "action_segment_4" in outcome.attribution.affected_nodes
+
+
+def test_causal_guard_treats_simultaneous_visual_and_action_evidence_as_unknown():
+    guard = CausalConsistencyGuard(0.3, 0.2)
+    outcome = guard.apply(result(Cause.VISUAL_OCCLUSION, {"camera_primary"}), 0.7, 0.0, {"object"})
+    assert outcome.attribution.cause is Cause.UNKNOWN
+    assert outcome.attribution.abstained
+
+
+def test_causal_guard_rescues_temporal_object_shift_without_action_delta():
+    guard = CausalConsistencyGuard(0.3, 0.2)
+    outcome = guard.apply(result(Cause.NORMAL), 0.0, 0.25, {"object", "target"})
+    assert outcome.attribution.cause is Cause.OBJECT_SHIFT
+    assert outcome.attribution.affected_nodes == {"object", "target"}
+
+
+def test_causal_guard_model_unknown_with_action_evidence_is_explicit():
+    guard = CausalConsistencyGuard(0.3, 0.2)
+    original = result(Cause.UNKNOWN, abstained=True)
+    outcome = guard.apply(original, 0.7, 0.3, {"object"})
+    assert outcome.attribution.cause is Cause.UNKNOWN
+    assert outcome.reason == "model_unknown_with_execution_evidence"
+    assert "action_segment_4" in outcome.attribution.affected_nodes
+
+
+def test_causal_guard_preserves_unexplained_model_unknown():
+    guard = CausalConsistencyGuard(0.3, 0.2)
+    original = result(Cause.UNKNOWN, abstained=True)
+    outcome = guard.apply(original, 0.0, 0.3, {"object"})
+    assert outcome.attribution is original
+    assert outcome.reason == "model_unknown"

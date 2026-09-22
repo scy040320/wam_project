@@ -17,6 +17,7 @@ class Cause(str, Enum):
 
 class RecoveryAction(str, Enum):
     CONTINUE = "continue"
+    GUARDED_REOBSERVE = "guarded_reobserve"
     REOBSERVE = "reobserve"
     LOCAL_STATE_UPDATE = "local_state_update"
     LOCAL_ACTION_CORRECTION = "local_action_correction"

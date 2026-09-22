@@ -133,7 +133,7 @@ for episode_id in EPISODE_IDS:
                 # continuing to call env.step afterwards created misleading
                 # one-action pseudo-blocks in the old D12 record.
                 if done or info.get("success", False) or executed >= TASK_MAX_STEPS[SUITE]:
-                    success = bool(info.get("success", False))
+                    success = bool(done or info.get("success", False))
                     terminal = True
                     break
             actual = np.flipud(obs["agentview_image"]); predicted = result["future_image_predictions"]["future_image"]

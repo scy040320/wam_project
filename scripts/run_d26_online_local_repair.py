@@ -60,8 +60,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--phase", choices=("approach", "grasp", "transport"), default="approach")
     parser.add_argument("--condition", choices=("normal", "visual_occlusion", "object_shift", "action_noise", "unknown"), default="normal")
     parser.add_argument("--intervention-block", type=int, default=2)
+    parser.add_argument("--max-policy-steps", type=int, default=None,
+                        help="Optional validation-calibration budget; defaults to the LIBERO task maximum.")
     parser.add_argument("--dino-device", choices=("cpu", "cuda"), default="cpu",
                         help="CPU default avoids concurrent WAM/DINO GPU residency on small GPUs.")
+    parser.add_argument("--observe-only", action="store_true",
+                        help="Record counterfactual recovery decisions without applying them or safety-stopping.")
     parser.add_argument("--output", required=True, type=Path)
     return parser.parse_args()
 
@@ -139,7 +143,7 @@ def main() -> int:
     spec = TaskGraphSpec.from_yaml(args.task_config)
     graph = BeliefGraph(spec); router = RecoveryRouter(graph)
     thresholds = yaml.safe_load(args.thresholds.read_text(encoding="utf-8"))
-    if thresholds.get("status") != "frozen_for_held_out_test":
+    if thresholds.get("status") not in {"frozen_for_held_out_test", "frozen_for_online_held_out"}:
         raise ValueError("Only validation-frozen thresholds may be used for online rollout")
     abstain = AbstainPolicy(float(thresholds["min_known_probability"]), float(thresholds["max_entropy"]), float(thresholds["max_residual_energy"]))
     prototype = torch.load(args.training_tensors, map_location="cpu", weights_only=False)[0]
@@ -165,8 +169,9 @@ def main() -> int:
     object_qpos = find_object_qpos(env, object_hint) if args.condition in {"object_shift", "unknown"} else None
     action_correction = np.zeros(3, dtype=np.float32)
     primary_video, wrist_video, records = [], [], []
-    executed_total, block, success, safety_stopped = 0, 0, False, False
-    while executed_total < TASK_MAX_STEPS["libero_10"] and not success:
+    max_policy_steps = args.max_policy_steps or TASK_MAX_STEPS["libero_10"]
+    executed_total, block, success, safety_stopped, terminal = 0, 0, False, False, False
+    while executed_total < max_policy_steps and not terminal:
         block += 1; query_time = SETTLE + executed_total
         primary_current, wrist_current = images(observation); proprio_current = proprio(observation)
         input_payload = prepare_observation(observation, resize_size=256, flip_images=cfg.flip_images)
@@ -187,8 +192,9 @@ def main() -> int:
             primary, wrist = images(observation)
             primary_video.append(caption(primary, f"block={block} t={SETTLE + executed_total}"))
             wrist_video.append(caption(wrist, f"wrist block={block} t={SETTLE + executed_total}"))
-            if done or info.get("success", False) or executed_total >= TASK_MAX_STEPS["libero_10"]:
-                success = bool(info.get("success", False)); break
+            if done or info.get("success", False) or executed_total >= max_policy_steps:
+                success = bool(done or info.get("success", False))
+                terminal = True; break
         primary_real, wrist_real = images(observation); proprio_real = proprio(observation)
         p_res = feature(dino, dino_processor, result["future_image_predictions"]["future_image"], primary_real, args.dino_device)
         w_res = feature(dino, dino_processor, result["future_image_predictions"]["future_wrist_image"], wrist_real, args.dino_device)
@@ -201,23 +207,38 @@ def main() -> int:
         with torch.inference_mode():
             output = attributor(residual, dynamic_features.unsqueeze(0).cuda(), edge_index.cuda(), edge_type.cuda(), edge_mask.unsqueeze(0).cuda(), node_valid.unsqueeze(0).cuda())
         attribution = decode_attribution(output, residual, node_ids, abstain)
-        decision = router.route(attribution, SETTLE + executed_total)
-        if decision.action.value == "local_action_correction":
+        raw_cause = max(attribution.cause_probabilities, key=attribution.cause_probabilities.get)
+        max_known_probability = max(
+            probability for cause, probability in attribution.cause_probabilities.items()
+            if cause.value != "unknown"
+        )
+        abstain_reasons = []
+        if raw_cause.value == "unknown":
+            abstain_reasons.append("raw_unknown")
+        if max_known_probability < abstain.min_known_probability:
+            abstain_reasons.append("low_known_probability")
+        if attribution.entropy > abstain.max_entropy:
+            abstain_reasons.append("high_entropy")
+        if attribution.residual_energy > abstain.max_residual_energy:
+            abstain_reasons.append("high_residual_energy")
+        decision = (RecoveryRouter(deepcopy(graph)).route(attribution, SETTLE + executed_total)
+                    if args.observe_only else router.route(attribution, SETTLE + executed_total))
+        if not args.observe_only and decision.action.value == "local_action_correction":
             action_correction = -np.mean(executed[:actual_steps, :3] - planned[:actual_steps, :3], axis=0)
         else:
             action_correction[:] = 0
         query_dir = args.output / f"query_{block:03d}"; query_dir.mkdir(exist_ok=True)
         files = {"primary_current": save_png(primary_current, query_dir / "primary_current.png"), "wrist_current": save_png(wrist_current, query_dir / "wrist_current.png"), "primary_predicted": save_png(result["future_image_predictions"]["future_image"], query_dir / "primary_predicted.png"), "wrist_predicted": save_png(result["future_image_predictions"]["future_wrist_image"], query_dir / "wrist_predicted.png"), "primary_real": save_png(primary_real, query_dir / "primary_real_t_plus_4.png"), "wrist_real": save_png(wrist_real, query_dir / "wrist_real_t_plus_4.png")}
         np.save(query_dir / "planned_actions.npy", planned); np.save(query_dir / "executed_actions.npy", executed[:actual_steps]); np.save(query_dir / "action_execution_delta.npy", executed[:actual_steps] - planned[:actual_steps])
-        row = {"block": block, "t_query": query_time, "t_real": SETTLE + executed_total, "intervention_injected": injected, "cause": attribution.cause.value, "abstained": attribution.abstained, "cause_probabilities": attribution.cause_probabilities, "affected_nodes": sorted(attribution.affected_nodes), "recovery_action": decision.action.value, "invalidated_nodes": sorted(decision.invalidated_nodes), "refresh_wam": decision.refresh_wam, "action_correction_next": action_correction.tolist(), "value": float(result["value_prediction"]), "files": files}
+        row = {"block": block, "t_query": query_time, "t_real": SETTLE + executed_total, "intervention_injected": injected, "raw_cause": raw_cause.value, "cause": attribution.cause.value, "abstained": attribution.abstained, "abstain_reasons": abstain_reasons, "max_known_probability": max_known_probability, "entropy": attribution.entropy, "residual_energy": attribution.residual_energy, "cause_probabilities": attribution.cause_probabilities, "affected_nodes": sorted(attribution.affected_nodes), "recovery_action": decision.action.value, "would_safety_stop": decision.action.value == "safe_stop_global_refresh", "invalidated_nodes": sorted(decision.invalidated_nodes), "refresh_wam": decision.refresh_wam, "action_correction_next": action_correction.tolist(), "value": float(result["value_prediction"]), "files": files}
         (query_dir / "decision.json").write_text(json.dumps(row, indent=2), encoding="utf-8"); records.append(row)
-        if decision.action.value == "safe_stop_global_refresh":
+        if not args.observe_only and decision.action.value == "safe_stop_global_refresh":
             safety_stopped = True; break
     imageio.mimsave(args.output / "full_episode_primary.mp4", primary_video, fps=10, macro_block_size=1)
     imageio.mimsave(args.output / "full_episode_wrist.mp4", wrist_video, fps=10, macro_block_size=1)
-    (args.output / "online_decision_log.json").write_text(json.dumps({"method": "cfwam_dependency_aware_v1", "online_only": True, "episode_id": args.episode_id, "task_id": task_id, "success": success, "safety_stopped": safety_stopped, "policy_steps": executed_total, "decisions": records}, indent=2), encoding="utf-8")
+    (args.output / "online_decision_log.json").write_text(json.dumps({"method": "cfwam_dependency_aware_v1", "online_only": True, "observe_only": args.observe_only, "episode_id": args.episode_id, "task_id": task_id, "success": success, "safety_stopped": safety_stopped, "would_safety_stop_count": sum(int(row["would_safety_stop"]) for row in records), "policy_steps": executed_total, "max_policy_steps": max_policy_steps, "decisions": records}, indent=2), encoding="utf-8")
     (args.output / "offline_evaluation_metadata.json").write_text(json.dumps({"condition": args.condition, "intervention_block": args.intervention_block, "warning": "post-hoc metadata; not opened by online router"}, indent=2), encoding="utf-8")
-    print(json.dumps({"success": success, "safety_stopped": safety_stopped, "blocks": block, "output": str(args.output)}), flush=True)
+    print(json.dumps({"success": success, "safety_stopped": safety_stopped, "observe_only": args.observe_only, "would_safety_stop_count": sum(int(row["would_safety_stop"]) for row in records), "blocks": block, "output": str(args.output)}), flush=True)
     return 0
 
 
