@@ -3,7 +3,7 @@ import csv, json, math
 from collections import Counter, defaultdict
 from pathlib import Path
 
-root = Path('outputs/d31_native16_abcd_v1')
+root = Path('outputs/paired_native16_recovery_v1')
 manifest = list(csv.DictReader(open(root/'manifest.csv', encoding='utf-8')))
 rows=[]
 expected={
@@ -49,7 +49,7 @@ for (cond,method),rs in sorted(condition_method.items()):
   'recovery_actions':dict(Counter(r['recovery_action'] for r in rs)),
   'causes':dict(Counter(r['cause'] for r in rs))})
 
-# D31 is an engineering/protocol pass, not a new threshold-selection gate.
+# This is an engineering/protocol pass, not a new threshold-selection gate.
 d={(x['condition'],x['approach']):x for x in detail}
 criteria={
  'integrity_320_of_320': len(rows)==320,
@@ -62,12 +62,12 @@ criteria={
 }
 report={'primary_only':True,'overall':overall,'by_condition_method':detail,'criteria':criteria,
  'decision':'PASS_WITH_LIMITATION' if all(v for k,v in criteria.items() if k!='d_object_shift_task_success') else 'FAIL',
- 'limitation':'All methods, including D, have 0 task success under object_shift. Do not retune on D31 held-out data; carry this as a preregistered D32 failure-analysis target.'}
-(root/'d31_acceptance.json').write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding='utf-8')
-lines=['# D31 acceptance report','','**Decision: '+report['decision']+'**','',report['limitation'],'','## Primary aggregate','',
+ 'limitation':'All methods, including D, have 0 task success under object_shift. Do not retune on held-out data; carry this as a preregistered recovery-cue validation target.'}
+(root/'comparison_acceptance.json').write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding='utf-8')
+lines=['# Paired recovery comparison acceptance report','','**Decision: '+report['decision']+'**','',report['limitation'],'','## Primary aggregate','',
 '| method | n | success | recovery correct | safety stop | global refresh | invalidated nodes | WAM calls |',
 '|---|---:|---:|---:|---:|---:|---:|---:|']
 for m,x in overall.items(): lines.append(f"| {m} | {x['n']} | {x['success_rate']:.3f} | {x['recovery_correct_rate']:.3f} | {x['safety_stop_rate']:.3f} | {x['mean_global_refreshes']:.2f} | {x['mean_invalidated_nodes']:.2f} | {x['mean_wam_calls']:.2f} |")
 lines += ['','## Acceptance criteria','']+[f"- [{'x' if v else ' '}] {k}" for k,v in criteria.items()]
-(root/'D31_ACCEPTANCE.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+(root/'COMPARISON_ACCEPTANCE.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 print(json.dumps(report,indent=2,ensure_ascii=False))

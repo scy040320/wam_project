@@ -1,153 +1,126 @@
 # CF-WAM: Counterfactual Mismatch Attribution for World Action Models
 
-> **Research code — post-D31 prerelease.** D30 online qualification and the preregistered D31 small-scale comparison are complete. This is not yet a paper reproduction package or a trained-model release.
+> **Research prerelease.** Attribution, localization, native-horizon online qualification, and a paired recovery comparison are complete. Recovery-cue integration is under validation; the final multi-task paper matrix has not started.
 
-CF-WAM studies a practical failure mode of world action models (WAMs): a difference between an imagined future and the subsequent observation does not, by itself, identify *why* the difference occurred. It may arise from a visual occlusion, an object displacement, action-execution noise, or an unknown event. A uniform “stop and replan” response can therefore be unnecessarily costly or unsafe.
+CF-WAM addresses a practical ambiguity in world action models (WAMs): when an imagined future differs from the next observation, the mismatch alone does not reveal whether the cause is visual occlusion, object displacement, action-execution noise, or an unknown event. Treating every mismatch as “discard everything and replan” can be unnecessarily expensive and can erase valid task state.
 
-This repository provides an external, dependency-aware attribution layer for a frozen WAM. Its first adapter uses [Cosmos Policy](https://github.com/nvlabs/cosmos-policy) with LIBERO. Cosmos Policy remains the action/world model; CF-WAM does **not** modify or redistribute Cosmos Policy, LIBERO, or their checkpoints.
+This repository implements an external, dependency-aware attribution and recovery layer around a frozen WAM. The first adapter targets [Cosmos Policy](https://github.com/nvlabs/cosmos-policy) on [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO). CF-WAM does **not** modify or redistribute Cosmos Policy, LIBERO, or their checkpoints.
 
-## Current status
+## Project status
 
-- The counterfactual attribution model, dependency graph, recovery router, and `unknown/abstain` safety exit are implemented and unit-tested.
-- Development attribution and localization results are complete. The corrected native-16 online control qualification passed its frozen D30 gate.
-- A September 2026 protocol audit found that the released LIBERO checkpoint is trained for 16-action chunks. The online runner now preserves that native horizon and aligns predicted futures only with real observations at `t+16`.
-- Method v1 is frozen after validation-only calibration, a 20-episode smoke test, and a 100-episode held-out qualification.
-- D31 completed a paired native-16 A/B/C/D comparison with 288 primary held-out episodes and 32 validation-overlap episodes excluded from primary inference. The full method preserved clean/occlusion/action-noise success and reduced invalidated state, but object-shift task success remained zero for every method. D32 is therefore pending approval; no broader paper-level recovery claim is made here.
+- **Attribution and localization:** complete on a grouped 2,400-record development protocol. Held-out cause Macro-F1 is **0.835**, node-mask IoU is **0.704**, and unknown recall is **0.938**.
+- **Native-horizon online qualification:** passed on 100/100 held-out episodes. Known-intervention routing is **59/60 (98.3%)**, unknown reaches a safe exit in **20/20**, and clean false safety stops are **0/20**.
+- **Paired online comparison:** complete on 288 primary held-out episodes, plus 32 validation-overlap diagnostics excluded from inference. The full method reduces mean invalidated nodes from **140.22** (binary global) to **13.18** while retaining the same aggregate task success.
+- **Current limitation:** object shifts are attributed correctly and routed to a local update in 13/14 cases, but final object-shift task success remains 0/14. A one-query recovery cue is now being validated to make the refreshed state affect the next frozen-policy decision.
+- **Not yet complete:** the final 6–10 task main experiment, ablations, and cross-platform/cross-model generalization.
 
-See [`docs/D30_PROTOCOL_CORRECTION.md`](docs/D30_PROTOCOL_CORRECTION.md) for the protocol audit and frozen V6 rule, and [`docs/D31_SMALL_SCALE_COMPARISON.md`](docs/D31_SMALL_SCALE_COMPARISON.md) for the preregistered comparison and its limitation.
+![Held-out attribution and localization results](docs/assets/attribution_results.png)
 
-## What CF-WAM does
+![Paired online recovery comparison](docs/assets/paired_online_comparison.png)
 
-For the corrected online controller, Cosmos decodes and executes its native 16-action chunk. At each aligned decision boundary, the runner records:
+## Method
 
-1. current primary/wrist observations and proprioception;
-2. frozen-WAM planned actions, imagined future images, and value;
-3. executed actions and action-execution difference;
-4. real primary/wrist observations after 16 actions; and
-5. an online belief/provenance graph snapshot.
+At each native 16-action boundary, the adapter records current primary/wrist observations, proprioception, the frozen WAM plan and imagined future, executed actions, the real observation at `t+16`, value change, and an online belief/provenance graph. Simulator truth is used only to create offline labels and evaluation masks; it is never an online input.
 
-Simulator truth is written only as an **offline** cause and affected-node label for training and evaluation. It is never an online input. The intended causes are `normal`, `visual_occlusion`, `object_shift`, `action_noise`, and `unknown`.
+The trainable module is a lightweight two-layer graph attention network. It predicts:
 
-The lightweight two-layer graph-attention prototype predicts a cause, an affected-node mask, and per-cause residual explanations. The recovery router then applies a transparent rule table. “Local rollback” means invalidating the affected **belief/provenance** subgraph and changing the next decision; it never claims to undo a physical simulator action.
+1. a cause in `normal`, `visual_occlusion`, `object_shift`, `action_noise`, or `unknown`;
+2. an affected-node mask over a reviewed task graph; and
+3. a per-cause counterfactual residual explanation.
+
+The recovery router converts those outputs into transparent actions: continue, reobserve, local belief/provenance invalidation, local action correction, or safe stop. “Local rollback” refers only to invalidating internal belief/provenance state and changing the next decision; it never claims to undo a physical action.
+
+## Online comparison snapshot
+
+The primary population uses held-out LIBERO states 32–49. All methods receive matched task, seed, condition, intervention timing, and budget; method order is cyclically balanced.
+
+| Metric | Binary global | Uniform subgraph | Attribution global | Dependency-aware |
+|---|---:|---:|---:|---:|
+| Episodes | 72 | 72 | 72 | 72 |
+| Task success | 59.7% | 59.7% | 55.6% | 59.7% |
+| Correct recovery action | 5.6% | 5.6% | 31.9% | **90.3%** |
+| Mean global refreshes | 15.07 | 0.00 | 6.88 | **0.24** |
+| Mean invalidated nodes | 140.22 | 95.93 | 64.61 | **13.18** |
+| Mean WAM calls | 22.69 | 22.72 | **14.33** | 16.07 |
+
+For the dependency-aware method, clean, visual occlusion, and action noise each retain 100% task success in this screening population; unknown reaches the safe-stop exit in 15/15 cases. Object shift is the named negative result described above. Held-out results are not used to retune the frozen thresholds.
+
+See [native-horizon control protocol](docs/NATIVE16_CONTROL_PROTOCOL.md) and [paired recovery comparison](docs/PAIRED_RECOVERY_COMPARISON.md) for protocol boundaries and interpretation.
 
 ## Repository layout
 
 ```text
-cfwam/                 # task graph, record schema, GAT prototype, losses, abstain and recovery logic
-configs/               # reviewed task graphs and frozen development-split protocol
-scripts/               # collection, feature extraction, audits, training and statistics utilities
-tests/                 # graph/protocol and model smoke tests
-docs/                  # scope, reproducibility boundary and publication policy
+cfwam/                 task graph, schemas, attribution model, abstention and recovery
+configs/               reviewed task graphs and frozen development protocol
+scripts/               collection, training, calibration, online runners and summaries
+tests/                 graph, leakage, calibration and runner-contract tests
+docs/                  protocol notes, comparison reports and public figures
 ```
+
+Public filenames describe function rather than internal experiment-day identifiers. Cloud orchestration, private output paths, checkpoints, and large experiment artifacts are intentionally excluded.
 
 ## Installation
 
-CF-WAM is an add-on, not a replacement runtime. First create a working Cosmos Policy + LIBERO environment from the upstream [Cosmos Policy setup instructions](https://github.com/nvlabs/cosmos-policy). Use a Python 3.10 environment for the current adapter.
+Create a working Cosmos Policy + LIBERO environment following the upstream setup instructions, using Python 3.10 for the current adapter.
 
 ```bash
 git clone https://github.com/scy040320/wam_project.git cfwam
 cd cfwam
 python -m pip install -r requirements-gate1.txt
 export PYTHONPATH="$PWD:${COSMOS_POLICY_ROOT}:${PYTHONPATH}"
-pytest -q tests/test_cfwam_core.py tests/test_model_smoke.py tests/test_d30_native16_calibration.py
+pytest -q
 ```
 
-`COSMOS_POLICY_ROOT` must point to a separately installed upstream checkout with LIBERO and access to the official model assets. Do not commit Hugging Face tokens, checkpoints, cache directories, or simulator data.
+`COSMOS_POLICY_ROOT` must point to a separately installed upstream checkout with access to the official assets. Never commit Hugging Face tokens, checkpoints, simulator data, or cache directories.
 
-## Reproduce the non-GPU protocol checks
+## Reproduce the development protocol
 
-The development manifest freezes 4 tasks × 3 phases × 5 conditions × 40 matched initial states = 2,400 planned records, with a grouped 24/8/8 initial-state split. This v1 dataset is retained for attribution development; online control results are separately qualified under the native-16 protocol.
+The manifest freezes 4 tasks × 3 phases × 5 conditions × 40 matched initial states = 2,400 records, using a grouped 24/8/8 train/validation/development-test split.
 
 ```bash
 python scripts/build_development_manifest.py --root . --output outputs/protocol_v1
 ```
 
-The output is deliberately ignored by Git. It records configuration/code hashes and split membership for experiment tracking.
-
-## Collect one aligned development record
-
-Run this only after the upstream Cosmos Policy + LIBERO runtime and official model assets are available:
+Collect one aligned development record:
 
 ```bash
 python scripts/collect_libero_counterfactuals.py \
   --task-config configs/libero_task_0.yaml \
   --episode-id 0 --phase approach --condition normal \
-  --output outputs/cfwam_v1_records
+  --output outputs/counterfactual_records
 ```
 
-For the controlled action-execution diagnostic, retain the intervention scale in the record name and offline metadata:
+Train and evaluate the attributor only after grouped split validation:
 
 ```bash
-python scripts/collect_libero_counterfactuals.py \
-  --task-config configs/libero_task_0.yaml \
-  --episode-id 0 --phase approach --condition action_noise \
-  --noise-scale 0.5 --output outputs/d09_noise_strength_audit_v1
+python scripts/train_attributor.py --help
+python scripts/evaluate_attributor.py --help
 ```
 
-Before scaling up, validate a complete 15-record task-0 smoke batch:
+Freeze the native-horizon temporal guard from validation records only:
 
 ```bash
-python scripts/audit_small_batch.py \
-  --root outputs/small_batch_task0_seed00 \
-  --report outputs/small_batch_task0_seed00_audit.json
+python scripts/calibrate_native16_temporal_guard.py \
+  --input outputs/native16_validation \
+  --output outputs/native16_temporal_guard
 ```
 
-## Training and evaluation boundary
+The semantic online entry points are:
 
-`scripts/train_attributor.py` is a prototype trainer. It enforces that a matched initial state cannot appear in both train and validation inputs. Thresholds for `unknown/abstain` must be selected once on validation states 24–31 and then frozen before held-out testing.
+- `scripts/run_binary_mismatch_baseline.py` — complete-episode image-MAE diagnostic;
+- `scripts/run_dependency_aware_recovery.py` — early four-step integration diagnostic, not a final control result;
+- `scripts/run_native16_temporal_guard.py` — native 16-action online controller with validation-frozen safety guard;
+- `scripts/run_paired_recovery_comparison.py` — locked, resumable, same-seed A/B/C/D comparison;
+- `scripts/summarize_online_control_qualification.py` and `scripts/summarize_paired_recovery_comparison.py` — descriptive summaries that never change frozen rules.
 
-The repository includes a paired-bootstrap summary utility, but it does not choose thresholds or alter raw records.
+## Reproducibility and release boundaries
 
-## Diagnostic and online-repair runners
-
-The D12 full-episode diagnostic uses a frozen image-MAE threshold to record the explicit custom decision `continue` or `global_refresh`. This is a measurement baseline rather than a claim about Cosmos Policy's native controller.
-
-`scripts/run_d26_online_local_repair.py` is retained as the first four-step integration diagnostic. It must not be used for final control claims with the released 16-step checkpoint.
-
-`scripts/run_d30_temporal_guard.py` is the corrected online runner. It keeps the frozen WAM at its trained 16-action horizon, writes strict `t+16` prediction–reality pairs, and applies the validation-frozen V6 guard. An isolated model-unknown signal first produces a guarded re-observation and requires a second consecutive confirmation before safe stop. Immediate safe stop is reserved for unknown evidence supported by action-execution evidence. Use only thresholds frozen on a separate validation set. `unknown/abstain` is a safety stop, not a successful recovery.
-
-`scripts/run_d31_native16_abcd_v1.py` constructs the immutable D31 manifest and executes the paired comparison with locking, resume support, integrity checks, bounded retry, and disk/OOM failure guards. `scripts/summarize_d31_native16_abcd.py` and `scripts/analyze_d31_acceptance.py` produce descriptive results without changing the frozen decision rule. Cloud-specific launcher paths are intentionally not included.
-
-## D30 qualification snapshot
-
-The frozen V6 configuration used 935 continuous online rows from task 0/1 validation only. Task 2/3 held-out results were not used to select thresholds.
-
-| Check | Result | Gate |
-|---|---:|---:|
-| Full episodes completed | 100/100 | 100/100 |
-| Known-intervention recovery | 59/60 (98.3%) | at least 90% |
-| Unknown safe stop | 20/20 | at least 18/20 |
-| Later false safety stop on known conditions | 2/60 (3.3%) | at most 20% |
-| Clean false safety stop | 0/20 | 0 |
-| Task 2 clean success, method / A-clean | 10/10 / 10/10 | decline at most 1/10 |
-| Task 3 clean success, method / A-clean | 9/10 / 9/10 | decline at most 1/10 |
-
-All required decision JSON files and both camera videos were non-empty. No OOM, dead loop, or runtime-fatal traceback occurred. Per-episode outputs and checkpoints remain excluded from Git.
-
-## D31 small-scale comparison snapshot
-
-D31 scheduled 20 initial states per task. Seeds 32–49 form the 18-state held-out primary population; seeds 30–31 overlap validation and are retained only as supplemental diagnostics. The primary analysis therefore contains 4 tasks × 18 states × 4 methods = 288 episodes. Method order is balanced by cyclic rotation within matched task/seed/condition cells.
-
-| Primary metric | A | B | C | D |
-|---|---:|---:|---:|---:|
-| Episodes | 72 | 72 | 72 | 72 |
-| Task success | 59.7% | 59.7% | 55.6% | 59.7% |
-| Intervention-block recovery action correct | 5.6% | 5.6% | 31.9% | 90.3% |
-| Mean global refreshes | 15.07 | 0.00 | 6.88 | 0.24 |
-| Mean invalidated nodes | 140.22 | 95.93 | 64.61 | 13.18 |
-| Mean WAM calls | 22.69 | 22.72 | 14.33 | 16.07 |
-
-For D, clean, visual occlusion, and action noise each retained 100% task success, and unknown entered the safe-stop exit in 15/15 primary episodes. Object shift is the material negative result: D selected `local_state_update` in 13/14 cases, but all four methods had 0% final task success. D31 is therefore recorded as **pass with limitation**. These held-out results must not be used to retune D30; the failure is carried forward as a preregistered D32 analysis target.
-
-## What is deliberately not released
-
-- raw observations, actions, labels, videos, DINO features, CSV results, and development manifests;
-- model checkpoints, tokenizer files, Hugging Face cache or authentication material;
-- LIBERO assets, Cosmos Policy source/weights, and cloud/desktop-specific launch scripts;
-- personal plans, reports, screenshots, and unpublished claims.
-
-These exclusions keep the repository reproducible without exposing credentials, third-party artifacts, or large experimental artifacts. A paper-ready release will add the final comparison package, dataset/checkpoint policy, and project license.
+- Initial states are grouped so matched counterfactuals cannot cross train/validation/test splits.
+- Unknown thresholds are selected once on validation data and frozen before held-out evaluation.
+- The released checkpoint’s native 16-action horizon is preserved; imagined and real futures are aligned at `t+16`.
+- Raw observations, videos, checkpoints, tokenizer files, large output directories, private manifests, and cloud-specific launchers are not in Git.
+- A paper-ready release will add the final multi-task comparison package, dataset/checkpoint policy, license, and citation.
 
 ## Acknowledgements
 
-This adapter is built around the public [Cosmos Policy](https://github.com/nvlabs/cosmos-policy) interface and the [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO) benchmark. Please follow their respective licenses, access requirements, and citation instructions.
+This research adapter builds on the public interfaces of [Cosmos Policy](https://github.com/nvlabs/cosmos-policy), [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO), and [DINOv2](https://github.com/facebookresearch/dinov2). Please follow their licenses and citation guidance.

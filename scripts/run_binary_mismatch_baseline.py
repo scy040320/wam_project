@@ -21,14 +21,14 @@ from cosmos_policy.experiments.robot.cosmos_utils import get_action, get_model, 
 from cosmos_policy.experiments.robot.libero.libero_utils import get_libero_dummy_action, get_libero_env
 from cosmos_policy.experiments.robot.libero.run_libero_eval import PolicyEvalConfig, TASK_MAX_STEPS, prepare_observation
 
-OUT = Path(os.environ.get("D12_FULL_OUTPUT_DIR", "outputs/d12_full_episode_binary_v1"))
+OUT = Path(os.environ.get("CFWAM_BINARY_OUTPUT_DIR", "outputs/binary_mismatch_baseline_v1"))
 OUT.mkdir(parents=True, exist_ok=True)
 SUITE, TASK_ID, SETTLE, PREFIX = "libero_10", 0, 10, 16
-EPISODE_IDS = [int(v) for v in os.environ.get("D12_EPISODE_IDS", "0").split(",") if v.strip()]
-CONDITIONS = [v.strip() for v in os.environ.get("D12_CONDITIONS", "clean,visual_occlusion,object_shift,action_noise").split(",") if v.strip()]
+EPISODE_IDS = [int(v) for v in os.environ.get("CFWAM_BINARY_EPISODE_IDS", "0").split(",") if v.strip()]
+CONDITIONS = [v.strip() for v in os.environ.get("CFWAM_BINARY_CONDITIONS", "clean,visual_occlusion,object_shift,action_noise").split(",") if v.strip()]
 # The threshold is part of the diagnostic-method card.  Allow an explicitly
 # logged override for a no-trigger control; never tune it on the same rollout.
-THRESHOLD = float(os.environ.get("D12_MAE_THRESHOLD", "13.50"))
+THRESHOLD = float(os.environ.get("CFWAM_BINARY_MAE_THRESHOLD", "13.50"))
 SHIFT_DELTA = np.asarray([0.25, -0.12, 0.02], dtype=np.float32)
 NOISE_DELTA = np.asarray([0.12, -0.12, 0.0], dtype=np.float32)
 
@@ -131,7 +131,7 @@ for episode_id in EPISODE_IDS:
                 # LIBERO can terminate an unsuccessful episode at its own
                 # time limit.  That must end this diagnostic rollout too;
                 # continuing to call env.step afterwards created misleading
-                # one-action pseudo-blocks in the old D12 record.
+                # one-action pseudo-blocks in an earlier diagnostic record.
                 if done or info.get("success", False) or executed >= TASK_MAX_STEPS[SUITE]:
                     success = bool(done or info.get("success", False))
                     terminal = True

@@ -4,15 +4,15 @@ from pathlib import Path
 
 
 def _module():
-    path = Path(__file__).resolve().parents[1] / "scripts" / "run_d31_native16_abcd_v1.py"
-    spec = importlib.util.spec_from_file_location("d31_runner", path)
+    path = Path(__file__).resolve().parents[1] / "scripts" / "run_paired_recovery_comparison.py"
+    spec = importlib.util.spec_from_file_location("paired_recovery_runner", path)
     module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(module)
     return module
 
 
-def test_d31_manifest_is_paired_and_leakage_tagged():
+def test_manifest_is_paired_and_leakage_tagged():
     module = _module()
     rows = module.build_manifest()
     assert len(rows) == 320
@@ -27,7 +27,7 @@ def test_d31_manifest_is_paired_and_leakage_tagged():
     assert all({r["approach"] for r in cell} == set(module.METHODS) for cell in cells.values())
 
 
-def test_d31_method_order_is_balanced():
+def test_method_order_is_balanced():
     module = _module()
     rows = module.build_manifest()
     first = Counter(r["approach"] for r in rows if r["order_slot"] == "0")

@@ -1,4 +1,4 @@
-"""Summarize staged D30 qualification without changing experiment state."""
+"""Summarize staged online-control qualification without changing state."""
 
 from __future__ import annotations
 

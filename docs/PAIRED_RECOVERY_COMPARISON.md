@@ -1,8 +1,8 @@
-# D31 native-16 small-scale A/B/C/D comparison
+# Native-16 paired A/B/C/D recovery comparison
 
 ## Scope
 
-D31 tests whether cause-aware, dependency-aware recovery reduces unnecessary
+This study tests whether cause-aware, dependency-aware recovery reduces unnecessary
 state invalidation and global refreshes while preserving task success. It is a
 small-scale controlled comparison, not the final paper matrix.
 
@@ -18,16 +18,16 @@ The compared methods are:
 ## Preregistered protocol
 
 - frozen Cosmos Policy checkpoint and native 16-action execution horizon;
-- frozen D30 V6 attributor, thresholds, and recovery rules;
+- validation-frozen attributor, thresholds, and recovery rules;
 - same task, initial state, condition, intervention block, and budget for all
   four methods in a matched comparison cell;
 - cyclic method-order rotation to balance run-order effects;
-- one deterministic condition per task/seed cell for the D31 screening run;
-- no adaptation from D31 outcomes.
+- one deterministic condition per task/seed cell for the screening run;
+- no adaptation from comparison outcomes.
 
 LIBERO exposes only 50 initial states for each selected task. States 0–23 were
 used for training and 24–31 for validation/calibration. Consequently, only
-states 32–49 are eligible as fully held-out primary states. D31 still executes
+states 32–49 are eligible as fully held-out primary states. The runner executes
 the planned 20 states per task, but states 30–31 are tagged
 `supplemental_validation_overlap` and permanently excluded from primary
 inference.
@@ -65,13 +65,13 @@ For method D:
 
 ## Decision and limitation
 
-D31 passes its engineering, fairness, safety, and local-invalidation checks,
+The comparison passes its engineering, fairness, safety, and local-invalidation checks,
 but carries a material limitation. Correctly routing an object shift to a
 local state update did not restore task success. A, B, C, and D all achieved
-0% success for this condition. The D31 held-out data must not be used to tune
-the frozen D30 thresholds or recovery rules.
+0% success for this condition. The held-out data must not be used to tune
+the frozen thresholds or recovery rules.
 
-D32 should preserve D30 V6 and preregister the complete condition matrix,
+The next recovery-cue study preserves the frozen rule and preregisters the complete condition matrix,
 with object-shift trajectories treated as a named failure-analysis stratum.
 Any method change motivated by that analysis requires a new validation-only
 development version and a fresh untouched evaluation set.

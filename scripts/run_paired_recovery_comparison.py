@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the preregistered D31 native-16 A/B/C/D comparison unattended."""
+"""Run a preregistered native-16 A/B/C/D recovery comparison unattended."""
 
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ except ImportError:  # Keep manifest construction testable on non-POSIX hosts.
 
 METHODS = ["A_binary_global", "B_uniform_subgraph", "C_attribution_global", "D_dependency_aware"]
 CONDITIONS = ["normal", "visual_occlusion", "object_shift", "action_noise", "unknown"]
-EXPECTED_THRESHOLD_SHA256 = "a656df385296a108cade5488b3e79dbf619afe6a2ded05befd367c0c6f252e89"
+EXPECTED_THRESHOLD_SHA256 = "5dcac3d5e4bd6531ad52dfc1524f595096961d4cda8b8cde46a627de6c37cea6"
 MIN_FREE_GIB = 30
 
 def now() -> str:
@@ -107,21 +107,21 @@ def status_file(path: Path, **items: object) -> None:
 def main() -> int:
     ap = argparse.ArgumentParser(); ap.add_argument("--project-root", type=Path, default=Path.cwd()); ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args(); root = args.project_root.resolve()
-    out_root = root / "outputs/d31_native16_abcd_v1"; run_root = out_root / "runs"; log_root = out_root / "job_logs"
+    out_root = root / "outputs/paired_native16_recovery_v1"; run_root = out_root / "runs"; log_root = out_root / "job_logs"
     manifest = out_root / "manifest.csv"; progress = out_root / "progress.tsv"; status = out_root / "status.json"
     attention = out_root / "NEEDS_ATTENTION"; done = out_root / "DONE"; lock_path = out_root / ".orchestrator.lock"
-    threshold = root / "outputs/d30_temporal_guard_native16_calibration_v6/d30_native16_temporal_guard_frozen.yaml"
+    threshold = root / "outputs/native16_temporal_guard/native16_temporal_guard_frozen.yaml"
     checkpoint = root / "outputs/cfwam_v1_attributor_train_v1/attributor_best.pt"
     tensors = root / "outputs/cfwam_v1_training_tensors/train.pt"
-    runner = root / "cfwam_v1/scripts/run_d30_temporal_guard.py"
-    summary_script = root / "cfwam_v1/scripts/summarize_d31_native16_abcd.py"; uv = shutil.which("uv")
+    runner = root / "scripts/run_native16_temporal_guard.py"
+    summary_script = root / "scripts/summarize_paired_recovery_comparison.py"; uv = shutil.which("uv")
     out_root.mkdir(parents=True, exist_ok=True); run_root.mkdir(exist_ok=True); log_root.mkdir(exist_ok=True)
     if fcntl is None and not args.dry_run:
-        raise RuntimeError("D31 execution requires a POSIX host with fcntl locking")
+        raise RuntimeError("paired recovery comparison requires a POSIX host with fcntl locking")
     lock = lock_path.open("w")
     try:
         if fcntl is not None: fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except BlockingIOError: print("another D31 orchestrator holds the lock", file=sys.stderr); return 3
+    except BlockingIOError: print("another paired-comparison orchestrator holds the lock", file=sys.stderr); return 3
     rows = build_manifest()
     if not manifest.exists(): write_manifest(rows, manifest)
     else:
@@ -137,7 +137,7 @@ def main() -> int:
     free_gib = shutil.disk_usage(root).free / (1024 ** 3)
     if free_gib < MIN_FREE_GIB:
         attention.write_text(f"preflight free disk {free_gib:.1f} GiB < {MIN_FREE_GIB}\n", encoding="utf-8"); return 6
-    protocol = {"protocol_version": "d31_native16_abcd_v1", "created_at": now(),
+    protocol = {"protocol_version": "paired_native16_recovery_v1", "created_at": now(),
         "primary_population": "tasks 0-3, seeds 32-49; no training or validation states",
         "supplemental_population": "seeds 30-31; validation-overlap; excluded from primary inference",
         "total_jobs": 320, "primary_jobs": 288, "supplemental_jobs": 32,
@@ -145,7 +145,7 @@ def main() -> int:
         "condition_assignment": "CONDITIONS[(seed-30+task) mod 5]", "method_order": "four-way cyclic Latin rotation by cell index",
         "threshold_sha256": threshold_hash, "checkpoint_sha256": sha256(checkpoint), "runner_sha256": sha256(runner),
         "manifest_sha256": sha256(manifest), "control_horizon": 16, "phase": "approach", "intervention_block": 2,
-        "binary_mae_threshold": 13.5, "no_adaptation": "No thresholds, checkpoint, code, or recovery rules may change during D31."}
+        "binary_mae_threshold": 13.5, "no_adaptation": "No thresholds, checkpoint, code, or recovery rules may change during the comparison."}
     (out_root / "protocol.json").write_text(json.dumps(protocol, indent=2, ensure_ascii=False), encoding="utf-8")
     if args.dry_run: print(json.dumps(protocol, indent=2, ensure_ascii=False)); return 0
     done.unlink(missing_ok=True); attention.unlink(missing_ok=True)
@@ -162,7 +162,7 @@ def main() -> int:
             status_file(status, state="running", completed=complete_count, total=len(rows), current=row, attempt=attempt)
             job_log = log_root / f'{int(row["job_index"]):03d}_{row["cell_id"]}_{row["approach"]}_attempt{attempt}.log'
             cmd = [uv, "run", "--extra", "cu128", "--group", "libero", "--python", "3.10", "python", str(runner),
-                "--task-config", str(root / f'cfwam_v1/configs/libero_task_{row["task"]}.yaml'), "--checkpoint", str(checkpoint),
+                "--task-config", str(root / f'configs/libero_task_{row["task"]}.yaml'), "--checkpoint", str(checkpoint),
                 "--thresholds", str(threshold), "--training-tensors", str(tensors), "--episode-id", row["seed"],
                 "--phase", row["phase"], "--condition", row["condition"], "--intervention-block", row["intervention_block"],
                 "--approach", row["approach"], "--dino-device", "cpu", "--output", str(output)]
@@ -181,7 +181,7 @@ def main() -> int:
             if consecutive_failures >= 3:
                 attention.write_text(f"three consecutive failed jobs; last={row}\n", encoding="utf-8")
                 status_file(status, state="halted_failures", completed=complete_count, total=len(rows), current=row); return 9
-        if complete_count % 10 == 0: print(f"[{now()}] D31 complete {complete_count}/{len(rows)}", flush=True)
+        if complete_count % 10 == 0: print(f"[{now()}] paired comparison complete {complete_count}/{len(rows)}", flush=True)
     rc = subprocess.run([sys.executable, str(summary_script), "--root", str(out_root)], cwd=root).returncode
     if rc != 0: attention.write_text(f"summary failed rc={rc}\n", encoding="utf-8"); return 10
     final_complete = sum(complete(run_root / f'{r["cell_id"]}_{r["approach"]}') for r in rows)

@@ -6,7 +6,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
-from calibrate_d30_native16_temporal_guard import load_rows, main
+from calibrate_native16_temporal_guard import load_rows, main
 
 
 def _write_run(root: Path, condition: str, probabilities: dict[str, float]) -> None:
@@ -56,7 +56,7 @@ def test_native16_calibration_freezes_validation_only_manifest(tmp_path, monkeyp
     output = tmp_path / "frozen"
     monkeypatch.setattr(sys, "argv", ["calibrate", "--input", str(source), "--output", str(output)])
     assert main() == 0
-    manifest = (output / "d30_native16_temporal_guard_frozen.yaml").read_text(encoding="utf-8")
+    manifest = (output / "native16_temporal_guard_frozen.yaml").read_text(encoding="utf-8")
     assert "protocol: native16_prediction_real_alignment" in manifest
     assert "control_horizon: 16" in manifest
     assert "model_unknown_with_execution_evidence" in manifest

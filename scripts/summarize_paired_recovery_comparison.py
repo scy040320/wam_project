@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Summarize D31 without changing any frozen decision rule."""
+"""Summarize the paired comparison without changing any frozen rule."""
 import argparse, csv, json, statistics
 from collections import defaultdict
 from pathlib import Path
@@ -42,14 +42,14 @@ def main() -> int:
     summary={"integrity":{"expected":len(manifest),"loaded":len(rows),"missing_or_invalid":missing},
         "primary_jobs":sum(r["analysis_set"]=="primary_heldout" for r in rows),
         "supplemental_jobs":sum(r["analysis_set"]!="primary_heldout" for r in rows),"aggregate":aggregates,
-        "warning":"Seeds 30-31 overlap validation and are excluded from primary inference. D31 is preliminary and must not retune thresholds."}
+        "warning":"Seeds 30-31 overlap validation and are excluded from primary inference. This screening comparison must not retune thresholds."}
     (root/"summary.json").write_text(json.dumps(summary,indent=2,ensure_ascii=False),encoding="utf-8")
-    lines=["# D31 native-16 paired A/B/C/D summary","",f"- Integrity: {len(rows)}/{len(manifest)} readable episodes",
+    lines=["# Native-16 paired A/B/C/D recovery summary","",f"- Integrity: {len(rows)}/{len(manifest)} readable episodes",
         f"- Primary held-out jobs: {summary['primary_jobs']} (seeds 32-49)",f"- Supplemental jobs: {summary['supplemental_jobs']} (seeds 30-31; excluded)",
-        "- Frozen D30 V6 rules were not adapted during D31.","","| set | method | condition | n | success | safety stop | global refresh | WAM calls | invalidated nodes |",
+        "- Validation-frozen temporal-guard rules were not adapted during the comparison.","","| set | method | condition | n | success | safety stop | global refresh | WAM calls | invalidated nodes |",
         "|---|---|---|---:|---:|---:|---:|---:|---:|"]
     for a in aggregates:
         lines.append(f"| {a['analysis_set']} | {a['approach']} | {a['condition']} | {a['n']} | {a['success_rate']:.3f} | {a['safety_stop_rate']:.3f} | {a['mean_global_refreshes']:.2f} | {a['mean_wam_calls']:.2f} | {a['mean_invalidated_nodes']:.2f} |")
-    (root/"D31_SUMMARY.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
+    (root/"COMPARISON_SUMMARY.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
     return 0 if not missing else 2
 if __name__=="__main__": raise SystemExit(main())

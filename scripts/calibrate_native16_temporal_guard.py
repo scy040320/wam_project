@@ -1,4 +1,4 @@
-"""Freeze D30 native-16 temporal guard thresholds from validation seeds only."""
+"""Freeze native-16 temporal-guard thresholds from validation seeds only."""
 
 from __future__ import annotations
 
@@ -149,7 +149,7 @@ def main() -> int:
     _, object_recall, object_neg_false_rate, object_energy_threshold = object_selected
 
     config = {
-        "status": "frozen_d30_validation",
+        "status": "frozen_validation_temporal_guard",
         "protocol": "native16_prediction_real_alignment",
         "control_horizon": 16,
         "prediction_alignment_horizon": 16,
@@ -190,7 +190,7 @@ def main() -> int:
         },
     }
     serialized = yaml.safe_dump(config, sort_keys=False)
-    (args.output / "d30_native16_temporal_guard_frozen.yaml").write_text(serialized, encoding="utf-8")
+    (args.output / "native16_temporal_guard_frozen.yaml").write_text(serialized, encoding="utf-8")
     (args.output / "calibration_summary.json").write_text(json.dumps(config, indent=2), encoding="utf-8")
     (args.output / "validation_rows.json").write_text(json.dumps(rows, indent=2), encoding="utf-8")
     digest = hashlib.sha256(serialized.encode("utf-8")).hexdigest()

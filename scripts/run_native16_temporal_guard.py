@@ -1,6 +1,6 @@
-"""Run one D30 temporal-guard full-episode rollout in LIBERO.
+"""Run one native-16 temporal-guard full-episode rollout in LIBERO.
 
-The D30 runner adds validation-frozen strong-unknown detection and episode-local
+The runner adds validation-frozen strong-unknown detection and episode-local
 weak-evidence hysteresis. Cosmos always decodes and executes its native 16-step
 action chunk so the predicted future and real observation share the same
 horizon. A first weak signal produces a four-step guarded hold
@@ -73,7 +73,7 @@ def parse_args() -> argparse.Namespace:
                         help="Record counterfactual recovery decisions without applying them or safety-stopping.")
     parser.add_argument("--approach", required=True, choices=("A_binary_global", "B_uniform_subgraph", "C_attribution_global", "D_dependency_aware"))
     parser.add_argument("--binary-mae-threshold", type=float, default=13.5)
-    parser.add_argument("--hold-steps", type=int, default=None, help="Must match the validation-frozen D30 configuration.")
+    parser.add_argument("--hold-steps", type=int, default=None, help="Must match the validation-frozen configuration.")
     parser.add_argument("--output", required=True, type=Path)
     return parser.parse_args()
 
@@ -165,8 +165,8 @@ def main() -> int:
     spec = TaskGraphSpec.from_yaml(args.task_config)
     graph = BeliefGraph(spec); router = RecoveryRouter(graph)
     thresholds = yaml.safe_load(args.thresholds.read_text(encoding="utf-8"))
-    if thresholds.get("status") != "frozen_d30_validation":
-        raise ValueError("D30 requires validation-frozen temporal-guard thresholds")
+    if thresholds.get("status") != "frozen_validation_temporal_guard":
+        raise ValueError("online control requires validation-frozen temporal-guard thresholds")
     abstain = AbstainPolicy(float(thresholds["min_known_probability"]), float(thresholds["max_entropy"]), float(thresholds["max_residual_energy"]))
     prototype = torch.load(args.training_tensors, map_location="cpu", weights_only=False)[0]
     attributor = CounterfactualAttributor(prototype["residual"].numel(), prototype["node_features"].shape[-1], 5).cuda().eval()

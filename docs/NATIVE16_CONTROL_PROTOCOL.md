@@ -1,4 +1,4 @@
-# D30 protocol correction: native 16-step alignment
+# Native 16-step control and prediction alignment
 
 ## Why the protocol changed
 
@@ -16,7 +16,7 @@ behaviour, but their task-success numbers are not used as paper results.
 
 A second audit found that the development runners stopped on LIBERO
 `done=True` but recorded success only from `info["success"]`. The official
-evaluator treats `done=True` as success. D30 and the corrected earlier runners
+evaluator treats `done=True` as success. The native-horizon runner and corrected diagnostics
 now use `done or info.get("success", False)`.
 
 ## Evidence
@@ -31,7 +31,7 @@ Using the frozen checkpoint and the official native horizon on LIBERO task 2:
 The private experiment archive retains primary/wrist MP4 files, the exact trained chunk size, the
 executed prefix, per-query value and latency, and the final success flag.
 
-## Frozen D30 protocol
+## Frozen protocol
 
 1. Cosmos remains frozen and decodes its native 16-action chunk.
 2. All 16 planned actions are executed before residual construction.
@@ -46,9 +46,9 @@ executed prefix, per-query value and latency, and the final success flag.
    action-execution evidence.
 6. Native-16 thresholds are selected only from task0/task1 validation seeds.
    Task2/task3 seeds 40--49 are reserved for qualification and evaluation.
-7. No D27/D28 development result is used to select a D30 threshold.
+7. No held-out online comparison result is used to select a threshold.
 
-## D30 gate outcome
+## Online qualification outcome
 
 - Native clean baseline: at least 5/10 successes on each of task2 and task3.
 - Validation-only threshold manifest is frozen and hashed.
@@ -74,5 +74,6 @@ All required decision JSON files and both camera videos were non-empty. There
 was no OOM, dead loop, or runtime-fatal traceback. EGL destructor warnings
 after completed episodes were treated as cleanup warnings, not run failures.
 
-D30 therefore passes its frozen gate. D31 has not started and requires a
-separately approved, same-seed/same-budget comparison protocol.
+The native-horizon controller therefore passes its frozen qualification gate.
+The subsequent comparison uses a separately preregistered, same-seed and
+same-budget protocol.
