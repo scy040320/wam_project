@@ -1,126 +1,87 @@
-# CF-WAM: Counterfactual Mismatch Attribution for World Action Models
+# CF-WAM: Counterfactual Recovery Decisions for World Action Models
 
-> **Research prerelease.** Attribution, localization, native-horizon online qualification, and a paired recovery comparison are complete. Recovery-cue integration is under validation; the final multi-task paper matrix has not started.
+**Research prototype · simulation-first · paired data collection in progress**
 
-CF-WAM addresses a practical ambiguity in world action models (WAMs): when an imagined future differs from the next observation, the mismatch alone does not reveal whether the cause is visual occlusion, object displacement, action-execution noise, or an unknown event. Treating every mismatch as “discard everything and replan” can be unnecessarily expensive and can erase valid task state.
+When execution deviates from a world-action model's plan, should a robot keep going, observe again, or replan immediately? CF-WAM studies **which recovery treatment helps in a given state**, rather than assuming that identifying an error cause guarantees useful recovery.
 
-This repository implements an external, dependency-aware attribution and recovery layer around a frozen WAM. The first adapter targets [Cosmos Policy](https://github.com/nvlabs/cosmos-policy) on [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO). CF-WAM does **not** modify or redistribute Cosmos Policy, LIBERO, or their checkpoints.
+The goal is better task completion with fewer harmful interventions. Reduced execution cost is a secondary hypothesis, **not an established benefit**. Cosmos Policy remains the action generator; this project is an external recovery-decision layer, not a new foundation WAM.
 
-## Project status
+## Research workflow
 
-- **Attribution and localization:** complete on a grouped 2,400-record development protocol. Held-out cause Macro-F1 is **0.835**, node-mask IoU is **0.704**, and unknown recall is **0.938**.
-- **Native-horizon online qualification:** passed on 100/100 held-out episodes. Known-intervention routing is **59/60 (98.3%)**, unknown reaches a safe exit in **20/20**, and clean false safety stops are **0/20**.
-- **Paired online comparison:** complete on 288 primary held-out episodes, plus 32 validation-overlap diagnostics excluded from inference. The full method reduces mean invalidated nodes from **140.22** (binary global) to **13.18** while retaining the same aggregate task success.
-- **Current limitation:** object shifts are attributed correctly and routed to a local update in 13/14 cases, but final object-shift task success remains 0/14. A one-query recovery cue is now being validated to make the refreshed state affect the next frozen-policy decision.
-- **Not yet complete:** the final 6–10 task main experiment, ablations, and cross-platform/cross-model generalization.
+```mermaid
+flowchart LR
+    A[Matched clean prefix and frozen action plan] --> B[Offline scheduled intervention]
+    B --> C[Same branch state]
+    C --> D[Continue remaining actions]
+    C --> E[Hold and reobserve for 4 steps]
+    C --> F[Discard tail and replan]
+    E --> G[Fresh Cosmos query]
+    F --> G
+    D --> H[Paired outcomes: success, harm, steps, calls]
+    G --> H
+    H -. proposed, not trained yet .-> I[Observation-based treatment selector]
+```
 
-![Held-out attribution and localization results](docs/assets/attribution_results.png)
+Current collection branches **inside** an action chunk, four steps after a scheduled intervention. The branch time is selected offline; there is **no deployed online mismatch detector or trained treatment selector yet**. A prediction for `t+16` is never compared with an observation at `t+4` as aligned supervision.
 
-![Paired online recovery comparison](docs/assets/paired_online_comparison.png)
+## Evidence so far
 
-## Method
+Completed stage-coverage pilot: **2 tasks × 3 development seeds × 2 stages × 4 conditions × 3 treatments = 144 branches**, forming 48 matched treatment triplets (not 144 independent initial states).
 
-At each native 16-action boundary, the adapter records current primary/wrist observations, proprioception, the frozen WAM plan and imagined future, executed actions, the real observation at `t+16`, value change, and an online belief/provenance graph. Simulator truth is used only to create offline labels and evaluation masks; it is never an online input.
+| Condition | Continue | Reobserve then replan | Immediate replan |
+|---|---:|---:|---:|
+| Normal | 12/12 | 11/12 | 12/12 |
+| Visual occlusion | 12/12 | 11/12 | 12/12 |
+| Object shift | 9/12 | 12/12 | 11/12 |
+| Action noise | 12/12 | 12/12 | 12/12 |
+| **Overall task success** | **45/48** | **46/48** | **47/48** |
 
-The trainable module is a lightweight two-layer graph attention network. It predicts:
+These are descriptive development results, not a final benchmark. Recovery rescued some object-shift failures but also harmed normal/occluded episodes. Rescue events occurred in one task; the other had ceiling success. Thus **no universal best treatment, generalization, physical safety, or learned-policy advantage has been demonstrated**. An earlier fixed-early-checkpoint 72-branch pilot had 24/24 successes for every treatment.
 
-1. a cause in `normal`, `visual_occlusion`, `object_shift`, `action_noise`, or `unknown`;
-2. an affected-node mask over a reviewed task graph; and
-3. a per-cause counterfactual residual explanation.
+The next frozen collection contains **576 planned branches over 24 task/seed groups**. Collection is in progress; no final result or selector training is claimed. See [protocol and interpretation](docs/PAIRED_TREATMENT_PROTOCOL.md).
 
-The recovery router converts those outputs into transparent actions: continue, reobserve, local belief/provenance invalidation, local action correction, or safe stop. “Local rollback” refers only to invalidating internal belief/provenance state and changing the next decision; it never claims to undo a physical action.
-
-## Online comparison snapshot
-
-The primary population uses held-out LIBERO states 32–49. All methods receive matched task, seed, condition, intervention timing, and budget; method order is cyclically balanced.
-
-| Metric | Binary global | Uniform subgraph | Attribution global | Dependency-aware |
-|---|---:|---:|---:|---:|
-| Episodes | 72 | 72 | 72 | 72 |
-| Task success | 59.7% | 59.7% | 55.6% | 59.7% |
-| Correct recovery action | 5.6% | 5.6% | 31.9% | **90.3%** |
-| Mean global refreshes | 15.07 | 0.00 | 6.88 | **0.24** |
-| Mean invalidated nodes | 140.22 | 95.93 | 64.61 | **13.18** |
-| Mean WAM calls | 22.69 | 22.72 | **14.33** | 16.07 |
-
-For the dependency-aware method, clean, visual occlusion, and action noise each retain 100% task success in this screening population; unknown reaches the safe-stop exit in 15/15 cases. Object shift is the named negative result described above. Held-out results are not used to retune the frozen thresholds.
-
-See [native-horizon control protocol](docs/NATIVE16_CONTROL_PROTOCOL.md) and [paired recovery comparison](docs/PAIRED_RECOVERY_COMPARISON.md) for protocol boundaries and interpretation.
-
-## Repository layout
+## Public code layout
 
 ```text
-cfwam/                 task graph, schemas, attribution model, abstention and recovery
-configs/               reviewed task graphs and frozen development protocol
-scripts/               collection, training, calibration, online runners and summaries
-tests/                 graph, leakage, calibration and runner-contract tests
-docs/                  protocol notes, comparison reports and public figures
+recovery_decision/       current paired-treatment protocol and descriptive analysis
+tests/test_treatment_contract.py
+docs/PAIRED_TREATMENT_PROTOCOL.md
+docs/LEGACY_ATTRIBUTION.md
+cfwam/                  retained legacy attribution, graph and recovery primitives
+configs/                retained legacy graph/protocol configurations
+scripts/                retained legacy collection/training/control utilities
 ```
 
-Public filenames describe function rather than internal experiment-day identifiers. Cloud orchestration, private output paths, checkpoints, and large experiment artifacts are intentionally excluded.
+The new utilities use semantic names, independent of private daily task identifiers. Legacy code remains in its original locations to preserve imports and reproducibility; it is **not the new treatment-selection model**. See [release boundaries](docs/RELEASE_SCOPE.md).
 
-## Installation
+## Quick start: lightweight public utilities
 
-Create a working Cosmos Policy + LIBERO environment following the upstream setup instructions, using Python 3.10 for the current adapter.
+Python 3.10+; these utilities require only the standard library. Run from the repository root:
 
 ```bash
-git clone https://github.com/scy040320/wam_project.git cfwam
-cd cfwam
-python -m pip install -r requirements-gate1.txt
-export PYTHONPATH="$PWD:${COSMOS_POLICY_ROOT}:${PYTHONPATH}"
-pytest -q
+python -m recovery_decision.protocol --output /tmp/treatment_manifest.json
+python -m unittest discover -s tests -p test_treatment_contract.py -v
+python -m recovery_decision.analysis /path/to/results.json --output /tmp/paired_summary.json
 ```
 
-`COSMOS_POLICY_ROOT` must point to a separately installed upstream checkout with access to the official assets. Never commit Hugging Face tokens, checkpoints, simulator data, or cache directories.
+The manifest builder freezes the 576-combination design; it **does not launch a simulator**. The analysis tool accepts a JSON list of complete matched triplets and reports rescues, harms, and resource differences restricted to jointly successful pairs. It rejects missing/duplicate arms. See the protocol document for the result schema.
 
-## Reproduce the development protocol
+The cloud simulator collector is **not yet a portable public entry point**. Do not treat the commands above as end-to-end reproduction. Upstream integration requires a separately installed [Cosmos Policy](https://github.com/nvlabs/cosmos-policy) and [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO) environment; neither assets nor checkpoints are redistributed.
 
-The manifest freezes 4 tasks × 3 phases × 5 conditions × 40 matched initial states = 2,400 records, using a grouped 24/8/8 train/validation/development-test split.
+## What changed from the earlier project?
 
-```bash
-python scripts/build_development_manifest.py --root . --output outputs/protocol_v1
-```
+The earlier module classified mismatch causes and invalidated dependent graph state. Experiments showed that correct routing or fewer invalidated nodes did not, by themselves, establish improved task completion. The current direction first measures the consequences of different treatments from matched states, before learning a decision rule. Earlier attribution scores and control experiments belong to a different protocol and are retained in [historical notes](docs/LEGACY_ATTRIBUTION.md), not presented as validation of this direction.
 
-Collect one aligned development record:
+## Next research gates
 
-```bash
-python scripts/collect_libero_counterfactuals.py \
-  --task-config configs/libero_task_0.yaml \
-  --episode-id 0 --phase approach --condition normal \
-  --output outputs/counterfactual_records
-```
+- Audit paired data, alignment, replay equality, and grouped splits.
+- Establish repeatable rescue/harm differences without changing settings to favor a treatment.
+- Train a treatment selector only after data review; compare against fixed-treatment policies.
+- Ablate prediction inputs against observation-only inputs before claiming value from imagination.
+- Evaluate closed-loop success and intervention harm on an independently frozen population.
 
-Train and evaluate the attributor only after grouped split validation:
-
-```bash
-python scripts/train_attributor.py --help
-python scripts/evaluate_attributor.py --help
-```
-
-Freeze the native-horizon temporal guard from validation records only:
-
-```bash
-python scripts/calibrate_native16_temporal_guard.py \
-  --input outputs/native16_validation \
-  --output outputs/native16_temporal_guard
-```
-
-The semantic online entry points are:
-
-- `scripts/run_binary_mismatch_baseline.py` — complete-episode image-MAE diagnostic;
-- `scripts/run_dependency_aware_recovery.py` — early four-step integration diagnostic, not a final control result;
-- `scripts/run_native16_temporal_guard.py` — native 16-action online controller with validation-frozen safety guard;
-- `scripts/run_paired_recovery_comparison.py` — locked, resumable, same-seed A/B/C/D comparison;
-- `scripts/summarize_online_control_qualification.py` and `scripts/summarize_paired_recovery_comparison.py` — descriptive summaries that never change frozen rules.
-
-## Reproducibility and release boundaries
-
-- Initial states are grouped so matched counterfactuals cannot cross train/validation/test splits.
-- Unknown thresholds are selected once on validation data and frozen before held-out evaluation.
-- The released checkpoint’s native 16-action horizon is preserved; imagined and real futures are aligned at `t+16`.
-- Raw observations, videos, checkpoints, tokenizer files, large output directories, private manifests, and cloud-specific launchers are not in Git.
-- A paper-ready release will add the final multi-task comparison package, dataset/checkpoint policy, license, and citation.
+There is no released selector checkpoint, final paper result, or publication claim. Raw data, videos, credentials, machine-specific launchers and large model assets are excluded. A project license has not yet been selected; public visibility does not grant an open-source license.
 
 ## Acknowledgements
 
-This research adapter builds on the public interfaces of [Cosmos Policy](https://github.com/nvlabs/cosmos-policy), [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO), and [DINOv2](https://github.com/facebookresearch/dinov2). Please follow their licenses and citation guidance.
+Built around [Cosmos Policy](https://github.com/nvlabs/cosmos-policy) and [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO); earlier visual attribution uses [DINOv2](https://github.com/facebookresearch/dinov2). Follow upstream licenses and citation requirements.

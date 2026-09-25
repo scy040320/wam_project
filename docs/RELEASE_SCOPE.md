@@ -1,13 +1,18 @@
-# Gate 1 release scope
+# Public release boundaries
 
-This is a source-only prerelease for the CF-WAM research pipeline.
+The active direction is paired recovery-treatment learning for a frozen WAM.
+`recovery_decision/` releases lightweight manifest, alignment, stage-selection and
+descriptive-analysis utilities, with unit tests. It does not yet release a portable
+simulator collector, trained selector, online detector or end-to-end benchmark.
 
-The public interface is intentionally narrow:
+`cfwam/`, existing `configs/` and existing `scripts/` retain the earlier attribution
+prototype and baseline tooling. Their interfaces are preserved; their metrics and
+time-alignment assumptions must not be transferred to the new protocol. See
+[historical notes](LEGACY_ATTRIBUTION.md) and the earlier protocol documents.
 
-- `cfwam/` contains platform-neutral task-graph, attribution, abstention and recovery code.
-- `configs/` contains human-reviewed semantic task graphs and a pre-registered development split.
-- `scripts/` contains code to collect, audit, featurize and summarize records when the user provides a licensed upstream Cosmos Policy + LIBERO installation.
+Excluded: credentials, personal reports, daily plans, private orchestration,
+absolute cloud launch paths, checkpoints, observations, videos, datasets, caches
+and third-party assets. New public files use semantic names, not daily task IDs.
 
-The repository does not publish an experimental conclusion. In particular, the GAT is a prototype implementation; it has no released trained weights, calibrated threshold file, or benchmark score. The custom binary diagnostic script exists to illustrate a stated baseline policy and is not evidence about an original Cosmos Policy decision rule.
-
-Raw outputs remain private until their licenses, privacy, storage, and reproducibility conditions have been reviewed. A project license must be chosen before advertising a later paper-ready release as fully open source.
+No project-wide license has been selected. Do not advertise a fully licensed
+open-source release or redistribute upstream code/weights without permission.

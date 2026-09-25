@@ -30,3 +30,15 @@ wandb/
 # Platform files
 .DS_Store
 Thumbs.db
+
+# Private launchers and daily-task exports (never part of the public interface)
+scripts/*_d[0-9]*
+tests/test_d[0-9]*
+*.pem
+*.key
+*.pkl
+*.tgz
+*.tar
+*.zip
+*.docx
+*.xlsx
