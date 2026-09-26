@@ -1,87 +1,90 @@
-# CF-WAM: Counterfactual Recovery Decisions for World Action Models
+# CF-WAM: Belief-Constrained Candidate Reranking for World Action Models
 
-**Research prototype · simulation-first · paired data collection in progress**
+**Research prototype · simulation first · no released checkpoint yet**
 
-When execution deviates from a world-action model's plan, should a robot keep going, observe again, or replan immediately? CF-WAM studies **which recovery treatment helps in a given state**, rather than assuming that identifying an error cause guarantees useful recovery.
+CF-WAM asks a concrete control question: when a world-action model's imagined block ending disagrees with reality, can an explicit explanation and task belief prevent the next query from selecting an action that depends on invalid assumptions?
 
-The goal is better task completion with fewer harmful interventions. Reduced execution cost is a secondary hypothesis, **not an established benefit**. Cosmos Policy remains the action generator; this project is an external recovery-decision layer, not a new foundation WAM.
-
-## Research workflow
+The current method keeps the Cosmos Policy generator frozen. Cosmos produces `K` action-block candidates and their official values; CF-WAM explains the previous block mismatch, updates an auditable object-centric belief, rejects candidates whose prerequisites are contradicted, and reranks the remaining candidates. This is an action-selection mechanism, not merely an error log.
 
 ```mermaid
 flowchart LR
-    A[Matched clean prefix and frozen action plan] --> B[Offline scheduled intervention]
-    B --> C[Same branch state]
-    C --> D[Continue remaining actions]
-    C --> E[Hold and reobserve for 4 steps]
-    C --> F[Discard tail and replan]
-    E --> G[Fresh Cosmos query]
-    F --> G
-    D --> H[Paired outcomes: success, harm, steps, calls]
-    G --> H
-    H -. proposed, not trained yet .-> I[Observation-based treatment selector]
+    E[Previous block evidence<br/>predicted future + real future + execution] --> A[Hierarchical multi-label attribution]
+    A --> B[Object-centric belief update]
+    B --> G[Dependency DAG propagation]
+    O[Current observation] --> C[Cosmos Policy<br/>K candidates, frozen]
+    C --> P[Auditable candidate-effect parser]
+    G --> H[Hard prerequisite gate]
+    P --> H
+    H --> R[Attribution-aware reranker]
+    R --> X[Execute candidate]
+    R --> F[Reobserve / requery / safe reject]
+    X --> E
 ```
 
-Current collection branches **inside** an action chunk, four steps after a scheduled intervention. The branch time is selected offline; there is **no deployed online mismatch detector or trained treatment selector yet**. A prediction for `t+16` is never compared with an observation at `t+4` as aligned supervision.
+## What is new in this direction?
 
-## Evidence so far
+The official Best-of-N rule selects the candidate with maximum predicted value. CF-WAM inserts a structured decision layer:
 
-Completed stage-coverage pilot: **2 tasks × 3 development seeds × 2 stages × 4 conditions × 3 treatments = 144 branches**, forming 48 matched treatment triplets (not 144 independent initial states).
+1. **Hierarchical attribution** separates evidence reliability, world-state consistency, execution/contact consistency, task-stage consistency, and whether the cause is resolved. Coarse labels remain an evaluation projection, not the only representation.
+2. **Belief state** stores task facts as `true / false / unknown`, with confidence, evidence and update history.
+3. **Dependency-aware invalidation** revokes only the minimum contradicted fact, then propagates uncertainty to downstream facts.
+4. **Candidate effects** expose each candidate's required facts and proposed effects through deterministic, testable rules.
+5. **Hard gating before soft ranking** prevents a high Cosmos value from overriding a known prerequisite violation.
 
-| Condition | Continue | Reobserve then replan | Immediate replan |
-|---|---:|---:|---:|
-| Normal | 12/12 | 11/12 | 12/12 |
-| Visual occlusion | 12/12 | 11/12 | 12/12 |
-| Object shift | 9/12 | 12/12 | 11/12 |
-| Action noise | 12/12 | 12/12 | 12/12 |
-| **Overall task success** | **45/48** | **46/48** | **47/48** |
+The key experimental claim is not assumed: under the same `K`, query budget and execution budget, belief constraints must demonstrably change selected actions and improve task success, safety proxies or successful-run steps without materially harming clean performance.
 
-These are descriptive development results, not a final benchmark. Recovery rescued some object-shift failures but also harmed normal/occluded episodes. Rescue events occurred in one task; the other had ceiling success. Thus **no universal best treatment, generalization, physical safety, or learned-policy advantage has been demonstrated**. An earlier fixed-early-checkpoint 72-branch pilot had 24/24 successes for every treatment.
-
-The next frozen collection contains **576 planned branches over 24 task/seed groups**. Collection is in progress; no final result or selector training is claimed. See [protocol and interpretation](docs/PAIRED_TREATMENT_PROTOCOL.md).
-
-## Public code layout
+## Repository layout
 
 ```text
-recovery_decision/       current paired-treatment protocol and descriptive analysis
-tests/test_treatment_contract.py
-docs/PAIRED_TREATMENT_PROTOCOL.md
-docs/LEGACY_ATTRIBUTION.md
-cfwam/                  retained legacy attribution, graph and recovery primitives
-configs/                retained legacy graph/protocol configurations
-scripts/                retained legacy collection/training/control utilities
+wam_reranking/
+  contracts.py          typed public interfaces
+  belief.py             three-valued belief and dependency propagation
+  candidate_effects.py  interpretable action-block effect parser
+  reranker.py           hard gate, soft score and explicit fallbacks
+  refiner.py             future external action-residual interface
+configs/
+  task_bindings.json
+  score_weights.template.json
+docs/
+  METHOD.md
+  EVALUATION_PROTOCOL.md
+tests/
+  test_belief_reranking.py
 ```
 
-The new utilities use semantic names, independent of private daily task identifiers. Legacy code remains in its original locations to preserve imports and reproducibility; it is **not the new treatment-selection model**. See [release boundaries](docs/RELEASE_SCOPE.md).
+Private daily-task names, cloud launchers, raw data, videos, checkpoints and abandoned recovery-treatment code are intentionally excluded. Their Git history remains available, but they are not part of the current public API.
 
-## Quick start: lightweight public utilities
+## Quick start
 
-Python 3.10+; these utilities require only the standard library. Run from the repository root:
+Python 3.10+ is required.
 
 ```bash
-python -m recovery_decision.protocol --output /tmp/treatment_manifest.json
-python -m unittest discover -s tests -p test_treatment_contract.py -v
-python -m recovery_decision.analysis /path/to/results.json --output /tmp/paired_summary.json
+python -m pip install -e .
+python -m unittest discover -s tests -v
 ```
 
-The manifest builder freezes the 576-combination design; it **does not launch a simulator**. The analysis tool accepts a JSON list of complete matched triplets and reports rescues, harms, and resource differences restricted to jointly successful pairs. It rejects missing/duplicate arms. See the protocol document for the result schema.
+The package is independent of simulator ground truth and Cosmos internals. Integration code should translate the already-audited Cosmos Best-of-N output into these contracts. Upstream [Cosmos Policy](https://github.com/nvlabs/cosmos-policy) and [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO) must be installed separately; their assets and checkpoints are not redistributed here.
 
-The cloud simulator collector is **not yet a portable public entry point**. Do not treat the commands above as end-to-end reproduction. Upstream integration requires a separately installed [Cosmos Policy](https://github.com/nvlabs/cosmos-policy) and [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO) environment; neither assets nor checkpoints are redistributed.
+## Research gates
 
-## What changed from the earlier project?
+The work advances only in this order:
 
-The earlier module classified mismatch causes and invalidated dependent graph state. Experiments showed that correct routing or fewer invalidated nodes did not, by themselves, establish improved task completion. The current direction first measures the consequences of different treatments from matched states, before learning a decision rule. Earlier attribution scores and control experiments belong to a different protocol and are retained in [historical notes](docs/LEGACY_ATTRIBUTION.md), not presented as validation of this direction.
+1. train and validate hierarchical attribution;
+2. prove belief-constrained reranking changes actions and improves closed-loop performance;
+3. collect matched `(original candidate, execution outcome, better candidate or corrected action)` records;
+4. train an external **belief-conditioned action refiner** that predicts a bounded `16 × 7` action residual;
+5. only if candidate coverage remains the limiting factor, evaluate a LoRA or cross-attention adapter in the Cosmos action decoder.
 
-## Next research gates
+> explain mismatch → update belief → constrain candidates → refine actions → condition the generator only if necessary
 
-- Audit paired data, alignment, replay equality, and grouped splits.
-- Establish repeatable rescue/harm differences without changing settings to favor a treatment.
-- Train a treatment selector only after data review; compare against fixed-treatment policies.
-- Ablate prediction inputs against observation-only inputs before claiming value from imagination.
-- Evaluate closed-loop success and intervention harm on an independently frozen population.
+The action refiner and generator adapter are interfaces and planned experiments, not completed results.
 
-There is no released selector checkpoint, final paper result, or publication claim. Raw data, videos, credentials, machine-specific launchers and large model assets are excluded. A project license has not yet been selected; public visibility does not grant an open-source license.
+## Current status and limitations
 
-## Acknowledgements
+- Candidate generation remains native Cosmos Policy with a 16-action chunk.
+- Attribution is evaluated at a complete block boundary; there is no claim of within-block prediction.
+- The rule-based candidate-effect parser is an auditable first version, not a learned effect model.
+- Soft-score weights are deliberately marked uncalibrated and cannot be used in deployment mode until frozen on a development split.
+- No final benchmark result, pretrained model or paper acceptance claim is provided.
 
-Built around [Cosmos Policy](https://github.com/nvlabs/cosmos-policy) and [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO); earlier visual attribution uses [DINOv2](https://github.com/facebookresearch/dinov2). Follow upstream licenses and citation requirements.
+No project license has been selected yet. Public visibility alone does not grant reuse rights; a license will be added before a formal open-source release.

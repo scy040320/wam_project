@@ -1,0 +1,6 @@
+{
+  "0": {"language": "put alphabet soup and tomato sauce in basket", "target_object": "alphabet_soup_1", "receptacle": "basket"},
+  "1": {"language": "put cream cheese box and butter in basket", "target_object": "butter_1", "receptacle": "basket"},
+  "2": {"language": "turn on stove and put moka pot on it", "target_object": "moka_pot_1", "receptacle": "stove"},
+  "3": {"language": "put black bowl in bottom drawer and close it", "target_object": "akita_black_bowl_1", "receptacle": "bottom_drawer"}
+}

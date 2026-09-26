@@ -1,7 +1,0 @@
-# Fill once from validation-only predictions, then copy as frozen thresholds for final testing.
-# Do not tune these values on the 8 held-out development-test initial states.
-min_known_probability: null
-max_entropy: null
-max_residual_energy: null
-selection_source: validation_initial_states_24_to_31
-status: pending_validation_calibration

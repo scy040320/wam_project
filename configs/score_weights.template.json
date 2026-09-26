@@ -1,0 +1,8 @@
+{
+  "calibrated": false,
+  "attribution_compatibility": null,
+  "progress": null,
+  "dependency_risk": null,
+  "uncertainty": null,
+  "note": "Freeze weights on the development split before deployment; never fill them from held-out test results."
+}

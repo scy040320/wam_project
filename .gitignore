@@ -31,9 +31,12 @@ wandb/
 .DS_Store
 Thumbs.db
 
-# Private launchers and daily-task exports (never part of the public interface)
+# Private launchers, reports and experiment exports (never part of the public interface)
 scripts/*_d[0-9]*
 tests/test_d[0-9]*
+research_runs/
+private_reports/
+*.partial
 *.pem
 *.key
 *.pkl
