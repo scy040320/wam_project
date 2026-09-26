@@ -38,6 +38,7 @@ The official Cosmos rule is `argmax(value)`. CF-WAM first removes candidates tha
 | Deployment feature contract | Frozen observations, imagined terminal frames, actions and proprioception; simulator GT excluded |
 | Hierarchical attribution interface | Implemented; first protocol-silver model trained, not a human-ground-truth claim |
 | Validation calibration | Implemented; same-split metrics passed, leave-one-task-out Gate M2 remains below threshold |
+| D18-v2 paired repair collection | 144/144 raw pilot branches passed 12 strict shard audits; bounded full collection is running |
 | Three-valued object-centric belief | Implemented; calibrated `true/false/unknown` factor states are preserved |
 | Dependency DAG and minimal invalidation | Implemented |
 | Rule-based candidate-effect parser | Implemented |
@@ -78,6 +79,7 @@ wam_reranking/
   candidate_effects.py  interpretable 16×7 action-block parser
   reranker.py           hard feasibility gate, soft score and fallback
   refiner.py             bounded action-residual application interface
+  paired_audit.py        paired-clean physical gates and cache-only diagnostics
 configs/
   task_bindings.json
   score_weights.template.json
@@ -127,4 +129,5 @@ explain mismatch
 - Score weights remain blocked from deployment until calibrated on the development split.
 - Calibration confidence does not turn silver supervision into human-validated causal truth.
 - The current cross-task Gate M2 is not passed; closed-loop claims are intentionally withheld.
+- D18-v2 uses paired counterfactual branches: `clean_a` versus QC-only `clean_b` after identical snapshot restoration. Cached-query versus forced re-observation differences are diagnostic and never replace the unchanged clean-pair hard gates.
 - No project license has been selected yet; a license will be added before formal open-source release.

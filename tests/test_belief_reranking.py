@@ -7,7 +7,7 @@ from wam_reranking import (
     ActionRefinementRequest, ActionRefinementResult, AttributionOutput, BeliefFact,
     CoarseCause, ConsistencyFactor, DEFAULT_GRAPH, DependencyGraph, EvidenceQuality,
     HeadThreshold, ScoreWeights, Stage, TriValue, build_attribution_output, evaluate_candidate, initial_belief,
-    parse_candidate_effect, select_candidate, update_belief,
+    parse_candidate_effect, select_candidate, update_belief, evaluate_clean_pair,
 )
 from wam_reranking.refiner import apply_bounded_residual
 
@@ -195,6 +195,42 @@ class RefinerContractTests(unittest.TestCase):
     def test_residual_bound_is_enforced(self):
         with self.assertRaises(ValueError):
             ActionRefinementResult(np.ones((16, 7)), 0.8, 0.1)
+
+
+def exact_clean_pair():
+    image = {"mean_abs": 0.0, "p95_abs": 0.0, "fraction_gt5": 0.0, "psnr_db": 99.0}
+    return {
+        "sim_state": {
+            "qpos_max_abs": 0.0, "qpos_p95_abs": 0.0,
+            "robot_gripper_qvel_max_abs": 0.0, "target_qvel_max_abs": 0.0,
+            "other_qvel_max_abs": 0.0, "other_qvel_p95_abs": 0.0,
+        },
+        "primary": image, "wrist": image, "proprio_max_abs": 0.0,
+    }
+
+
+class PairedCounterfactualAuditTests(unittest.TestCase):
+    def test_cached_query_difference_is_diagnostic_only(self):
+        result = evaluate_clean_pair(
+            exact_clean_pair(),
+            cached_observation_diagnostics={"proprio_max_abs": 0.001368},
+        )
+        self.assertTrue(result.passed)
+        self.assertEqual(result.cached_observation_diagnostics["proprio_max_abs"], 0.001368)
+
+    def test_clean_pair_proprio_threshold_remains_hard(self):
+        pair = exact_clean_pair()
+        pair["proprio_max_abs"] = 0.001001
+        result = evaluate_clean_pair(pair)
+        self.assertFalse(result.passed)
+        self.assertIn("proprio_max_abs", result.failures)
+
+    def test_clean_pair_image_threshold_remains_hard(self):
+        pair = exact_clean_pair()
+        pair["wrist"] = dict(pair["wrist"], mean_abs=2.01)
+        result = evaluate_clean_pair(pair)
+        self.assertFalse(result.passed)
+        self.assertIn("wrist.mean_abs", result.failures)
 
 
 if __name__ == "__main__":
