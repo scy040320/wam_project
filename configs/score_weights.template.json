@@ -4,5 +4,6 @@
   "progress": null,
   "dependency_risk": null,
   "uncertainty": null,
+  "requery_cost": null,
   "note": "Freeze weights on the development split before deployment; never fill them from held-out test results."
 }

@@ -67,6 +67,8 @@ class AttributionOutput:
     entropy: float
     evidence_quality: EvidenceQuality
     source_block_id: str
+    factor_states: Mapping[str, TriValue] = field(default_factory=dict)
+    factor_confidences: Mapping[str, float] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         expected_factors = {item.value for item in ConsistencyFactor}
@@ -89,9 +91,27 @@ class AttributionOutput:
             raise ValueError("reliable-view conflict must project to unknown")
         if self.factor_probs[ConsistencyFactor.CAUSE_RESOLVED.value] < 0.5 and self.projected_cause is not CoarseCause.UNKNOWN:
             raise ValueError("unresolved attribution must project to unknown")
+        if self.factor_states and set(self.factor_states) != expected_factors:
+            raise ValueError(f"factor_states must contain {sorted(expected_factors)}")
+        if self.factor_confidences and set(self.factor_confidences) != expected_factors:
+            raise ValueError(f"factor_confidences must contain {sorted(expected_factors)}")
+        if self.factor_confidences:
+            confidences = np.asarray(list(self.factor_confidences.values()), dtype=np.float64)
+            if not np.isfinite(confidences).all() or ((confidences < 0) | (confidences > 1)).any():
+                raise ValueError("factor confidences must be finite values in [0,1]")
 
     def factor(self, factor: ConsistencyFactor) -> float:
         return float(self.factor_probs[factor.value])
+
+    def factor_state(self, factor: ConsistencyFactor) -> TriValue:
+        if self.factor_states:
+            return self.factor_states[factor.value]
+        return TriValue.TRUE if self.factor(factor) >= 0.5 else TriValue.FALSE
+
+    def factor_confidence(self, factor: ConsistencyFactor) -> float:
+        if self.factor_confidences:
+            return float(self.factor_confidences[factor.value])
+        return self.confidence
 
 
 @dataclass
@@ -172,6 +192,7 @@ class ScoreWeights:
     dependency_risk: float
     uncertainty: float
     calibrated: bool = False
+    requery_cost: float = 0.0
 
 
 @dataclass(frozen=True)

@@ -4,11 +4,11 @@ The public mechanism operates at a complete native action-block boundary. It doe
 
 ## Hierarchical attribution
 
-The interface predicts five consistency factors that may coexist: observation reliability, world-state consistency, execution/contact consistency, task-stage consistency, and whether the cause is resolved. It also exports a five-way coarse projection for evaluation compatibility. An unresolved cause or reliable cross-view conflict must project to `unknown`.
+The interface predicts eight tri-state heads. Three describe evidence quality (primary view, wrist view, and action record), while five describe observation sufficiency, world-state consistency, execution/contact consistency, task-stage consistency, and whether the cause is resolved. Each head retains `true`, `false`, or `unknown` plus confidence. The five decision factors also export a backwards-compatible scalar and five-way coarse projection. An unresolved cause, low-confidence decision, or reliable cross-view conflict must project to `unknown`.
 
 ## Belief update
 
-Each task fact is `true`, `false`, or `unknown`, with confidence, evidence IDs and update time. World-state inconsistency invalidates the target pose and propagates uncertainty to pose-dependent descendants. Execution/contact inconsistency invalidates execution consistency and its descendants. Observation unreliability must not by itself negate an already established physical state.
+Each task fact is `true`, `false`, or `unknown`, with confidence, evidence IDs and update time. A confident `false` world-state factor invalidates the target pose; an `unknown` factor propagates uncertainty without asserting a false physical fact. Execution/contact follows the same distinction. Observation unreliability must not by itself negate an already established physical state.
 
 ## Candidate decision
 

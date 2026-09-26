@@ -89,28 +89,59 @@ def _invalidate(belief: BeliefState, graph: DependencyGraph, root: str, confiden
         _set_fact(belief, child, TriValue.UNKNOWN, propagated, reason, block_index, evidence_id, direct=False, path=path)
 
 
+def _mark_uncertain(belief: BeliefState, graph: DependencyGraph, root: str, confidence: float,
+                    reason: str, block_index: int, evidence_id: str) -> None:
+    _set_fact(belief, root, TriValue.UNKNOWN, confidence, reason, block_index, evidence_id,
+              direct=True, path=(root,))
+    for child, path in graph.descendants_with_paths(root).items():
+        propagated = max(0.05, confidence * (0.85 ** (len(path) - 1)))
+        _set_fact(belief, child, TriValue.UNKNOWN, propagated, reason, block_index,
+                  evidence_id, direct=False, path=path)
+
+
 def update_belief(belief: BeliefState, attribution: AttributionOutput, block_index: int,
                   graph: DependencyGraph = DEFAULT_GRAPH, inconsistency_threshold: float = 0.5) -> BeliefState:
     """Apply every supported inconsistency factor; multiple causes may coexist."""
     evidence_id = attribution.source_block_id
     confidence = attribution.confidence
     reasons: list[str] = []
-    if attribution.factor(ConsistencyFactor.OBSERVATION_RELIABLE) < inconsistency_threshold:
+    observation = attribution.factor_state(ConsistencyFactor.OBSERVATION_RELIABLE)
+    world = attribution.factor_state(ConsistencyFactor.WORLD_STATE_CONSISTENT)
+    execution = attribution.factor_state(ConsistencyFactor.EXECUTION_CONTACT_CONSISTENT)
+    stage = attribution.factor_state(ConsistencyFactor.TASK_STAGE_CONSISTENT)
+    resolved = attribution.factor_state(ConsistencyFactor.CAUSE_RESOLVED)
+    if attribution.factor_confidence(ConsistencyFactor.OBSERVATION_RELIABLE) < inconsistency_threshold:
+        observation = TriValue.UNKNOWN
+    if attribution.factor_confidence(ConsistencyFactor.WORLD_STATE_CONSISTENT) < inconsistency_threshold:
+        world = TriValue.UNKNOWN
+    if attribution.factor_confidence(ConsistencyFactor.EXECUTION_CONTACT_CONSISTENT) < inconsistency_threshold:
+        execution = TriValue.UNKNOWN
+    if attribution.factor_confidence(ConsistencyFactor.TASK_STAGE_CONSISTENT) < inconsistency_threshold:
+        stage = TriValue.UNKNOWN
+    if attribution.factor_confidence(ConsistencyFactor.CAUSE_RESOLVED) < inconsistency_threshold:
+        resolved = TriValue.UNKNOWN
+    if observation is not TriValue.TRUE:
         reasons.append(ConsistencyFactor.OBSERVATION_RELIABLE.value)
         _set_fact(belief, "target_visible", TriValue.UNKNOWN, confidence, reasons[-1], block_index, evidence_id,
                   direct=True, path=("target_visible",))
         _set_fact(belief, "target_pose_current", TriValue.UNKNOWN, confidence, reasons[-1], block_index, evidence_id,
                   direct=True, path=("target_pose_current",))
-    if attribution.factor(ConsistencyFactor.WORLD_STATE_CONSISTENT) < inconsistency_threshold:
+    if world is TriValue.FALSE:
         reasons.append(ConsistencyFactor.WORLD_STATE_CONSISTENT.value)
         _invalidate(belief, graph, "target_pose_current", confidence, reasons[-1], block_index, evidence_id)
-    if attribution.factor(ConsistencyFactor.EXECUTION_CONTACT_CONSISTENT) < inconsistency_threshold:
+    elif world is TriValue.UNKNOWN:
+        reasons.append(ConsistencyFactor.WORLD_STATE_CONSISTENT.value)
+        _mark_uncertain(belief, graph, "target_pose_current", confidence, reasons[-1], block_index, evidence_id)
+    if execution is TriValue.FALSE:
         reasons.append(ConsistencyFactor.EXECUTION_CONTACT_CONSISTENT.value)
         _invalidate(belief, graph, "execution_consistent", confidence, reasons[-1], block_index, evidence_id)
-    if attribution.factor(ConsistencyFactor.TASK_STAGE_CONSISTENT) < inconsistency_threshold:
+    elif execution is TriValue.UNKNOWN:
+        reasons.append(ConsistencyFactor.EXECUTION_CONTACT_CONSISTENT.value)
+        _mark_uncertain(belief, graph, "execution_consistent", confidence, reasons[-1], block_index, evidence_id)
+    if stage is not TriValue.TRUE:
         reasons.append(ConsistencyFactor.TASK_STAGE_CONSISTENT.value)
         belief.task_stage = Stage.UNCERTAIN
-    unresolved = attribution.factor(ConsistencyFactor.CAUSE_RESOLVED) < inconsistency_threshold
+    unresolved = resolved is not TriValue.TRUE
     if unresolved or attribution.projected_cause is CoarseCause.UNKNOWN:
         risky = {
             Stage.GRASP: ("target_pose_current", "execution_consistent"),

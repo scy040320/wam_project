@@ -6,7 +6,7 @@ import numpy as np
 from wam_reranking import (
     ActionRefinementRequest, ActionRefinementResult, AttributionOutput, BeliefFact,
     CoarseCause, ConsistencyFactor, DEFAULT_GRAPH, DependencyGraph, EvidenceQuality,
-    ScoreWeights, Stage, TriValue, evaluate_candidate, initial_belief,
+    HeadThreshold, ScoreWeights, Stage, TriValue, build_attribution_output, evaluate_candidate, initial_belief,
     parse_candidate_effect, select_candidate, update_belief,
 )
 from wam_reranking.refiner import apply_bounded_residual
@@ -46,6 +46,27 @@ def actions_for(stage: Stage) -> np.ndarray:
 WEIGHTS = ScoreWeights(0.3, 0.2, 0.5, 0.1, calibrated=False)
 
 
+def tri(label: str, confidence: float = 0.9):
+    rest = (1.0 - confidence) / 2.0
+    return {name: confidence if name == label else rest for name in ("no", "yes", "uncertain")}
+
+
+def calibrated_output(*, world="yes", observation="yes", execution="yes", stage="yes", resolved="yes"):
+    factors = {
+        "primary_view_reliable": tri("yes"), "wrist_view_reliable": tri("yes"),
+        "action_record_reliable": tri("yes"), "observation_sufficient": tri(observation),
+        "world_state_consistent": tri(world), "execution_contact_consistent": tri(execution),
+        "task_progress_consistent": tri(stage), "cause_resolved": tri(resolved),
+    }
+    thresholds = {name: HeadThreshold(0.6) for name in factors}
+    thresholds["coarse"] = HeadThreshold(0.6)
+    return build_attribution_output(
+        coarse_probs={"normal": 0.02, "visual_occlusion": 0.02, "object_shift": 0.92,
+                      "execution_contact_deviation": 0.02, "unknown": 0.02},
+        factor_distributions=factors, thresholds=thresholds, source_block_id="block_002",
+    )
+
+
 class AttributionContractTests(unittest.TestCase):
     def test_unresolved_projects_to_unknown(self):
         with self.assertRaises(ValueError):
@@ -54,6 +75,11 @@ class AttributionContractTests(unittest.TestCase):
     def test_cross_view_conflict_projects_to_unknown(self):
         with self.assertRaises(ValueError):
             attribution(conflict=True, cause=CoarseCause.OBJECT_SHIFT)
+
+    def test_calibrated_tri_state_adapter_preserves_unknown(self):
+        result = calibrated_output(world="uncertain", resolved="uncertain")
+        self.assertEqual(result.factor_state(ConsistencyFactor.WORLD_STATE_CONSISTENT), TriValue.UNKNOWN)
+        self.assertEqual(result.projected_cause, CoarseCause.UNKNOWN)
 
 
 class BeliefTests(unittest.TestCase):
@@ -98,6 +124,16 @@ class BeliefTests(unittest.TestCase):
         update_belief(belief, attribution(stage=0.1, cause=CoarseCause.UNKNOWN, resolved=0.1), 3)
         self.assertEqual(belief.task_stage, Stage.UNCERTAIN)
 
+    def test_uncertain_world_state_does_not_become_false(self):
+        belief = initial_belief(0)
+        update_belief(belief, calibrated_output(world="uncertain", resolved="uncertain"), 2)
+        self.assertEqual(belief.facts["target_pose_current"].value, TriValue.UNKNOWN)
+
+    def test_calibrated_world_inconsistency_invalidates_pose(self):
+        belief = initial_belief(0)
+        update_belief(belief, calibrated_output(world="no"), 2)
+        self.assertEqual(belief.facts["target_pose_current"].value, TriValue.FALSE)
+
 
 class CandidateTests(unittest.TestCase):
     def test_rule_parser_stages(self):
@@ -139,6 +175,15 @@ class CandidateTests(unittest.TestCase):
         chosen, fallback = select_candidate([], attribution(observation=0.1, cause=CoarseCause.VISUAL_OCCLUSION))
         self.assertIsNone(chosen)
         self.assertEqual(fallback, "reobserve")
+
+    def test_query_cost_is_auditable_score_component(self):
+        belief = initial_belief(0)
+        effect = parse_candidate_effect(0, actions_for(Stage.APPROACH))
+        weights = ScoreWeights(0.3, 0.2, 0.5, 0.1, calibrated=True, requery_cost=0.4)
+        cheap = evaluate_candidate(belief, attribution(), effect, 0.5, weights, query_cost=0.0)
+        costly = evaluate_candidate(belief, attribution(), effect, 0.5, weights, query_cost=1.0)
+        self.assertAlmostEqual(cheap.total_score - costly.total_score, 0.4)
+        self.assertEqual(costly.components["query_cost"], 1.0)
 
 
 class RefinerContractTests(unittest.TestCase):

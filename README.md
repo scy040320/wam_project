@@ -36,15 +36,16 @@ The official Cosmos rule is `argmax(value)`. CF-WAM first removes candidates tha
 | Cosmos multi-query and value-selection interface | Verified |
 | Block-aligned development dataset | 520 samples; grouped split and pairing audit complete |
 | Deployment feature contract | Frozen observations, imagined terminal frames, actions and proprioception; simulator GT excluded |
-| Hierarchical attribution interface | Implemented; model training awaits final manual label audit |
-| Three-valued object-centric belief | Implemented |
+| Hierarchical attribution interface | Implemented; first protocol-silver model trained, not a human-ground-truth claim |
+| Validation calibration | Implemented; same-split metrics passed, leave-one-task-out Gate M2 remains below threshold |
+| Three-valued object-centric belief | Implemented; calibrated `true/false/unknown` factor states are preserved |
 | Dependency DAG and minimal invalidation | Implemented |
 | Rule-based candidate-effect parser | Implemented |
-| Hard gate, soft score and explicit fallback | Implemented; score weights intentionally uncalibrated |
+| Hard gate, soft score and explicit fallback | Implemented and tested; score weights intentionally blocked from deployment calibration |
 | Closed-loop Cosmos candidate reranking | Next integration milestone |
 | Belief-conditioned action refiner | Interface only; training data not collected yet |
 
-The repository currently contains mechanism code and tests, not a pretrained attribution checkpoint or final benchmark claim.
+The repository contains mechanism code and tests, not checkpoints, datasets, or a final benchmark claim. The first development model used deterministic protocol-derived silver labels. It reached useful within-split performance, but did not pass the pre-registered leave-one-task-out engineering gate; it is therefore not presented as a deployable causal attributor.
 
 ## Environment
 
@@ -124,4 +125,6 @@ explain mismatch
 - The candidate-effect parser is intentionally rule based and auditable in the first version.
 - Unresolved or conflicting evidence maps to `unknown` and a conservative fallback.
 - Score weights remain blocked from deployment until calibrated on the development split.
+- Calibration confidence does not turn silver supervision into human-validated causal truth.
+- The current cross-task Gate M2 is not passed; closed-loop claims are intentionally withheld.
 - No project license has been selected yet; a license will be added before formal open-source release.
