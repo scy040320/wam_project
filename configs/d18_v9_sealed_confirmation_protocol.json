@@ -1,0 +1,35 @@
+{
+  "version": "candidate_reranking_d18_v9_sealed_confirmation480_20260928_v1",
+  "role": "pre_registered_sealed_confirmation",
+  "evaluation_allowed_only_after": "development gate passes and model/schema/thresholds are frozen",
+  "silver_schema": "d18_v9_target_conditioned_command_routing_silver_v7",
+  "tasks": [16, 45, 73],
+  "states": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+  "moments": [0, 1],
+  "arms": [
+    "clean_a",
+    "clean_b",
+    "visual_occlusion",
+    "object_shift",
+    "execution_contact_deviation",
+    "unknown_cross_view_conflict",
+    "unknown_action_record_unreliable",
+    "unknown_low_magnitude_ambiguous"
+  ],
+  "raw_expected": 480,
+  "model_expected": 420,
+  "qc_expected": 60,
+  "split": "confirmation",
+  "clean_b_role": "qc_only",
+  "parallel_lane_ownership": {
+    "lane_a": [16],
+    "lane_b": [45],
+    "lane_c": [73]
+  },
+  "pilot": "state0 for all tasks; 48/48 raw branches and six strict shard audits must pass before states1-9",
+  "sealed_rules": [
+    "no model evaluation during or after collection",
+    "no training, threshold selection, schema changes, task-specific rules or loss changes may use this set",
+    "any future development exposure permanently retires this set from confirmation status"
+  ]
+}

@@ -8,7 +8,9 @@ from wam_reranking import (
     CoarseCause, ConsistencyFactor, DEFAULT_GRAPH, DependencyGraph, EvidenceQuality,
     HeadThreshold, ScoreWeights, Stage, TriValue, build_attribution_output, evaluate_candidate, initial_belief,
     parse_candidate_effect, select_candidate, update_belief, evaluate_clean_pair,
-    EvidenceRoute, LEARNED_FACTOR_NAMES, route_evidence,
+    EvidenceRoute, LEARNED_FACTOR_NAMES, canonical_target_prompt,
+    evaluate_command_execution, pool_target_residual, route_evidence,
+    cross_task_factor_contrastive_loss,
 )
 from wam_reranking.refiner import apply_bounded_residual
 
@@ -267,6 +269,110 @@ class EvidenceRoutingTests(unittest.TestCase):
         )
         self.assertEqual(result.route, EvidenceRoute.RESOLVED)
         self.assertEqual(result.projected_cause, CoarseCause.OBJECT_SHIFT)
+
+    def test_requested_applied_mismatch_is_auditable_hard_route(self):
+        requested = np.zeros((16, 7), dtype=np.float32)
+        applied = requested.copy()
+        applied[4:8, 0] = 0.12
+        command = evaluate_command_execution(requested, applied)
+        result = route_evidence(
+            action_record_available=True,
+            projected_cause=CoarseCause.NORMAL,
+            learned_factor_probs=self.factors(),
+            command_execution=command,
+        )
+        self.assertTrue(command.deviated)
+        self.assertEqual(result.route, EvidenceRoute.COMMAND_EXECUTION_DEVIATION)
+        self.assertEqual(result.projected_cause, CoarseCause.EXECUTION_CONTACT_DEVIATION)
+        self.assertTrue(result.hard_rule_applied)
+
+    def test_equal_requested_applied_actions_do_not_claim_contact_failure(self):
+        actions = np.zeros((16, 7), dtype=np.float32)
+        command = evaluate_command_execution(actions, actions)
+        result = route_evidence(
+            action_record_available=True,
+            projected_cause=CoarseCause.NORMAL,
+            learned_factor_probs=self.factors(),
+            command_execution=command,
+        )
+        self.assertFalse(command.deviated)
+        self.assertEqual(result.route, EvidenceRoute.RESOLVED)
+        self.assertEqual(result.projected_cause, CoarseCause.NORMAL)
+
+    def test_missing_action_record_dominates_command_route(self):
+        requested = np.zeros((16, 7), dtype=np.float32)
+        applied = requested.copy()
+        applied[:, 1] = 0.1
+        result = route_evidence(
+            action_record_available=False,
+            projected_cause=CoarseCause.NORMAL,
+            learned_factor_probs=self.factors(),
+            command_execution=evaluate_command_execution(requested, applied),
+        )
+        self.assertEqual(result.route, EvidenceRoute.ACTION_RECORD_UNRELIABLE)
+        self.assertEqual(result.projected_cause, CoarseCause.UNKNOWN)
+
+
+class TargetConditionedResidualTests(unittest.TestCase):
+    def test_target_pooling_separates_target_change_from_background(self):
+        residual = np.zeros((4, 4), dtype=np.float32)
+        residual[1:3, 1:3] = 0.8
+        relevance = np.zeros((4, 4), dtype=np.float32)
+        relevance[1:3, 1:3] = 1.0
+        result = pool_target_residual(
+            residual, relevance, relevance,
+            prefix="visual.target_primary", prompt="ketchup_1",
+        )
+        values = dict(zip(result.names, result.values.tolist()))
+        self.assertGreater(values["visual.target_primary.weighted_residual_mean"], 0.79)
+        self.assertGreater(values["visual.target_primary.target_minus_background"], 0.79)
+        self.assertEqual(result.prompt, "ketchup bottle")
+
+    def test_target_pooling_is_deterministic_and_resizes_relevance(self):
+        residual = np.arange(16, dtype=np.float32).reshape(4, 4) / 16
+        relevance = np.asarray([[0.0, 1.0], [0.0, 1.0]], dtype=np.float32)
+        first = pool_target_residual(
+            residual, relevance, relevance,
+            prefix="visual.target_wrist", prompt="white_cabinet_1_bottom_level",
+        )
+        second = pool_target_residual(
+            residual, relevance, relevance,
+            prefix="visual.target_wrist", prompt="white_cabinet_1_bottom_level",
+        )
+        np.testing.assert_array_equal(first.values, second.values)
+        self.assertEqual(first.prompt, "white cabinet bottom drawer")
+
+
+class CrossTaskContrastiveTests(unittest.TestCase):
+    def test_cross_task_positive_pairs_reduce_loss_when_aligned(self):
+        try:
+            import torch
+        except ImportError:
+            self.skipTest("torch is tested in the cloud training environment")
+        factors = np.asarray([[1, 0], [1, 0], [0, 1], [0, 1]], dtype=np.float32)
+        tasks = np.asarray([0, 1, 0, 1], dtype=np.int64)
+        aligned = np.asarray([[1, 0], [1, 0], [0, 1], [0, 1]], dtype=np.float32)
+        crossed = np.asarray([[1, 0], [0, 1], [0, 1], [1, 0]], dtype=np.float32)
+        aligned_loss = cross_task_factor_contrastive_loss(
+            torch.from_numpy(aligned), torch.from_numpy(factors), torch.from_numpy(tasks)
+        )
+        crossed_loss = cross_task_factor_contrastive_loss(
+            torch.from_numpy(crossed), torch.from_numpy(factors), torch.from_numpy(tasks)
+        )
+        self.assertLess(float(aligned_loss), float(crossed_loss))
+
+    def test_no_cross_task_positive_returns_differentiable_zero(self):
+        try:
+            import torch
+        except ImportError:
+            self.skipTest("torch is tested in the cloud training environment")
+        embeddings = torch.randn(3, 4, requires_grad=True)
+        factors = torch.eye(3)
+        tasks = torch.zeros(3, dtype=torch.long)
+        loss = cross_task_factor_contrastive_loss(embeddings, factors, tasks)
+        self.assertEqual(float(loss), 0.0)
+        loss.backward()
+        self.assertIsNotNone(embeddings.grad)
 
 
 if __name__ == "__main__":

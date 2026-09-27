@@ -36,10 +36,11 @@ The official Cosmos rule is `argmax(value)`. CF-WAM first removes candidates tha
 | Cosmos multi-query and value-selection interface | Verified |
 | Block-aligned development data | 520 auxiliary samples plus paired formal train/validation data; roles and groups remain isolated |
 | Deployment feature contract | Frozen observations, imagined terminal frames, actions and proprioception; simulator GT excluded |
-| Hierarchical attribution interface | D18-v5 development model frozen under versioned protocol-silver schema v4 |
-| Evidence routing | Action-record reliability is an auditable hard rule; unsupported causes abstain as `cause_unresolved / evidence_insufficient` |
-| Development gate | Passed: Macro-F1 0.7624, unknown recall 0.6875, retained factor recalls at least 0.50 |
-| Engineering gate | Blocked pending a separately approved, untouched one-shot confirmation set |
+| Hierarchical attribution interface | D18-v9 development contract uses target-conditioned local residuals, auditable command evidence and cross-task contrastive regularization under silver schema v7 |
+| Evidence routing | Action-record reliability and explicit requested-versus-applied command deviation are auditable hard routes; unsupported causes abstain as `cause_unresolved / evidence_insufficient` |
+| Development gate | **Blocked**: v9 validation Macro-F1 0.8347, normal recall 0.7625 and unknown recall 0.7308 pass, but the learned execution/contact factor recall is 0 |
+| Diagnostic tasks | Task 23/58 are consumed development diagnostics, never untouched confirmation; task58 object-shift recall remains 0 |
+| Engineering gate | Blocked. A separately preregistered task16/45/73 set may be collected sealed, but cannot be evaluated until the development gate passes and the model contract is frozen |
 | Three-valued object-centric belief | Implemented; calibrated `true/false/unknown` factor states are preserved |
 | Dependency DAG and minimal invalidation | Implemented |
 | Rule-based candidate-effect parser | Implemented |
@@ -47,7 +48,7 @@ The official Cosmos rule is `argmax(value)`. CF-WAM first removes candidates tha
 | Closed-loop Cosmos candidate reranking | Next integration milestone |
 | Belief-conditioned action refiner | Interface only; training data not collected yet |
 
-The repository contains mechanism code, frozen public contracts and tests, not checkpoints, datasets, or a final benchmark claim. D18-v5 uses deterministic protocol-derived silver labels. Its development gates pass, but the untouched confirmation gate and closed-loop task evaluation have not run; it is therefore not presented as a deployable causal attributor or a task-performance result.
+The repository contains mechanism code, public contracts and tests, not checkpoints, datasets, or a final benchmark claim. D18-v9 uses deterministic protocol-derived silver labels. Its development gate currently fails because one learned factor has zero recall, so D19–D21 and closed-loop task evaluation remain blocked. A sealed confirmation collection is not evidence until it is legitimately unsealed and evaluated after development freezes.
 
 ## Environment
 
@@ -81,11 +82,14 @@ wam_reranking/
   reranker.py           hard feasibility gate, soft score and fallback
   refiner.py             bounded action-residual application interface
   paired_audit.py        paired-clean physical gates and cache-only diagnostics
-  evidence_routing.py    hard evidence rules and unresolved-cause abstention
+  evidence_routing.py    hard action/command evidence routes and unresolved-cause abstention
+  target_localization.py target-conditioned residual pooling from deployable RGB/text evidence
+  contrastive.py         cross-task factor contrastive objective
 configs/
   task_bindings.json
   score_weights.template.json
   d18_v5_frozen_contract.json
+  d18_v9_sealed_confirmation_protocol.json
 docs/
   METHOD.md
   EVALUATION_PROTOCOL.md
@@ -132,7 +136,9 @@ explain mismatch
 - Unresolved or conflicting evidence maps to `unknown` and a conservative fallback.
 - Score weights remain blocked from deployment until calibrated on the development split.
 - Calibration confidence does not turn silver supervision into human-validated causal truth.
-- D18-v5's frozen development contract passes, but its engineering gate is still blocked because the untouched confirmation protocol has not run.
+- D18-v9's development contract does not yet pass: the learned execution/contact factor recall is zero, despite passing coarse-class, normal, unknown, visual, object-state and cross-view thresholds.
+- Task58 remains a development diagnostic with zero object-shift recall. It must be repaired using development data only.
+- The task16/task45/task73 confirmation set is preregistered and may be pre-collected with `sealed=true`; it cannot be opened, evaluated or used for development until the full development gate passes and the model/schema/thresholds are frozen.
 - Action-record reliability is not learned: the acquisition-contract availability bit applies a hard `unknown` rule and is masked from the neural input.
 - Existing features did not meet the preregistered feasibility thresholds for a 5 mm weak displacement. Those records map to `cause_unresolved / evidence_insufficient`; the method does not claim to identify their hidden physical cause.
 - Paired counterfactual data uses `clean_a` versus QC-only `clean_b` after identical snapshot restoration. Cached-query versus forced re-observation differences are diagnostic and never replace the unchanged clean-pair hard gates.
