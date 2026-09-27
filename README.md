@@ -34,11 +34,12 @@ The official Cosmos rule is `argmax(value)`. CF-WAM first removes candidates tha
 | Component | Status |
 |---|---|
 | Cosmos multi-query and value-selection interface | Verified |
-| Block-aligned development dataset | 520 samples; grouped split and pairing audit complete |
+| Block-aligned development data | 520 auxiliary samples plus paired formal train/validation data; roles and groups remain isolated |
 | Deployment feature contract | Frozen observations, imagined terminal frames, actions and proprioception; simulator GT excluded |
-| Hierarchical attribution interface | Implemented; first protocol-silver model trained, not a human-ground-truth claim |
-| Validation calibration | Implemented; same-split metrics passed, leave-one-task-out Gate M2 remains below threshold |
-| D18-v2 paired repair collection | 144/144 raw pilot branches passed 12 strict shard audits; bounded full collection is running |
+| Hierarchical attribution interface | D18-v5 development model frozen under versioned protocol-silver schema v4 |
+| Evidence routing | Action-record reliability is an auditable hard rule; unsupported causes abstain as `cause_unresolved / evidence_insufficient` |
+| Development gate | Passed: Macro-F1 0.7624, unknown recall 0.6875, retained factor recalls at least 0.50 |
+| Engineering gate | Blocked pending a separately approved, untouched one-shot confirmation set |
 | Three-valued object-centric belief | Implemented; calibrated `true/false/unknown` factor states are preserved |
 | Dependency DAG and minimal invalidation | Implemented |
 | Rule-based candidate-effect parser | Implemented |
@@ -46,7 +47,7 @@ The official Cosmos rule is `argmax(value)`. CF-WAM first removes candidates tha
 | Closed-loop Cosmos candidate reranking | Next integration milestone |
 | Belief-conditioned action refiner | Interface only; training data not collected yet |
 
-The repository contains mechanism code and tests, not checkpoints, datasets, or a final benchmark claim. The first development model used deterministic protocol-derived silver labels. It reached useful within-split performance, but did not pass the pre-registered leave-one-task-out engineering gate; it is therefore not presented as a deployable causal attributor.
+The repository contains mechanism code, frozen public contracts and tests, not checkpoints, datasets, or a final benchmark claim. D18-v5 uses deterministic protocol-derived silver labels. Its development gates pass, but the untouched confirmation gate and closed-loop task evaluation have not run; it is therefore not presented as a deployable causal attributor or a task-performance result.
 
 ## Environment
 
@@ -80,12 +81,15 @@ wam_reranking/
   reranker.py           hard feasibility gate, soft score and fallback
   refiner.py             bounded action-residual application interface
   paired_audit.py        paired-clean physical gates and cache-only diagnostics
+  evidence_routing.py    hard evidence rules and unresolved-cause abstention
 configs/
   task_bindings.json
   score_weights.template.json
+  d18_v5_frozen_contract.json
 docs/
   METHOD.md
   EVALUATION_PROTOCOL.md
+  CONFIRMATION_PROTOCOL.md
 tests/
   test_belief_reranking.py
 ```
@@ -128,6 +132,8 @@ explain mismatch
 - Unresolved or conflicting evidence maps to `unknown` and a conservative fallback.
 - Score weights remain blocked from deployment until calibrated on the development split.
 - Calibration confidence does not turn silver supervision into human-validated causal truth.
-- The current cross-task Gate M2 is not passed; closed-loop claims are intentionally withheld.
-- D18-v2 uses paired counterfactual branches: `clean_a` versus QC-only `clean_b` after identical snapshot restoration. Cached-query versus forced re-observation differences are diagnostic and never replace the unchanged clean-pair hard gates.
+- D18-v5's frozen development contract passes, but its engineering gate is still blocked because the untouched confirmation protocol has not run.
+- Action-record reliability is not learned: the acquisition-contract availability bit applies a hard `unknown` rule and is masked from the neural input.
+- Existing features did not meet the preregistered feasibility thresholds for a 5 mm weak displacement. Those records map to `cause_unresolved / evidence_insufficient`; the method does not claim to identify their hidden physical cause.
+- Paired counterfactual data uses `clean_a` versus QC-only `clean_b` after identical snapshot restoration. Cached-query versus forced re-observation differences are diagnostic and never replace the unchanged clean-pair hard gates.
 - No project license has been selected yet; a license will be added before formal open-source release.

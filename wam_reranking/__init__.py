@@ -10,6 +10,9 @@ from .contracts import (
 )
 from .reranker import evaluate_candidate, select_candidate
 from .paired_audit import PairedAuditDecision, PairedAuditThresholds, evaluate_clean_pair
+from .evidence_routing import (
+    EvidenceRoute, EvidenceRoutingDecision, LEARNED_FACTOR_NAMES, route_evidence,
+)
 
 __all__ = [
     "ActionRefinementRequest", "ActionRefinementResult", "AttributionOutput",
@@ -19,4 +22,6 @@ __all__ = [
     "TriValue", "HeadThreshold", "build_attribution_output", "evaluate_candidate", "initial_belief", "parse_candidate_effect",
     "select_candidate", "update_belief", "PairedAuditDecision",
     "PairedAuditThresholds", "evaluate_clean_pair",
+    "EvidenceRoute", "EvidenceRoutingDecision", "LEARNED_FACTOR_NAMES",
+    "route_evidence",
 ]

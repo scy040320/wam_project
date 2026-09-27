@@ -1,0 +1,37 @@
+{
+  "version": "d18_v5_frozen_contract_v1",
+  "silver_schema": "d18_v5_evidence_routing_silver_v4",
+  "schema_parent": "d18_v4_weak_factor_paired_counterfactual_silver_v3",
+  "feature_contract": "d14_deployable_features_v2_task_invariant",
+  "model_artifact": "evidence_routed_bottleneck_v5.pt",
+  "model_sha256": "c6f0c78aab3b39362eeff06cb3bb5d097d7a99ec19643522368d557447e1677d",
+  "source_feature_sha256": "3ad81aa0c6cdb5849ce274f479a0cc428042e053e0d451fd50871541608de671",
+  "unknown_override_threshold": 0.64,
+  "learned_factor_threshold": 0.5,
+  "learned_factors": [
+    "visual_evidence_corrupted",
+    "object_or_environment_state_changed",
+    "execution_or_contact_deviated",
+    "cross_view_conflict"
+  ],
+  "hard_rules": {
+    "action_record_unreliable": "evidence.action_record_available < 0.5"
+  },
+  "unresolved_semantics": "unknown coarse cause with no supported learned factor; this is abstention, not identification of a hidden physical cause",
+  "development_gates": {
+    "macro_f1_min": 0.6,
+    "unknown_recall_min": 0.6,
+    "each_learned_factor_recall_min": 0.5,
+    "action_record_rule_accuracy": 1.0,
+    "old_aux_dev_macro_f1_min": 0.5
+  },
+  "development_results": {
+    "formal_val_macro_f1": 0.7624276924846185,
+    "formal_val_unknown_recall": 0.6875,
+    "learned_factor_recalls": [1.0, 0.6607142857142857, 0.875, 1.0],
+    "action_record_rule_accuracy": 1.0,
+    "old_aux_dev_macro_f1": 0.775848529472818
+  },
+  "confirmation_loaded": false,
+  "engineering_gate_pass": false
+}

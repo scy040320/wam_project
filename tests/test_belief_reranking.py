@@ -8,6 +8,7 @@ from wam_reranking import (
     CoarseCause, ConsistencyFactor, DEFAULT_GRAPH, DependencyGraph, EvidenceQuality,
     HeadThreshold, ScoreWeights, Stage, TriValue, build_attribution_output, evaluate_candidate, initial_belief,
     parse_candidate_effect, select_candidate, update_belief, evaluate_clean_pair,
+    EvidenceRoute, LEARNED_FACTOR_NAMES, route_evidence,
 )
 from wam_reranking.refiner import apply_bounded_residual
 
@@ -231,6 +232,41 @@ class PairedCounterfactualAuditTests(unittest.TestCase):
         result = evaluate_clean_pair(pair)
         self.assertFalse(result.passed)
         self.assertIn("wrist.mean_abs", result.failures)
+
+
+class EvidenceRoutingTests(unittest.TestCase):
+    def factors(self, **overrides):
+        values = {name: 0.1 for name in LEARNED_FACTOR_NAMES}
+        values.update(overrides)
+        return values
+
+    def test_missing_action_record_is_a_hard_unknown_rule(self):
+        result = route_evidence(
+            action_record_available=False,
+            projected_cause=CoarseCause.NORMAL,
+            learned_factor_probs=self.factors(),
+        )
+        self.assertEqual(result.route, EvidenceRoute.ACTION_RECORD_UNRELIABLE)
+        self.assertEqual(result.projected_cause, CoarseCause.UNKNOWN)
+        self.assertTrue(result.hard_rule_applied)
+
+    def test_unknown_without_supported_factor_abstains(self):
+        result = route_evidence(
+            action_record_available=True,
+            projected_cause=CoarseCause.UNKNOWN,
+            learned_factor_probs=self.factors(),
+        )
+        self.assertEqual(result.route, EvidenceRoute.CAUSE_UNRESOLVED)
+        self.assertFalse(result.hard_rule_applied)
+
+    def test_supported_factor_preserves_resolved_cause(self):
+        result = route_evidence(
+            action_record_available=True,
+            projected_cause=CoarseCause.OBJECT_SHIFT,
+            learned_factor_probs=self.factors(object_or_environment_state_changed=0.8),
+        )
+        self.assertEqual(result.route, EvidenceRoute.RESOLVED)
+        self.assertEqual(result.projected_cause, CoarseCause.OBJECT_SHIFT)
 
 
 if __name__ == "__main__":

@@ -15,3 +15,9 @@ Every condition in a group starts from one complete runtime snapshot and uses th
 The hard physical-pairing gate compares `clean_a` with `clean_b` after identical restoration. It retains the frozen simulation-state, dual-camera and proprioception thresholds. A previous-step cached observation compared with a forced observation after restore is diagnostic only: rebuilding the simulator observation cache is not itself a counterfactual branch mismatch.
 
 Pilot shards must all pass strict audit before full collection begins. Dataset releases, audit revisions and failed diagnostic versions remain separately named; an audit-only repair must not silently mix raw samples, label schemas, splits or thresholds.
+
+## D18-v5 frozen development contract
+
+The public frozen contract is recorded in `configs/d18_v5_frozen_contract.json`. The development model retains four learned factors. Action-record reliability is evaluated by an exact acquisition-contract hard rule and is masked from the learned input. A weak physical intervention that is not supported by observable evidence is reported as `cause_unresolved / evidence_insufficient`, not as a correctly identified physical cause.
+
+Development and engineering gates are separate. Passing train/validation thresholds freezes the model and permits a one-shot untouched confirmation run; it does not establish engineering generalization. The proposed confirmation set, isolation rules and failure semantics are specified in `CONFIRMATION_PROTOCOL.md`.
