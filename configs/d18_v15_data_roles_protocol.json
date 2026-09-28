@@ -1,0 +1,51 @@
+{
+  "version": "d18_v15_data_roles_protocol_v1",
+  "date": "2026-09-28",
+  "thresholds": {
+    "unknown": 0.64,
+    "factor": 0.5,
+    "lowering_permitted": false
+  },
+  "formal_development": {
+    "retained_tasks": [23, 58],
+    "new_relation_tasks": [14, 34, 64],
+    "new_collection": {
+      "raw_branches": 480,
+      "supervised_samples": 420,
+      "clean_b_qc": 60,
+      "train": 336,
+      "validation": 84,
+      "group_key": ["task", "state"]
+    }
+  },
+  "consumed_failure_diagnostics": {
+    "tasks": [16, 45, 73],
+    "may_train": false,
+    "may_tune": false,
+    "may_claim_independent_confirmation_again": false
+  },
+  "sealed_confirmation": {
+    "tasks": [13, 37, 65],
+    "raw_branches": 480,
+    "model_samples": 420,
+    "clean_b_qc": 60,
+    "sealed_until_development_freeze": true,
+    "may_train": false,
+    "may_tune": false
+  },
+  "feature_contract": {
+    "task_one_hot": false,
+    "simulator_state": false,
+    "ground_truth_intervention": false,
+    "relation_semantics": [
+      "articulated",
+      "receptacle",
+      "rigid_object",
+      "stacking_relation",
+      "spatial_relation",
+      "relation_anchor",
+      "repeated_identity"
+    ],
+    "explicit_normal_head": true
+  }
+}

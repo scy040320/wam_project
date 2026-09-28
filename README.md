@@ -36,11 +36,12 @@ The official Cosmos rule is `argmax(value)`. CF-WAM first removes candidates tha
 | Cosmos multi-query and value-selection interface | Verified |
 | Block-aligned development data | 520 auxiliary samples plus paired formal train/validation data; roles and groups remain isolated |
 | Deployment feature contract | Frozen observations, imagined terminal frames, actions and proprioception; simulator GT excluded |
-| Hierarchical attribution interface | D18-v9 development contract uses target-conditioned local residuals, auditable command evidence and cross-task contrastive regularization under silver schema v7 |
+| Hierarchical attribution interface | D18-v15 development contract adds explicit multi-object relation/stacking semantics and a normal-consistency head to the target-conditioned local residual, command-evidence and cross-task objectives |
 | Evidence routing | Action-record reliability and explicit requested-versus-applied command deviation are auditable hard routes; unsupported causes abstain as `cause_unresolved / evidence_insufficient` |
-| Development gate | **Blocked**: v9 validation Macro-F1 0.8347, normal recall 0.7625 and unknown recall 0.7308 pass, but the learned execution/contact factor recall is 0 |
-| Diagnostic tasks | Task 23/58 are consumed development diagnostics, never untouched confirmation; task58 object-shift recall remains 0 |
-| Engineering gate | Blocked. A separately preregistered task16/45/73 set may be collected sealed, but cannot be evaluated until the development gate passes and the model contract is frozen |
+| Development gate | D18-v14 passed its development thresholds (Macro-F1 0.808, normal recall 0.670, unknown recall 0.690, object-state recall 0.818); D18-v15 is a new development revision, not yet frozen |
+| Development tasks | Task 23/58 remain grouped formal train/validation data. Task 14/34/64 add spatial-relation, repeated-object and stacking coverage under the same paired contract |
+| Failed confirmation diagnostics | Task 16/45/73 were consumed once by D18-v14 and exposed normal over-routing and task16 object-state failure. They are retained as diagnostics and are excluded from training |
+| Engineering gate | Blocked. Task 13/37/65 are preregistered as a new sealed confirmation set and cannot influence D18-v15 training, selection, labels or thresholds |
 | Three-valued object-centric belief | Implemented; calibrated `true/false/unknown` factor states are preserved |
 | Dependency DAG and minimal invalidation | Implemented |
 | Rule-based candidate-effect parser | Implemented |
@@ -90,6 +91,7 @@ configs/
   score_weights.template.json
   d18_v5_frozen_contract.json
   d18_v9_sealed_confirmation_protocol.json
+  d18_v15_data_roles_protocol.json
 docs/
   METHOD.md
   EVALUATION_PROTOCOL.md
@@ -136,9 +138,10 @@ explain mismatch
 - Unresolved or conflicting evidence maps to `unknown` and a conservative fallback.
 - Score weights remain blocked from deployment until calibrated on the development split.
 - Calibration confidence does not turn silver supervision into human-validated causal truth.
-- D18-v9's development contract does not yet pass: the learned execution/contact factor recall is zero, despite passing coarse-class, normal, unknown, visual, object-state and cross-view thresholds.
-- Task58 remains a development diagnostic with zero object-shift recall. It must be repaired using development data only.
-- The task16/task45/task73 confirmation set is preregistered and may be pre-collected with `sealed=true`; it cannot be opened, evaluated or used for development until the full development gate passes and the model/schema/thresholds are frozen.
+- D18-v14 passed the development contract but failed its one-shot task16/task45/task73 engineering confirmation. Those tasks cannot be recycled into D18-v15 gradient training or reused as an independent confirmation claim.
+- D18-v15 repairs two mechanisms using development evidence only: explicit relation/stacking semantics for repeated objects, and explicit normal support when all reliable mismatch factors are negative.
+- Task23/task58 stay in grouped formal train/validation. Task14/task34/task64 are the added D18-v15 development tasks. Task13/task37/task65 are sealed confirmation tasks and remain unread by model development.
+- D19-D21 remain blocked until D18-v15 passes the unchanged development thresholds, freezes its model/schema/thresholds, and then passes the sealed confirmation once.
 - Action-record reliability is not learned: the acquisition-contract availability bit applies a hard `unknown` rule and is masked from the neural input.
 - Existing features did not meet the preregistered feasibility thresholds for a 5 mm weak displacement. Those records map to `cause_unresolved / evidence_insufficient`; the method does not claim to identify their hidden physical cause.
 - Paired counterfactual data uses `clean_a` versus QC-only `clean_b` after identical snapshot restoration. Cached-query versus forced re-observation differences are diagnostic and never replace the unchanged clean-pair hard gates.

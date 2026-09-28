@@ -373,8 +373,10 @@ class TargetConditionedResidualTests(unittest.TestCase):
     def test_target_semantics_are_language_derived(self):
         drawer = target_semantic_features("white_cabinet_1_bottom_level")
         bottle = target_semantic_features("ketchup_1")
-        self.assertEqual(drawer.values.tolist(), [1.0, 1.0, 0.0])
-        self.assertEqual(bottle.values.tolist(), [0.0, 0.0, 1.0])
+        self.assertEqual(drawer.values.tolist(), [1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        self.assertEqual(bottle.values.tolist(), [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0])
+        stacked = target_semantic_features("akita black bowl stack right bowl on left bowl")
+        self.assertEqual(stacked.values[3:].tolist(), [1.0, 1.0, 1.0, 1.0])
 
 
 class CrossTaskContrastiveTests(unittest.TestCase):

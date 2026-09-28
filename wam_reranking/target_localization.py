@@ -77,18 +77,34 @@ def structural_residual_grid(predicted_rgb: object, actual_rgb: object, *, size:
 
 
 def target_semantic_features(entity: str) -> TargetResidualFeatures:
-    """Task-independent target semantics derived from deployment language."""
+    """Task-independent target/relationship semantics from deployment language.
+
+    ``entity`` may include the current subgoal text in addition to the object
+    phrase. Both are available at deployment from the instruction and parsed
+    action stage; no task ID or simulator state is encoded.
+    """
     prompt = canonical_target_prompt(entity)
     tokens = set(prompt.split())
     articulated = float(bool(tokens & {"drawer", "button", "door", "joint", "microwave"}))
     receptacle = float(bool(tokens & {"drawer", "cabinet", "bowl", "basket", "caddy", "tray"}))
     rigid_object = float(not articulated)
+    stacking_relation = float(bool(tokens & {"stack", "stacked", "stacking"}))
+    spatial_relation = float(bool(tokens & {"front", "back", "left", "right", "middle", "top", "under"}))
+    relation_anchor = float(bool(tokens & {"plate", "bowl", "mug", "tray", "basket", "caddy", "cabinet"}) and (stacking_relation or spatial_relation))
+    repeated_identity = float(bool(tokens & {"front", "back", "left", "right", "middle"}))
     return TargetResidualFeatures(
-        np.asarray([articulated, receptacle, rigid_object], dtype=np.float32),
+        np.asarray([
+            articulated, receptacle, rigid_object, stacking_relation,
+            spatial_relation, relation_anchor, repeated_identity,
+        ], dtype=np.float32),
         (
             "target.semantic.articulated",
             "target.semantic.receptacle",
             "target.semantic.rigid_object",
+            "target.semantic.stacking_relation",
+            "target.semantic.spatial_relation",
+            "target.semantic.relation_anchor",
+            "target.semantic.repeated_identity",
         ),
         prompt,
     )
