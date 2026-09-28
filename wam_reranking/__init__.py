@@ -12,7 +12,7 @@ from .contracts import (
 from .reranker import evaluate_candidate, select_candidate
 from .target_localization import (
     CLIPSegTargetLocalizer, TargetResidualFeatures, canonical_target_prompt,
-    pool_target_residual,
+    pool_target_residual, structural_residual_grid, target_semantic_features,
 )
 from .paired_audit import PairedAuditDecision, PairedAuditThresholds, evaluate_clean_pair
 from .evidence_routing import (
@@ -31,6 +31,6 @@ __all__ = [
     "CommandExecutionEvidence", "EvidenceRoute", "EvidenceRoutingDecision",
     "LEARNED_FACTOR_NAMES", "evaluate_command_execution", "route_evidence",
     "CLIPSegTargetLocalizer", "TargetResidualFeatures", "canonical_target_prompt",
-    "pool_target_residual",
+    "pool_target_residual", "structural_residual_grid", "target_semantic_features",
     "cross_task_factor_contrastive_loss",
 ]

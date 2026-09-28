@@ -49,6 +49,51 @@ class TargetResidualFeatures:
     prompt: str
 
 
+def structural_residual_grid(predicted_rgb: object, actual_rgb: object, *, size: int = 64) -> np.ndarray:
+    """Measure internal edge changes using only predicted and observed RGB.
+
+    Pixel residuals are diluted for articulated objects whose outer silhouette
+    stays fixed (for example, a drawer opening inside a cabinet). Gradient
+    magnitude exposes the displaced internal boundary without simulator state.
+    """
+    from PIL import Image
+
+    def gray(image: object) -> np.ndarray:
+        array = np.asarray(
+            image.convert("RGB").resize((size, size), Image.Resampling.BILINEAR),
+            dtype=np.float32,
+        ) / 255.0
+        return 0.299 * array[..., 0] + 0.587 * array[..., 1] + 0.114 * array[..., 2]
+
+    def magnitude(array: np.ndarray) -> np.ndarray:
+        grad_y, grad_x = np.gradient(array)
+        return np.sqrt(grad_x * grad_x + grad_y * grad_y).astype(np.float32)
+
+    return np.clip(
+        np.abs(magnitude(gray(predicted_rgb)) - magnitude(gray(actual_rgb))),
+        0.0,
+        1.0,
+    ).astype(np.float32)
+
+
+def target_semantic_features(entity: str) -> TargetResidualFeatures:
+    """Task-independent target semantics derived from deployment language."""
+    prompt = canonical_target_prompt(entity)
+    tokens = set(prompt.split())
+    articulated = float(bool(tokens & {"drawer", "button", "door", "joint", "microwave"}))
+    receptacle = float(bool(tokens & {"drawer", "cabinet", "bowl", "basket", "caddy", "tray"}))
+    rigid_object = float(not articulated)
+    return TargetResidualFeatures(
+        np.asarray([articulated, receptacle, rigid_object], dtype=np.float32),
+        (
+            "target.semantic.articulated",
+            "target.semantic.receptacle",
+            "target.semantic.rigid_object",
+        ),
+        prompt,
+    )
+
+
 def pool_target_residual(
     residual_grid: np.ndarray,
     predicted_relevance: np.ndarray,
@@ -77,11 +122,27 @@ def pool_target_residual(
     yy, xx = np.mgrid[0:residual.shape[0], 0:residual.shape[1]]
     centroid_x = float(np.sum(weights * xx) / max(1, residual.shape[1] - 1))
     centroid_y = float(np.sum(weights * yy) / max(1, residual.shape[0] - 1))
+    pred_mass = float(pred.sum())
+    actual_mass = float(actual.sum())
+    pred_weights = pred / max(pred_mass, 1e-8)
+    actual_weights = actual / max(actual_mass, 1e-8)
+    pred_centroid_x = float(np.sum(pred_weights * xx) / max(1, residual.shape[1] - 1))
+    pred_centroid_y = float(np.sum(pred_weights * yy) / max(1, residual.shape[0] - 1))
+    actual_centroid_x = float(np.sum(actual_weights * xx) / max(1, residual.shape[1] - 1))
+    actual_centroid_y = float(np.sum(actual_weights * yy) / max(1, residual.shape[0] - 1))
+    centroid_delta_x = actual_centroid_x - pred_centroid_x
+    centroid_delta_y = actual_centroid_y - pred_centroid_y
+    centroid_delta_l2 = float(np.hypot(centroid_delta_x, centroid_delta_y))
+    pred_residual_mean = float(np.sum(residual * pred_weights))
+    actual_residual_mean = float(np.sum(residual * actual_weights))
     soft_iou = float(intersection.sum() / max(float(union.sum()), 1e-8))
     values = np.asarray([
         target_mean, target_top20, background_mean, target_mean - background_mean,
         float(pred.mean()), float(actual.mean()), soft_iou, centroid_x, centroid_y,
-        float(np.max(union)),
+        float(np.max(union)), pred_residual_mean, actual_residual_mean,
+        pred_centroid_x, pred_centroid_y, actual_centroid_x, actual_centroid_y,
+        centroid_delta_x, centroid_delta_y, centroid_delta_l2,
+        abs(float(actual.mean()) - float(pred.mean())),
     ], dtype=np.float32)
     names = tuple(f"{prefix}.{name}" for name in (
         "weighted_residual_mean", "top20_relevance_residual_mean",
@@ -89,6 +150,11 @@ def pool_target_residual(
         "predicted_relevance_mean", "actual_relevance_mean",
         "predicted_actual_soft_iou", "relevance_centroid_x",
         "relevance_centroid_y", "relevance_max",
+        "predicted_weighted_residual_mean", "actual_weighted_residual_mean",
+        "predicted_centroid_x", "predicted_centroid_y",
+        "actual_centroid_x", "actual_centroid_y",
+        "centroid_delta_x", "centroid_delta_y", "centroid_delta_l2",
+        "relevance_mass_abs_delta",
     ))
     return TargetResidualFeatures(values, names, canonical_target_prompt(prompt))
 

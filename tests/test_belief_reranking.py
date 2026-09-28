@@ -10,6 +10,7 @@ from wam_reranking import (
     parse_candidate_effect, select_candidate, update_belief, evaluate_clean_pair,
     EvidenceRoute, LEARNED_FACTOR_NAMES, canonical_target_prompt,
     evaluate_command_execution, pool_target_residual, route_evidence,
+    structural_residual_grid, target_semantic_features,
     cross_task_factor_contrastive_loss,
 )
 from wam_reranking.refiner import apply_bounded_residual
@@ -341,6 +342,39 @@ class TargetConditionedResidualTests(unittest.TestCase):
         )
         np.testing.assert_array_equal(first.values, second.values)
         self.assertEqual(first.prompt, "white cabinet bottom drawer")
+
+    def test_target_pooling_exposes_predicted_to_actual_displacement(self):
+        residual = np.ones((5, 5), dtype=np.float32)
+        predicted = np.zeros((5, 5), dtype=np.float32)
+        actual = np.zeros((5, 5), dtype=np.float32)
+        predicted[2, 1] = 1.0
+        actual[2, 3] = 1.0
+        result = pool_target_residual(
+            residual, predicted, actual,
+            prefix="visual.target_primary", prompt="ketchup_1",
+        )
+        values = dict(zip(result.names, result.values.tolist()))
+        self.assertAlmostEqual(values["visual.target_primary.centroid_delta_x"], 0.5)
+        self.assertAlmostEqual(values["visual.target_primary.centroid_delta_y"], 0.0)
+        self.assertAlmostEqual(values["visual.target_primary.centroid_delta_l2"], 0.5)
+
+    def test_structural_residual_detects_internal_boundary_change(self):
+        from PIL import Image
+
+        predicted = np.zeros((64, 64, 3), dtype=np.uint8)
+        actual = predicted.copy()
+        predicted[24:27, 8:56] = 255
+        actual[36:39, 8:56] = 255
+        residual = structural_residual_grid(Image.fromarray(predicted), Image.fromarray(actual))
+        self.assertEqual(residual.shape, (64, 64))
+        self.assertGreater(float(residual.max()), 0.0)
+        self.assertGreater(float(residual.sum()), 0.0)
+
+    def test_target_semantics_are_language_derived(self):
+        drawer = target_semantic_features("white_cabinet_1_bottom_level")
+        bottle = target_semantic_features("ketchup_1")
+        self.assertEqual(drawer.values.tolist(), [1.0, 1.0, 0.0])
+        self.assertEqual(bottle.values.tolist(), [0.0, 0.0, 1.0])
 
 
 class CrossTaskContrastiveTests(unittest.TestCase):
