@@ -10,6 +10,72 @@ from .contracts import (
 )
 
 
+PREDICATE_HARD_THRESHOLDS = {
+    "target_pose_current": 0.60,
+    "target_reachable": 0.65,
+    "execution_consistent": 0.60,
+    "grasped": 0.55,
+    "lifted": 0.55,
+    "place_ready": 0.60,
+}
+
+
+def _attribution_invalidates_requirement(
+    attribution: AttributionOutput, requirement: str, effect: CandidateEffect
+) -> tuple[bool, str | None, float]:
+    routes = {
+        ConsistencyFactor.WORLD_STATE_CONSISTENT: {
+            "target_pose_current", "target_reachable", "grasped", "lifted", "place_ready", "placed",
+        },
+        ConsistencyFactor.EXECUTION_CONTACT_CONSISTENT: {
+            "execution_consistent", "grasped", "lifted", "place_ready", "placed",
+        },
+        ConsistencyFactor.TASK_STAGE_CONSISTENT: {"grasped", "lifted", "place_ready", "placed"},
+    }
+    for factor, predicates in routes.items():
+        if requirement not in predicates:
+            continue
+        state = attribution.factor_state(factor)
+        confidence = attribution.factor_confidence(factor)
+        if (
+            factor is ConsistencyFactor.EXECUTION_CONTACT_CONSISTENT
+            and requirement in {"grasped", "lifted", "place_ready"}
+            and _candidate_preserves_contact_chain(effect)
+        ):
+            # An execution mismatch directly invalidates command consistency,
+            # but it does not prove that the object was dropped.  A complete
+            # closed-gripper -> transport -> release chunk with observable
+            # contact continuity can retain derived object predicates.  This
+            # exception never overrides a world-state invalidation above.
+            continue
+        if state is not TriValue.TRUE and confidence >= 0.5:
+            return True, factor.value, confidence
+    return False, None, 0.0
+
+
+def _candidate_preserves_contact_chain(effect: CandidateEffect) -> bool:
+    """Return deployable evidence that a place chunk retains object contact.
+
+    This is deliberately predicate-specific.  It cannot restore
+    ``execution_consistent`` and it cannot override an object/world shift.
+    """
+    if effect.stage is not Stage.PLACE:
+        return False
+    evidence = effect.evidence
+    before_distance = float(evidence.get("target_gripper_distance_before", 1.0))
+    after_distance = float(evidence.get("target_gripper_distance_after", 1.0))
+    before_affinity = float(evidence.get("target_gripper_affinity_before", 0.0))
+    after_affinity = float(evidence.get("target_gripper_affinity_after", 0.0))
+    contact_confidence = float(evidence.get("contact_confidence", 0.0))
+    before_support = max(before_affinity, 1.0 - min(1.0, 2.0 * before_distance))
+    continuity = after_distance <= before_distance + 0.03 or after_affinity >= before_affinity - 0.05
+    commanded_sequence = (
+        float(evidence.get("close_strength", 0.0)) >= 0.5
+        and float(evidence.get("open_strength", 0.0)) >= 0.5
+    )
+    return contact_confidence >= 0.55 and before_support >= 0.35 and continuity and commanded_sequence
+
+
 def _compatibility(attribution: AttributionOutput, stage: Stage) -> float:
     score = 0.0
     if attribution.factor_state(ConsistencyFactor.OBSERVATION_RELIABLE) is not TriValue.TRUE:
@@ -41,12 +107,29 @@ def evaluate_candidate(belief: BeliefState, attribution: AttributionOutput, effe
         Stage.TRANSPORT: {"grasped", "lifted"},
         Stage.PLACE: {"lifted", "place_ready"},
     }.get(effect.stage, set())
+    for reason, confidence in effect.hard_violations.items():
+        if confidence >= 0.50:
+            rejection.append(f"candidate_evidence:{reason}@{confidence:.2f}")
     for requirement, required_confidence in effect.required_facts.items():
         fact = belief.facts[requirement]
-        if fact.value is TriValue.FALSE and fact.confidence >= hard_confidence:
+        predicate_threshold = PREDICATE_HARD_THRESHOLDS.get(requirement, hard_confidence)
+        invalidated, factor_name, source_confidence = _attribution_invalidates_requirement(
+            attribution, requirement, effect
+        )
+        if fact.value is TriValue.FALSE and fact.confidence >= predicate_threshold:
             rejection.append(f"{requirement}=false@{fact.confidence:.2f}")
-        elif fact.value is TriValue.UNKNOWN and requirement in safety_critical and fact.confidence >= hard_confidence:
-            rejection.append(f"{requirement}=unknown@{fact.confidence:.2f}")
+        elif fact.value is TriValue.UNKNOWN and requirement in safety_critical:
+            if fact.source == "attribution" and invalidated:
+                rejection.append(
+                    f"{requirement}=unknown_from_{factor_name}@{source_confidence:.2f}"
+                )
+            elif fact.source != "attribution" and fact.confidence >= predicate_threshold:
+                rejection.append(f"{requirement}=unknown@{fact.confidence:.2f}")
+            else:
+                # Derived uncertainty from attribution is a soft risk when a
+                # predicate-specific candidate trace supplies continuity
+                # evidence.  It is not made safe merely by confidence decay.
+                risk += required_confidence * max(fact.confidence, 0.25)
         elif fact.value is not TriValue.TRUE:
             risk += required_confidence * max(fact.confidence, 0.25)
         else:
@@ -54,6 +137,7 @@ def evaluate_candidate(belief: BeliefState, attribution: AttributionOutput, effe
         uncertainty += 1.0 - fact.confidence
     if rejection:
         return CandidateDecision(effect.candidate_id, False, official_value, None, tuple(rejection), {})
+    risk += float(effect.evidence.get("relation_regression_soft", 0.0))
     compatibility = _compatibility(attribution, effect.stage)
     progress = {Stage.OBSERVE: 0.0, Stage.APPROACH: 0.2, Stage.GRASP: 0.4, Stage.LIFT: 0.6,
                 Stage.TRANSPORT: 0.7, Stage.PLACE: 1.0, Stage.UNCERTAIN: -0.2}[effect.stage]

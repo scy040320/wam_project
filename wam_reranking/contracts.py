@@ -183,6 +183,43 @@ class CandidateEffect:
     proposed_effects: Mapping[str, tuple[TriValue, float]]
     confidence: float
     evidence: Mapping[str, float]
+    hard_violations: Mapping[str, float] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class CandidateVisualEvidence:
+    """Auditable candidate-terminal evidence derived from deployable RGB.
+
+    The quantities are image-space proxies.  They are deliberately phrased as
+    support for contact/relation hypotheses rather than physical-state truth.
+    """
+
+    target_motion: float
+    anchor_motion: float
+    target_anchor_distance_before: float
+    target_anchor_distance_after: float
+    target_anchor_affinity_before: float
+    target_anchor_affinity_after: float
+    target_gripper_distance_before: float
+    target_gripper_distance_after: float
+    target_gripper_affinity_before: float
+    target_gripper_affinity_after: float
+    relation_progress: float
+    visibility_confidence: float
+    cross_view_agreement: float
+    relation_confidence: float = 0.0
+    contact_confidence: float = 0.0
+
+    def __post_init__(self) -> None:
+        values = np.asarray(list(asdict(self).values()), dtype=np.float64)
+        if not np.isfinite(values).all():
+            raise ValueError("candidate visual evidence must be finite")
+        for name in (
+            "visibility_confidence", "cross_view_agreement",
+            "relation_confidence", "contact_confidence",
+        ):
+            if not 0.0 <= float(getattr(self, name)) <= 1.0:
+                raise ValueError(f"{name} must be in [0,1]")
 
 
 @dataclass(frozen=True)

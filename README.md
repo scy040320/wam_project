@@ -36,20 +36,20 @@ The official Cosmos rule is `argmax(value)`. CF-WAM first removes candidates tha
 | Cosmos multi-query and value-selection interface | Verified |
 | Block-aligned development data | 520 auxiliary samples plus paired formal train/validation data; roles and groups remain isolated |
 | Deployment feature contract | Frozen observations, imagined terminal frames, actions and proprioception; simulator GT excluded |
-| Hierarchical attribution interface | D18-v15 development contract adds explicit multi-object relation/stacking semantics and a normal-consistency head to the target-conditioned local residual, command-evidence and cross-task objectives |
+| Hierarchical attribution interface | D18-v18i is frozen for learned-track diagnostics; its one-shot task13/37/65 confirmation failed the normal-recall gate and is not presented as a deployment-ready attributor |
 | Evidence routing | Action-record reliability and explicit requested-versus-applied command deviation are auditable hard routes; unsupported causes abstain as `cause_unresolved / evidence_insufficient` |
-| Development gate | D18-v14 passed its development thresholds (Macro-F1 0.808, normal recall 0.670, unknown recall 0.690, object-state recall 0.818); D18-v15 is a new development revision, not yet frozen |
-| Development tasks | Task 23/58 remain grouped formal train/validation data. Task 14/34/64 add spatial-relation, repeated-object and stacking coverage under the same paired contract |
-| Failed confirmation diagnostics | Task 16/45/73 were consumed once by D18-v14 and exposed normal over-routing and task16 object-state failure. They are retained as diagnostics and are excluded from training |
-| Engineering gate | Blocked. Task 13/37/65 are preregistered as a new sealed confirmation set and cannot influence D18-v15 training, selection, labels or thresholds |
+| Attribution engineering gate | Failed. On the frozen task13/37/65 confirmation, D18-v18i reached Macro-F1 0.717, unknown recall 0.694 and object-shift recall 0.650, but normal recall was 0.417; task65 object-shift recall was 0.20 |
+| D19–D21 decision mechanism | V5 source-aware predicate gates, relation evidence, explicit fallbacks and value-only tie-breaking are implemented and covered by 46 local unit tests (2 optional Torch tests skipped) |
+| Independent D19–D21 gate | Completed on task78/state35 and task81/state36 under clean/object-shift/execution conditions. Value-only, oracle-attribution and learned-attribution each achieved 0/6 because none of the 24 direct candidates or six requery fallbacks succeeded |
+| Current bottleneck | Candidate-pool coverage, not demonstrated selector quality. The V5 rules are frozen; the six independent scenarios are retained as a negative result and are not used for post-hoc rule tuning |
 | Three-valued object-centric belief | Implemented; calibrated `true/false/unknown` factor states are preserved |
 | Dependency DAG and minimal invalidation | Implemented |
 | Rule-based candidate-effect parser | Implemented |
 | Hard gate, soft score and explicit fallback | Implemented and tested; score weights intentionally blocked from deployment calibration |
-| Closed-loop Cosmos candidate reranking | Next integration milestone |
+| Closed-loop Cosmos candidate reranking | Integrated for the small independent gate; promotion is blocked until a preregistered task pool establishes a non-zero oracle ceiling |
 | Belief-conditioned action refiner | Interface only; training data not collected yet |
 
-The repository contains mechanism code, public contracts and tests, not checkpoints, datasets, or a final benchmark claim. D18-v9 uses deterministic protocol-derived silver labels. Its development gate currently fails because one learned factor has zero recall, so D19–D21 and closed-loop task evaluation remain blocked. A sealed confirmation collection is not evidence until it is legitimately unsealed and evaluated after development freezes.
+The repository contains mechanism code, public contracts and tests, not checkpoints, datasets, or a final benchmark claim. The latest independent D19–D21 gate is a valid negative result: V5 caused no observed clean harm, but the frozen candidate generator supplied no successful action block for any of the six scenarios, so neither oracle nor learned reranking could improve outcomes. The next protocol must report candidate-pool coverage/oracle ceiling separately from selector performance conditional on a successful candidate being present.
 
 ## Environment
 
@@ -80,7 +80,9 @@ wam_reranking/
   contracts.py          attribution, belief, candidate and refiner contracts
   belief.py             belief update and dependency propagation
   candidate_effects.py  interpretable 16×7 action-block parser
+  relation_evidence.py target–anchor relation evidence and temporal candidate checks
   reranker.py           hard feasibility gate, soft score and fallback
+  policy.py             value-only, oracle-hard-gate and learned-hard-gate selection paths
   refiner.py             bounded action-residual application interface
   paired_audit.py        paired-clean physical gates and cache-only diagnostics
   evidence_routing.py    hard action/command evidence routes and unresolved-cause abstention
@@ -98,6 +100,9 @@ docs/
   CONFIRMATION_PROTOCOL.md
 tests/
   test_belief_reranking.py
+  test_relation_evidence_temporal.py
+docs/
+  D19_D21_V5_GATE.md
 ```
 
 ## Evaluation contract
@@ -138,10 +143,10 @@ explain mismatch
 - Unresolved or conflicting evidence maps to `unknown` and a conservative fallback.
 - Score weights remain blocked from deployment until calibrated on the development split.
 - Calibration confidence does not turn silver supervision into human-validated causal truth.
-- D18-v14 passed the development contract but failed its one-shot task16/task45/task73 engineering confirmation. Those tasks cannot be recycled into D18-v15 gradient training or reused as an independent confirmation claim.
-- D18-v15 repairs two mechanisms using development evidence only: explicit relation/stacking semantics for repeated objects, and explicit normal support when all reliable mismatch factors are negative.
-- Task23/task58 stay in grouped formal train/validation. Task14/task34/task64 are the added D18-v15 development tasks. Task13/task37/task65 are sealed confirmation tasks and remain unread by model development.
-- D19-D21 remain blocked until D18-v15 passes the unchanged development thresholds, freezes its model/schema/thresholds, and then passes the sealed confirmation once.
+- D18-v18i failed its one-shot task13/task37/task65 engineering confirmation and is used only as a frozen learned diagnostic track.
+- D19–D21 V5 is frozen after an independent task78/task81 evaluation. No rule is changed in response to those six scenarios.
+- The independent gate found zero successful candidates across 24 direct candidates and six requery fallbacks. Therefore it cannot establish a selector advantage, even with oracle attribution.
+- The next evaluation freezes a task/state pool in advance and reports all qualification failures. It separates candidate coverage (oracle ceiling) from conditional selector accuracy and outcome improvement.
 - Action-record reliability is not learned: the acquisition-contract availability bit applies a hard `unknown` rule and is masked from the neural input.
 - Existing features did not meet the preregistered feasibility thresholds for a 5 mm weak displacement. Those records map to `cause_unresolved / evidence_insufficient`; the method does not claim to identify their hidden physical cause.
 - Paired counterfactual data uses `clean_a` versus QC-only `clean_b` after identical snapshot restoration. Cached-query versus forced re-observation differences are diagnostic and never replace the unchanged clean-pair hard gates.

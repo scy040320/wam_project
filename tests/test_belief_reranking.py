@@ -12,6 +12,8 @@ from wam_reranking import (
     evaluate_command_execution, pool_target_residual, route_evidence,
     structural_residual_grid, target_semantic_features,
     cross_task_factor_contrastive_loss,
+    CandidateVisualEvidence, SelectorMode, build_candidate_visual_evidence,
+    select_hard_gate_value_tiebreak, select_value_only,
 )
 from wam_reranking.refiner import apply_bounded_residual
 
@@ -140,6 +142,40 @@ class BeliefTests(unittest.TestCase):
 
 
 class CandidateTests(unittest.TestCase):
+    def test_value_only_matches_official_argmax(self):
+        selected = select_value_only([0.2, 0.8, 0.5])
+        self.assertEqual(selected.selected_candidate_id, 1)
+        self.assertIsNone(selected.fallback)
+
+    def test_hard_gate_uses_value_only_among_feasible_candidates(self):
+        attr = attribution(world=0.1, cause=CoarseCause.OBJECT_SHIFT)
+        result = select_hard_gate_value_tiebreak(
+            mode=SelectorMode.ORACLE_HARD_GATE,
+            belief=initial_belief(0),
+            attribution=attr,
+            block_index=2,
+            candidate_actions=[actions_for(Stage.GRASP), actions_for(Stage.APPROACH)],
+            official_values=[0.99, 0.1],
+        )
+        self.assertFalse(result.decisions[0].accepted)
+        self.assertTrue(result.decisions[1].accepted)
+        self.assertEqual(result.selected_candidate_id, 1)
+        self.assertEqual(result.belief_snapshot["facts"]["target_pose_current"]["value"], "true")
+        self.assertEqual(result.belief_snapshot["facts"]["target_reachable"]["value"], "unknown")
+
+    def test_hard_gate_all_rejected_exposes_fallback(self):
+        attr = attribution(observation=0.1, world=0.1, cause=CoarseCause.VISUAL_OCCLUSION)
+        result = select_hard_gate_value_tiebreak(
+            mode=SelectorMode.LEARNED_HARD_GATE,
+            belief=initial_belief(0),
+            attribution=attr,
+            block_index=2,
+            candidate_actions=[actions_for(Stage.GRASP)],
+            official_values=[0.9],
+        )
+        self.assertIsNone(result.selected_candidate_id)
+        self.assertEqual(result.fallback, "reobserve")
+
     def test_rule_parser_stages(self):
         for stage in (Stage.APPROACH, Stage.GRASP, Stage.LIFT, Stage.TRANSPORT, Stage.PLACE):
             self.assertEqual(parse_candidate_effect(0, actions_for(stage)).stage, stage)
@@ -158,6 +194,107 @@ class CandidateTests(unittest.TestCase):
         effect = parse_candidate_effect(0, actions_for(Stage.GRASP))
         decision = evaluate_candidate(belief, attr, effect, 0.99, WEIGHTS, allow_uncalibrated=True)
         self.assertFalse(decision.accepted)
+
+    def test_attribution_source_survives_propagation_confidence_decay(self):
+        attr = attribution(world=0.1, cause=CoarseCause.OBJECT_SHIFT)
+        result = select_hard_gate_value_tiebreak(
+            mode=SelectorMode.ORACLE_HARD_GATE,
+            belief=initial_belief(0), attribution=attr, block_index=2,
+            candidate_actions=[actions_for(Stage.TRANSPORT)], official_values=[0.99],
+        )
+        self.assertFalse(result.decisions[0].accepted)
+        self.assertTrue(any("unknown_from_world_state_consistent" in reason
+                            for reason in result.decisions[0].rejection_reasons))
+
+    def test_visual_candidate_violation_rejects_unsupported_transport(self):
+        visual = CandidateVisualEvidence(
+            target_motion=0.1, anchor_motion=0.0,
+            target_anchor_distance_before=0.5, target_anchor_distance_after=0.4,
+            target_anchor_affinity_before=0.0, target_anchor_affinity_after=0.1,
+            target_gripper_distance_before=0.6, target_gripper_distance_after=0.6,
+            target_gripper_affinity_before=0.0, target_gripper_affinity_after=0.0,
+            relation_progress=0.1, visibility_confidence=0.9, cross_view_agreement=0.9,
+            relation_confidence=0.9, contact_confidence=0.9,
+        )
+        effect = parse_candidate_effect(0, actions_for(Stage.TRANSPORT), visual_evidence=visual)
+        decision = evaluate_candidate(
+            initial_belief(0), attribution(), effect, 0.99, WEIGHTS, allow_uncalibrated=True
+        )
+        self.assertFalse(decision.accepted)
+        self.assertTrue(any("predicted_target_gripper_contact_missing" in reason
+                            for reason in decision.rejection_reasons))
+
+    def test_execution_deviation_can_preserve_derived_contact_chain(self):
+        visual = CandidateVisualEvidence(
+            target_motion=0.1, anchor_motion=0.0,
+            target_anchor_distance_before=0.4, target_anchor_distance_after=0.43,
+            target_anchor_affinity_before=0.2, target_anchor_affinity_after=0.18,
+            target_gripper_distance_before=0.2, target_gripper_distance_after=0.16,
+            target_gripper_affinity_before=0.2, target_gripper_affinity_after=0.18,
+            relation_progress=-0.03, visibility_confidence=0.9, cross_view_agreement=0.9,
+            relation_confidence=0.9, contact_confidence=0.9,
+        )
+        attr = attribution(execution=0.1, cause=CoarseCause.EXECUTION_CONTACT_DEVIATION)
+        belief = initial_belief(0)
+        update_belief(belief, attr, 2)
+        effect = parse_candidate_effect(0, actions_for(Stage.PLACE), visual_evidence=visual)
+        decision = evaluate_candidate(belief, attr, effect, 0.8, WEIGHTS, allow_uncalibrated=True)
+        self.assertTrue(decision.accepted)
+
+    def test_world_shift_still_blocks_contact_chain_override(self):
+        visual = CandidateVisualEvidence(
+            target_motion=0.1, anchor_motion=0.0,
+            target_anchor_distance_before=0.4, target_anchor_distance_after=0.35,
+            target_anchor_affinity_before=0.2, target_anchor_affinity_after=0.25,
+            target_gripper_distance_before=0.2, target_gripper_distance_after=0.16,
+            target_gripper_affinity_before=0.2, target_gripper_affinity_after=0.2,
+            relation_progress=0.05, visibility_confidence=0.9, cross_view_agreement=0.9,
+            relation_confidence=0.9, contact_confidence=0.9,
+        )
+        attr = attribution(world=0.1, cause=CoarseCause.OBJECT_SHIFT)
+        belief = initial_belief(0)
+        update_belief(belief, attr, 2)
+        effect = parse_candidate_effect(0, actions_for(Stage.PLACE), visual_evidence=visual)
+        decision = evaluate_candidate(belief, attr, effect, 0.8, WEIGHTS, allow_uncalibrated=True)
+        self.assertFalse(decision.accepted)
+
+    def test_small_or_single_view_relation_regression_is_not_hard_rejection(self):
+        visual = CandidateVisualEvidence(
+            target_motion=0.1, anchor_motion=0.0,
+            target_anchor_distance_before=0.4, target_anchor_distance_after=0.44,
+            target_anchor_affinity_before=0.2, target_anchor_affinity_after=0.15,
+            target_gripper_distance_before=0.2, target_gripper_distance_after=0.18,
+            target_gripper_affinity_before=0.2, target_gripper_affinity_after=0.18,
+            relation_progress=-0.04, visibility_confidence=0.9, cross_view_agreement=0.45,
+            relation_confidence=0.9, contact_confidence=0.9,
+        )
+        effect = parse_candidate_effect(0, actions_for(Stage.PLACE), visual_evidence=visual)
+        self.assertNotIn("predicted_target_anchor_relation_regresses", effect.hard_violations)
+
+    def test_visual_relation_maps_distinguish_candidate_progress(self):
+        def blob(x, y):
+            out = np.zeros((32, 32), np.float32)
+            out[y-1:y+2, x-1:x+2] = 1.0
+            return out
+        current_subject = blob(6, 16); current_anchor = blob(25, 16); gripper = blob(7, 16)
+        improved = build_candidate_visual_evidence(
+            current_subject_maps=(current_subject, current_subject),
+            predicted_subject_maps=(blob(20, 16), blob(20, 16)),
+            current_anchor_maps=(current_anchor, current_anchor),
+            predicted_anchor_maps=(current_anchor, current_anchor),
+            current_gripper_maps=(gripper, gripper),
+            predicted_gripper_maps=(blob(20, 16), blob(20, 16)), relation="toward",
+        )
+        regressed = build_candidate_visual_evidence(
+            current_subject_maps=(current_subject, current_subject),
+            predicted_subject_maps=(blob(3, 16), blob(3, 16)),
+            current_anchor_maps=(current_anchor, current_anchor),
+            predicted_anchor_maps=(current_anchor, current_anchor),
+            current_gripper_maps=(gripper, gripper),
+            predicted_gripper_maps=(blob(3, 16), blob(3, 16)), relation="toward",
+        )
+        self.assertGreater(improved.relation_progress, 0.0)
+        self.assertLess(regressed.relation_progress, 0.0)
 
     def test_value_cannot_override_hard_violation(self):
         belief = initial_belief(0)
