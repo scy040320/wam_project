@@ -1,0 +1,35 @@
+{
+  "protocol": "candidate_pool_task50_state_expansion_v1",
+  "frozen_at": "2026-09-29",
+  "purpose": "Test whether the non-bimodal task50 signal repeats across pre-registered unseen states before any selector-weight calibration.",
+  "source_discovery_cell": {"task_id": 50, "state": 41, "stress_successes": 5, "stress_k": 8},
+  "screen": {"condition": "clean", "k": 4, "minimum_successful_candidates": 3},
+  "stress": {
+    "condition": "object_shift",
+    "k": 8,
+    "shift_meters": [0.0625, -0.03, 0.005],
+    "primary_non_bimodal_range": [2, 6],
+    "boundary_range": [1, 7],
+    "cost_step_range": 3,
+    "cost_call_range": 1
+  },
+  "rules": [
+    "States are frozen before any state-expansion outcome is observed.",
+    "Every state first receives the same clean K=4 competence screen.",
+    "Only states with at least 3/4 clean successes receive the fixed K=8 stress test.",
+    "All eligible-state stress outcomes, including 0/8 and 8/8, remain in the report.",
+    "Discovery state 41 is excluded from this expansion.",
+    "No selector weight, threshold, intervention, state membership or candidate seed may change after launch.",
+    "This is development expansion, not independent confirmation or a main-experiment result."
+  ],
+  "cells": [
+    {"task_id": 50, "state": 32, "instruction": "pick up the alphabet soup and put it in the basket", "target": "alphabet_soup_1", "anchor": "basket", "relation": "inside", "subgoal": "place_soup_in_basket"},
+    {"task_id": 50, "state": 33, "instruction": "pick up the alphabet soup and put it in the basket", "target": "alphabet_soup_1", "anchor": "basket", "relation": "inside", "subgoal": "place_soup_in_basket"},
+    {"task_id": 50, "state": 34, "instruction": "pick up the alphabet soup and put it in the basket", "target": "alphabet_soup_1", "anchor": "basket", "relation": "inside", "subgoal": "place_soup_in_basket"},
+    {"task_id": 50, "state": 35, "instruction": "pick up the alphabet soup and put it in the basket", "target": "alphabet_soup_1", "anchor": "basket", "relation": "inside", "subgoal": "place_soup_in_basket"},
+    {"task_id": 50, "state": 36, "instruction": "pick up the alphabet soup and put it in the basket", "target": "alphabet_soup_1", "anchor": "basket", "relation": "inside", "subgoal": "place_soup_in_basket"},
+    {"task_id": 50, "state": 37, "instruction": "pick up the alphabet soup and put it in the basket", "target": "alphabet_soup_1", "anchor": "basket", "relation": "inside", "subgoal": "place_soup_in_basket"},
+    {"task_id": 50, "state": 38, "instruction": "pick up the alphabet soup and put it in the basket", "target": "alphabet_soup_1", "anchor": "basket", "relation": "inside", "subgoal": "place_soup_in_basket"},
+    {"task_id": 50, "state": 39, "instruction": "pick up the alphabet soup and put it in the basket", "target": "alphabet_soup_1", "anchor": "basket", "relation": "inside", "subgoal": "place_soup_in_basket"}
+  ]
+}
