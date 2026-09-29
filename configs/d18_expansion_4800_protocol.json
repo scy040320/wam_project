@@ -1,0 +1,45 @@
+{
+  "version": "candidate_reranking_d18_expansion_4800_20260930_v1",
+  "role": "grouped_development_train_validation",
+  "decision_note": "Researcher-approved expansion after the preregistered attribution-expansion stop test did not pass; the negative result and thresholds are retained.",
+  "silver_schema": "d18_v18i_raw_observability_silver_v20",
+  "tasks": [13, 14, 16, 17, 21, 32, 34, 37, 39, 45, 62, 63, 64, 65, 73],
+  "states": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+  "moments": [0, 1],
+  "arms": [
+    "clean_a",
+    "clean_b",
+    "visual_occlusion",
+    "object_shift",
+    "execution_contact_deviation",
+    "unknown_cross_view_conflict",
+    "unknown_action_record_unreliable",
+    "unknown_low_magnitude_ambiguous"
+  ],
+  "raw_expected": 4800,
+  "model_expected": 4200,
+  "qc_expected": 600,
+  "split": {
+    "train_states": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+    "val_states": [16, 17, 18, 19]
+  },
+  "group_key": ["task_id", "state_index"],
+  "clean_a_role": "formal_normal_hard_negative",
+  "clean_b_role": "qc_only_paired_restore_noise",
+  "parallel_lane_ownership": {
+    "lane_a": [13, 17, 34, 45, 64],
+    "lane_b": [14, 21, 37, 62, 65],
+    "lane_c": [16, 32, 39, 63, 73]
+  },
+  "pilot_raw_expected": 48,
+  "pilot_rule": "First task in each lane, state0, both moments, all eight arms; all strict audits and the GPU guard must pass before full collection.",
+  "frozen_constraints": {
+    "same_runtime_snapshot_per_group": true,
+    "same_query_and_planned_actions_per_group": true,
+    "clean_pair_strict_gate_unchanged": true,
+    "ground_truth_for_deployment_input": false,
+    "success_label_for_deployment_input": false,
+    "threshold_reduction": false,
+    "scientific_failure_policy": "stop_and_preserve_evidence"
+  }
+}

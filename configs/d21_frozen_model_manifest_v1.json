@@ -1,0 +1,22 @@
+{
+  "frozen_at": "2026-09-29",
+  "model_schema": "d21_value_anchored_source_routed_residual_v4",
+  "training_protocol": "d21_value_anchored_attribution_residual_development_v3",
+  "development_gate_passed": true,
+  "model_sha256": "ef2894eacae949634bca35e5056fa5d5c8567e84c67db79947b1fb4dca4e46f4",
+  "training_report_sha256": "bbf0b8550d50f16d98353fd800d856b5ad5fa511033df0b078dc0330880eeaa8",
+  "candidate_utility_code_sha256": "b4e7b525f081c7704707bba73f0311d0c00a7e25ee59dda191556889831cf997",
+  "candidate_effects_code_sha256": "04f71b217e21c33711b532bd976676c16bb4e2e567625f293b8f3f01430bf7ea",
+  "reranker_code_sha256": "da9d980d1dffa4850084e3516c89ad1d0866c7f715a2f8e998185ee60a783b27",
+  "training_script_sha256": "38050f811c0a8c962a02c05f7f434e61672051c019647b9cc2f9330ee70b53e8",
+  "confirmation_protocol_sha256": "49687ee2c1cdfddf791caeceb2a36ac66cbee2611a59713366e58a831e801090",
+  "development_results": {
+    "full": {"learned": 13, "value_only": 12, "oracle": 13},
+    "leave_one_task_out": {"learned": 13, "value_only": 12, "fold_wins": 1, "fold_harms": 0},
+    "leave_one_state_out": {"learned": 13, "value_only": 12, "fold_wins": 1, "fold_harms": 0}
+  },
+  "prohibitions": [
+    "No model, feature, attribution, belief, parser, threshold or gate changes may be made from the independent confirmation outcomes.",
+    "Independent confirmation outcomes may not be used for training or model selection for this frozen version."
+  ]
+}

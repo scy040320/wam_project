@@ -1,0 +1,103 @@
+{
+  "protocol": "d25_d28_preregistered_development_v1",
+  "frozen_at": "2026-09-29",
+  "purpose": "D25 paired two-task development comparison and D26-D27 source/ablation analysis before Gate M3.",
+  "qualification": {
+    "uses_selector_or_candidate_stress_outcomes": false,
+    "source": "value-only clean K=4 competence collected before D25",
+    "rule": "retain a task when at least 3 of 4 frozen clean states have at least 3 successful candidates",
+    "task46": {"qualified_cells": 3, "total_cells": 4},
+    "task57": {"qualified_cells": 3, "total_cells": 4}
+  },
+  "candidate_pool": {
+    "tasks": [46, 57],
+    "states": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "pilot_states": [0],
+    "conditions": ["clean", "visual_occlusion", "object_shift", "execution_contact_deviation"],
+    "k": 4,
+    "max_policy_steps": 256,
+    "object_shift_meters": [0.0625, -0.03, 0.005],
+    "lanes": 3
+  },
+  "tasks": [
+    {
+      "task_id": 46,
+      "instruction": "pick up the alphabet soup and put it in the basket",
+      "target": "alphabet_soup_1",
+      "anchor": "basket",
+      "relation": "inside",
+      "subgoal": "place_soup_in_basket",
+      "kind": "rigid_translation"
+    },
+    {
+      "task_id": 57,
+      "instruction": "pick up the cream cheese and put it in the tray",
+      "target": "cream_cheese_1",
+      "anchor": "tray",
+      "relation": "inside",
+      "subgoal": "place_cream_cheese_in_tray",
+      "kind": "rigid_translation"
+    }
+  ],
+  "task_bindings": {
+    "46": {
+      "instruction": "pick up the alphabet soup and put it in the basket",
+      "target": "alphabet_soup_1",
+      "anchor": "basket",
+      "relation": "inside",
+      "subgoal": "place_soup_in_basket"
+    },
+    "57": {
+      "instruction": "pick up the cream cheese and put it in the tray",
+      "target": "cream_cheese_1",
+      "anchor": "tray",
+      "relation": "inside",
+      "subgoal": "place_cream_cheese_in_tray"
+    }
+  },
+  "method_arms": [
+    "value_only",
+    "binary_global_replan",
+    "flat_attribution_same_budget",
+    "hierarchical_attribution_no_dependency_propagation",
+    "hierarchical_attribution_with_belief_dag"
+  ],
+  "fairness": {
+    "shared_candidate_pool_within_scenario": true,
+    "same_k": true,
+    "same_initial_state": true,
+    "same_candidate_seed_schedule": true,
+    "same_max_policy_steps": true,
+    "fallback_outcome_without_execution": "unobserved",
+    "binary_global_replan_note": "At a native chunk boundary a value-only global replan collapses to the same selection as value-only unless it consumes an additional query; additional-query cost is reported separately and is never treated as a free benefit."
+  },
+  "reporting": {
+    "primary": [
+      "candidate_pool_coverage",
+      "observed_task_success",
+      "paired_harm",
+      "safe_reject_and_fallback_rate"
+    ],
+    "secondary": [
+      "environment_steps_when_both_succeed",
+      "wam_calls_when_both_succeed",
+      "latency"
+    ],
+    "strata": ["task", "state", "condition"],
+    "preserve_all_failures": true
+  },
+  "gate_contract": {
+    "d25": "all 80 candidate pools collected once and audited; no pool membership changes after outcomes",
+    "d26": "separate generator coverage, attribution routing, dependency gating and extra-query effects",
+    "d27": "all five arms run from the same frozen candidate pools and budgets",
+    "d28": "development mechanism trend may pass only with positive task-level signal and zero paired harm; independent attribution Gate M2 remains a separate prerequisite for the main experiment"
+  },
+  "rules": [
+    "No task, state, condition, K, shift, budget, threshold or method is changed after candidate outcomes are observed.",
+    "The D18-v18i attribution model and D20-v10 utility model remain frozen.",
+    "Ground-truth condition and candidate outcomes are unavailable to learned selector arms.",
+    "Outcome oracle is reported only as a post-outcome ceiling and is not a deployable arm.",
+    "A pool with zero successful candidates remains in every overall denominator.",
+    "D21 independent 0/6 candidate coverage remains a separate negative result."
+  ]
+}

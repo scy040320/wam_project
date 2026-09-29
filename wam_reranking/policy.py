@@ -8,14 +8,17 @@ the tie-breaker among feasible candidates.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import Enum
 from typing import Mapping, Sequence
 
 import numpy as np
 
-from .belief import update_belief
+from .belief import DEFAULT_GRAPH, DependencyGraph, update_belief
 from .candidate_effects import parse_candidate_effect
+from .candidate_utility import (
+    CandidateUtilityModel, candidate_utility_features, select_with_utility,
+)
 from .contracts import (
     AttributionOutput, BeliefFact, BeliefState, CandidateDecision, CandidateVisualEvidence,
     ConsistencyFactor, ScoreWeights, TriValue,
@@ -88,6 +91,8 @@ def select_hard_gate_value_tiebreak(
     visual_evidence: Sequence[CandidateVisualEvidence | None] | None = None,
     hard_confidence: float = 0.75,
     score_weights: ScoreWeights | None = None,
+    utility_model: CandidateUtilityModel | None = None,
+    dependency_graph: DependencyGraph = DEFAULT_GRAPH,
 ) -> SelectionResult:
     """Apply belief gating and optionally candidate-specific calibrated scoring.
 
@@ -109,14 +114,18 @@ def select_hard_gate_value_tiebreak(
     weights = _VALUE_ONLY_WEIGHTS if score_weights is None else score_weights
     if not weights.calibrated:
         raise RuntimeError("candidate-effect score weights must be calibrated")
-    update_belief(belief, attribution, block_index)
+    update_belief(belief, attribution, block_index, graph=dependency_graph)
     refresh_from_current_observation(belief, attribution, block_index)
     decisions: list[CandidateDecision] = []
+    utility_features: dict[int, np.ndarray] = {}
     for candidate_id, (actions, value, support, visual_item) in enumerate(
         zip(candidate_actions, official_values, supports, visual_items, strict=True)
     ):
         effect = parse_candidate_effect(
             candidate_id, actions, visual_support=float(support), visual_evidence=visual_item
+        )
+        utility_features[candidate_id] = candidate_utility_features(
+            effect, float(value), attribution
         )
         decisions.append(
             evaluate_candidate(
@@ -128,7 +137,28 @@ def select_hard_gate_value_tiebreak(
                 hard_confidence=hard_confidence,
             )
         )
-    chosen, fallback = select_candidate(decisions, attribution)
+    if utility_model is None:
+        chosen, fallback = select_candidate(decisions, attribution)
+    else:
+        chosen, utility_scores = select_with_utility(decisions, utility_features, utility_model)
+        decisions = [
+            replace(
+                decision,
+                components={
+                    **decision.components,
+                    **({"learned_utility": utility_scores[decision.candidate_id]}
+                       if decision.candidate_id in utility_scores else {}),
+                },
+            )
+            for decision in decisions
+        ]
+        # ``chosen`` above references the pre-annotation object; recover the
+        # corresponding auditable decision after adding utility components.
+        if chosen is not None:
+            chosen = next(item for item in decisions if item.candidate_id == chosen.candidate_id)
+            fallback = None
+        else:
+            _, fallback = select_candidate(decisions, attribution)
     return SelectionResult(
         mode,
         None if chosen is None else chosen.candidate_id,

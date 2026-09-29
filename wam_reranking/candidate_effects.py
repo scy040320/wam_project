@@ -299,6 +299,10 @@ def parse_candidate_effect(candidate_id: int, actions: np.ndarray, *, visual_sup
     cumulative_excursion = float(np.linalg.norm(np.cumsum(xyz, axis=0), axis=1).max(initial=0.0))
     gripper_state = close_signal > 0.25
     gripper_transitions = int(np.count_nonzero(gripper_state[1:] != gripper_state[:-1]))
+    closed_at_entry = bool(gripper_state[0])
+    open_after_closed = np.flatnonzero((~gripper_state) & np.maximum.accumulate(gripper_state))
+    release_index = int(open_after_closed[0]) if open_after_closed.size else 16
+    closed_before_release = float(np.mean(gripper_state[:release_index])) if release_index else 0.0
     trajectory_risk = float(np.clip(
         0.30 * np.clip((max_step - 0.35) / 0.65, 0.0, 1.0)
         + 0.20 * np.clip((max_acceleration - 0.50) / 1.50, 0.0, 1.0)
@@ -321,8 +325,16 @@ def parse_candidate_effect(candidate_id: int, actions: np.ndarray, *, visual_sup
         stage = Stage.UNCERTAIN
     requirements = {
         Stage.APPROACH: {"target_visible": 0.5, "target_pose_current": 0.6},
-        Stage.GRASP: {"target_pose_current": 0.8, "target_reachable": 0.8, "execution_consistent": 0.6},
-        Stage.LIFT: {"grasped": 0.85, "execution_consistent": 0.8},
+        # A newly generated grasp chunk is itself the recovery action after an
+        # execution mismatch; it must not require the previous chunk's
+        # execution_consistent predicate. Pose and reachability remain hard.
+        Stage.GRASP: {"target_pose_current": 0.8, "target_reachable": 0.8},
+        # ``execution_consistent`` describes whether the *previous* action
+        # block matched its request.  It is evidence for invalidating the old
+        # grasp assumption, not a permanent prerequisite of a newly planned
+        # lift.  The new lift must instead re-establish ``grasped`` from the
+        # current observation/candidate trace before it is allowed through.
+        Stage.LIFT: {"grasped": 0.85},
         Stage.TRANSPORT: {"grasped": 0.8, "lifted": 0.75},
         Stage.PLACE: {"lifted": 0.75, "receptacle_visible": 0.6, "place_ready": 0.7},
         Stage.UNCERTAIN: {}, Stage.OBSERVE: {},
@@ -350,6 +362,11 @@ def parse_candidate_effect(candidate_id: int, actions: np.ndarray, *, visual_sup
         "trajectory_cumulative_excursion": cumulative_excursion,
         "trajectory_gripper_transitions": float(gripper_transitions),
         "trajectory_risk": trajectory_risk,
+        # Temporal command evidence.  These fields distinguish an entry
+        # prerequisite from a predicate established inside the same chunk.
+        "closed_at_entry": float(closed_at_entry),
+        "release_index": float(release_index),
+        "closed_before_release": closed_before_release,
     }
     proposed_effects = dict(effects[stage])
     violations: dict[str, float] = {}
@@ -418,6 +435,52 @@ def parse_candidate_effect(candidate_id: int, actions: np.ndarray, *, visual_sup
         ))
         evidence["predicted_grasp_support"] = grasp_prediction
         evidence["predicted_release_support"] = release_prediction
+        current_contact_support = float(np.clip(max(
+            visual_evidence.grasp_support_before,
+            visual_evidence.target_gripper_affinity_before,
+            1.0 - min(1.0, 2.0 * visual_evidence.target_gripper_distance_before),
+        ), 0.0, 1.0))
+        current_contact_reliability = float(min(
+            visual_evidence.contact_confidence,
+            max(
+                visual_evidence.cross_view_agreement,
+                0.65 if visual_evidence.contact_confidence >= 0.55 else 0.0,
+            ),
+        ))
+        evidence["current_contact_support"] = current_contact_support
+        evidence["current_contact_reliability"] = current_contact_reliability
+        evidence["current_grasped_support"] = float(min(
+            current_contact_support, current_contact_reliability
+        ))
+        carrying_sequence = (
+            closed_at_entry
+            and closed_before_release >= 0.75
+            and stage in {Stage.TRANSPORT, Stage.PLACE}
+        )
+        evidence["current_lifted_support"] = float(
+            min(current_contact_support, current_contact_reliability)
+            if carrying_sequence else 0.0
+        )
+        relation_nonregressing = (
+            visual_evidence.relation_score_after
+            >= visual_evidence.relation_score_before - 0.02
+        )
+        establishes_place_ready = (
+            stage is Stage.PLACE
+            and release_index < 16
+            and closed_before_release >= 0.75
+            and relation_nonregressing
+        )
+        evidence["establishes_place_ready_before_release"] = float(establishes_place_ready)
+        evidence["place_ready_support"] = float(
+            min(
+                visual_evidence.relation_confidence,
+                max(
+                    visual_evidence.cross_view_agreement,
+                    0.65 if visual_evidence.relation_confidence >= 0.55 else 0.0,
+                ),
+            ) if establishes_place_ready else 0.0
+        )
         if stage is Stage.GRASP:
             proposed_effects["grasped"] = (TriValue.TRUE, max(0.05, grasp_prediction))
         elif stage in {Stage.LIFT, Stage.TRANSPORT}:
@@ -430,13 +493,18 @@ def parse_candidate_effect(candidate_id: int, actions: np.ndarray, *, visual_sup
         if contact_reliable >= 0.55:
             if stage in {Stage.LIFT, Stage.TRANSPORT} and contact_support < 0.35:
                 violations["predicted_target_gripper_contact_missing"] = contact_reliable * (1.0 - contact_support)
-            if stage is Stage.GRASP and (
+            grasp_relation_nonimprovement = stage is Stage.GRASP and (
                 visual_evidence.target_gripper_distance_after
                 >= visual_evidence.target_gripper_distance_before
                 and visual_evidence.target_gripper_affinity_after
                 <= visual_evidence.target_gripper_affinity_before
-            ):
-                violations["predicted_grasp_relation_not_improved"] = contact_reliable
+            )
+            # Lack of predicted progress is not a demonstrated safety
+            # violation: downstream replanning may still recover. Preserve it
+            # as an auditable soft risk rather than rejecting the candidate.
+            evidence["grasp_relation_nonimprovement_soft"] = float(
+                contact_reliable if grasp_relation_nonimprovement else 0.0
+            )
         distance_regression = (
             visual_evidence.target_anchor_distance_after
             - visual_evidence.target_anchor_distance_before

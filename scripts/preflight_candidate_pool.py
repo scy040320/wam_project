@@ -40,6 +40,10 @@ def main() -> None:
     shared_states = None
     if "held_state" in protocol and "state" in protocol["screen"]:
         shared_states = {int(protocol["screen"]["state"]), int(protocol["held_state"]["state"])}
+    elif "candidate_pool" in protocol and "states" in protocol["candidate_pool"]:
+        shared_states = {int(value) for value in protocol["candidate_pool"]["states"]}
+    elif "candidate_pool" in protocol and "state" in protocol["candidate_pool"]:
+        shared_states = {int(protocol["candidate_pool"]["state"])}
     checks = []
     for row in task_rows:
         task_id = int(row["task_id"])

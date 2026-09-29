@@ -78,6 +78,34 @@ def _candidate_preserves_contact_chain(effect: CandidateEffect) -> bool:
     return contact_confidence >= 0.55 and before_support >= 0.35 and continuity and commanded_sequence
 
 
+def _candidate_reestablishes_requirement(
+    effect: CandidateEffect, requirement: str
+) -> tuple[bool, float, str | None]:
+    """Return candidate-conditioned support for an invalidated prerequisite.
+
+    The support is deliberately predicate specific.  It may come from the
+    current observation (for an already grasped/lifted object) or from an
+    ordered within-chunk effect (place-ready before release).  A terminal
+    effect is never allowed to satisfy an unrelated entry prerequisite.
+    """
+    evidence = effect.evidence
+    if requirement == "grasped":
+        confidence = float(evidence.get("current_grasped_support", 0.0))
+        return confidence >= PREDICATE_HARD_THRESHOLDS["grasped"], confidence, "current_contact"
+    if requirement == "lifted":
+        confidence = float(evidence.get("current_lifted_support", 0.0))
+        return confidence >= PREDICATE_HARD_THRESHOLDS["lifted"], confidence, "current_carry"
+    if requirement == "place_ready":
+        confidence = float(evidence.get("place_ready_support", 0.0))
+        ordered = bool(evidence.get("establishes_place_ready_before_release", 0.0))
+        return (
+            ordered and confidence >= PREDICATE_HARD_THRESHOLDS["place_ready"],
+            confidence,
+            "predicted_relation_before_release",
+        )
+    return False, 0.0, None
+
+
 def _compatibility(attribution: AttributionOutput, effect: CandidateEffect) -> float:
     stage = effect.stage
     score = 0.0
@@ -117,13 +145,17 @@ def evaluate_candidate(belief: BeliefState, attribution: AttributionOutput, effe
     if query_cost < 0.0:
         raise ValueError("query_cost must be non-negative")
     rejection: list[str] = []
+    reestablished: dict[str, float] = {}
     risk = 0.0
     uncertainty = 1.0 - effect.confidence
     safety_critical = {
         Stage.GRASP: {"target_pose_current", "target_reachable"},
         Stage.LIFT: {"grasped", "execution_consistent"},
         Stage.TRANSPORT: {"grasped", "lifted"},
-        Stage.PLACE: {"lifted", "place_ready"},
+        # lifted is an immediate safety prerequisite. place_ready=unknown is
+        # epistemic uncertainty and is scored as risk below; only a witnessed
+        # high-confidence false place_ready remains a hard rejection.
+        Stage.PLACE: {"lifted"},
     }.get(effect.stage, set())
     for reason, confidence in effect.hard_violations.items():
         if confidence >= 0.50:
@@ -134,10 +166,24 @@ def evaluate_candidate(belief: BeliefState, attribution: AttributionOutput, effe
         invalidated, factor_name, source_confidence = _attribution_invalidates_requirement(
             attribution, requirement, effect
         )
+        restored, restored_confidence, restored_source = _candidate_reestablishes_requirement(
+            effect, requirement
+        )
         if fact.value is TriValue.FALSE and fact.confidence >= predicate_threshold:
             rejection.append(f"{requirement}=false@{fact.confidence:.2f}")
         elif fact.value is TriValue.UNKNOWN and requirement in safety_critical:
-            if fact.source == "attribution" and invalidated:
+            # A candidate-specific observation/effect may re-establish a
+            # derived prerequisite that the previous-block attribution made
+            # unknown.  Test this *before* rejecting the propagated unknown;
+            # otherwise strong current-contact or ordered pre-release
+            # evidence is computed but can never affect the feasible set.
+            # The predicate-specific thresholds in
+            # ``_candidate_reestablishes_requirement`` remain unchanged.
+            if restored:
+                reestablished[requirement] = restored_confidence
+                risk += required_confidence * max(0.0, 1.0 - restored_confidence)
+                uncertainty += 1.0 - restored_confidence
+            elif fact.source == "attribution" and invalidated:
                 rejection.append(
                     f"{requirement}=unknown_from_{factor_name}@{source_confidence:.2f}"
                 )
@@ -148,14 +194,21 @@ def evaluate_candidate(belief: BeliefState, attribution: AttributionOutput, effe
                 # predicate-specific candidate trace supplies continuity
                 # evidence.  It is not made safe merely by confidence decay.
                 risk += required_confidence * max(fact.confidence, 0.25)
+        elif fact.value is TriValue.UNKNOWN and restored:
+            reestablished[requirement] = restored_confidence
+            risk += required_confidence * max(0.0, 1.0 - restored_confidence)
+            uncertainty += 1.0 - restored_confidence
         elif fact.value is not TriValue.TRUE:
             risk += required_confidence * max(fact.confidence, 0.25)
         else:
             risk += required_confidence * max(0.0, required_confidence - fact.confidence)
         uncertainty += 1.0 - fact.confidence
     if rejection:
-        return CandidateDecision(effect.candidate_id, False, official_value, None, tuple(rejection), {})
+        return CandidateDecision(effect.candidate_id, False, official_value, None, tuple(rejection), {
+            **{f"reestablished.{name}": value for name, value in reestablished.items()},
+        })
     risk += float(effect.evidence.get("relation_regression_soft", 0.0))
+    risk += float(effect.evidence.get("grasp_relation_nonimprovement_soft", 0.0))
     risk += 0.5 * float(effect.evidence.get("trajectory_risk", 0.0))
     compatibility = _compatibility(attribution, effect)
     stage_progress = {Stage.OBSERVE: 0.0, Stage.APPROACH: 0.2, Stage.GRASP: 0.4, Stage.LIFT: 0.6,
@@ -178,6 +231,7 @@ def evaluate_candidate(belief: BeliefState, attribution: AttributionOutput, effe
         "official_value": official_value, "attribution_compatibility": compatibility,
         "progress": progress, "dependency_risk": risk, "uncertainty": uncertainty,
         "query_cost": query_cost,
+        **{f"reestablished.{name}": value for name, value in reestablished.items()},
     })
 
 

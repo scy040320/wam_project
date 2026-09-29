@@ -12,8 +12,10 @@ from wam_reranking import (
     evaluate_command_execution, pool_target_residual, route_evidence,
     structural_residual_grid, target_semantic_features,
     cross_task_factor_contrastive_loss,
-    CandidateVisualEvidence, SelectorMode, build_candidate_visual_evidence,
+    CandidateDecision, CandidateVisualEvidence, SelectorMode, build_candidate_visual_evidence,
     candidate_effect_record,
+    CANDIDATE_UTILITY_FEATURE_NAMES, CandidateUtilityModel, candidate_utility_features,
+    fit_pairwise_utility, select_with_utility,
     select_hard_gate_value_tiebreak, select_value_only,
 )
 from wam_reranking.refiner import apply_bounded_residual
@@ -118,6 +120,17 @@ class BeliefTests(unittest.TestCase):
         self.assertEqual(belief.facts["target_visible"].value, TriValue.TRUE)
         self.assertEqual(belief.facts["target_pose_current"].value, TriValue.FALSE)
         self.assertEqual(belief.facts["target_reachable"].value, TriValue.UNKNOWN)
+
+    def test_no_dependency_ablation_keeps_descendants_unchanged(self):
+        belief = initial_belief(0)
+        update_belief(
+            belief,
+            attribution(world=0.1, cause=CoarseCause.OBJECT_SHIFT),
+            2,
+            graph=DependencyGraph(()),
+        )
+        self.assertEqual(belief.facts["target_pose_current"].value, TriValue.FALSE)
+        self.assertEqual(belief.facts["target_reachable"].value, TriValue.TRUE)
 
     def test_multiple_inconsistencies_can_coexist(self):
         belief = initial_belief(1)
@@ -242,7 +255,81 @@ class CandidateTests(unittest.TestCase):
         decision = evaluate_candidate(belief, attr, effect, 0.8, WEIGHTS, allow_uncalibrated=True)
         self.assertTrue(decision.accepted)
 
-    def test_world_shift_still_blocks_contact_chain_override(self):
+    def test_execution_deviation_allows_new_corrective_grasp(self):
+        attr = attribution(execution=0.1, cause=CoarseCause.EXECUTION_CONTACT_DEVIATION)
+        belief = initial_belief(0)
+        update_belief(belief, attr, 2)
+        effect = parse_candidate_effect(0, actions_for(Stage.GRASP))
+        decision = evaluate_candidate(
+            belief, attr, effect, 0.7, WEIGHTS, allow_uncalibrated=True
+        )
+        self.assertTrue(decision.accepted)
+        self.assertNotIn("execution_consistent", effect.required_facts)
+
+    def test_execution_deviation_allows_new_lift_only_with_current_grasp_evidence(self):
+        strong = CandidateVisualEvidence(
+            target_motion=0.05, anchor_motion=0.0,
+            target_anchor_distance_before=0.4, target_anchor_distance_after=0.4,
+            target_anchor_affinity_before=0.2, target_anchor_affinity_after=0.2,
+            target_gripper_distance_before=0.08, target_gripper_distance_after=0.07,
+            target_gripper_affinity_before=0.8, target_gripper_affinity_after=0.8,
+            relation_progress=0.0, visibility_confidence=0.9,
+            cross_view_agreement=0.9, relation_confidence=0.9,
+            contact_confidence=0.9, grasp_support_before=0.8,
+            grasp_support_after=0.8,
+        )
+        weak = CandidateVisualEvidence(
+            target_motion=0.05, anchor_motion=0.0,
+            target_anchor_distance_before=0.4, target_anchor_distance_after=0.4,
+            target_anchor_affinity_before=0.2, target_anchor_affinity_after=0.2,
+            target_gripper_distance_before=0.8, target_gripper_distance_after=0.8,
+            target_gripper_affinity_before=0.0, target_gripper_affinity_after=0.0,
+            relation_progress=0.0, visibility_confidence=0.9,
+            cross_view_agreement=0.9, relation_confidence=0.9,
+            contact_confidence=0.9, grasp_support_before=0.0,
+            grasp_support_after=0.0,
+        )
+        attr = attribution(execution=0.1, cause=CoarseCause.EXECUTION_CONTACT_DEVIATION)
+        belief = initial_belief(0)
+        update_belief(belief, attr, 2)
+        accepted = evaluate_candidate(
+            belief, attr,
+            parse_candidate_effect(0, actions_for(Stage.LIFT), visual_evidence=strong),
+            0.7, WEIGHTS, allow_uncalibrated=True,
+        )
+        rejected = evaluate_candidate(
+            belief, attr,
+            parse_candidate_effect(1, actions_for(Stage.LIFT), visual_evidence=weak),
+            0.7, WEIGHTS, allow_uncalibrated=True,
+        )
+        self.assertTrue(accepted.accepted)
+        self.assertGreaterEqual(accepted.components["reestablished.grasped"], 0.55)
+        self.assertFalse(rejected.accepted)
+        self.assertTrue(any("grasped=unknown" in reason for reason in rejected.rejection_reasons))
+
+    def test_unknown_place_ready_is_soft_when_lifted_is_reestablished(self):
+        visual = CandidateVisualEvidence(
+            target_motion=0.1, anchor_motion=0.0,
+            target_anchor_distance_before=0.4, target_anchor_distance_after=0.43,
+            target_anchor_affinity_before=0.2, target_anchor_affinity_after=0.18,
+            target_gripper_distance_before=0.2, target_gripper_distance_after=0.16,
+            target_gripper_affinity_before=0.2, target_gripper_affinity_after=0.18,
+            relation_progress=-0.03, visibility_confidence=0.9, cross_view_agreement=0.9,
+            relation_confidence=0.9, contact_confidence=0.9,
+        )
+        attr = attribution(world=0.1, cause=CoarseCause.OBJECT_SHIFT)
+        belief = initial_belief(0)
+        update_belief(belief, attr, 2)
+        effect = parse_candidate_effect(0, actions_for(Stage.PLACE), visual_evidence=visual)
+        effect.evidence["establishes_place_ready_before_release"] = 0.0
+        effect.evidence["place_ready_support"] = 0.0
+        decision = evaluate_candidate(
+            belief, attr, effect, 0.7, WEIGHTS, allow_uncalibrated=True
+        )
+        self.assertTrue(decision.accepted)
+        self.assertFalse(any("place_ready=unknown" in item for item in decision.rejection_reasons))
+
+    def test_world_shift_can_be_reestablished_by_strong_current_and_ordered_candidate_evidence(self):
         visual = CandidateVisualEvidence(
             target_motion=0.1, anchor_motion=0.0,
             target_anchor_distance_before=0.4, target_anchor_distance_after=0.35,
@@ -257,7 +344,46 @@ class CandidateTests(unittest.TestCase):
         update_belief(belief, attr, 2)
         effect = parse_candidate_effect(0, actions_for(Stage.PLACE), visual_evidence=visual)
         decision = evaluate_candidate(belief, attr, effect, 0.8, WEIGHTS, allow_uncalibrated=True)
+        self.assertTrue(decision.accepted)
+        self.assertGreaterEqual(decision.components["reestablished.lifted"], 0.55)
+        self.assertGreaterEqual(decision.components["reestablished.place_ready"], 0.60)
+
+    def test_world_shift_weak_contact_evidence_still_rejects_transport(self):
+        visual = CandidateVisualEvidence(
+            target_motion=0.1, anchor_motion=0.0,
+            target_anchor_distance_before=0.4, target_anchor_distance_after=0.35,
+            target_anchor_affinity_before=0.2, target_anchor_affinity_after=0.25,
+            target_gripper_distance_before=0.7, target_gripper_distance_after=0.7,
+            target_gripper_affinity_before=0.0, target_gripper_affinity_after=0.0,
+            relation_progress=0.05, visibility_confidence=0.9, cross_view_agreement=0.9,
+            relation_confidence=0.9, contact_confidence=0.9,
+            grasp_support_before=0.0, grasp_support_after=0.0,
+        )
+        attr = attribution(world=0.1, cause=CoarseCause.OBJECT_SHIFT)
+        belief = initial_belief(0)
+        update_belief(belief, attr, 2)
+        effect = parse_candidate_effect(0, actions_for(Stage.TRANSPORT), visual_evidence=visual)
+        decision = evaluate_candidate(belief, attr, effect, 0.8, WEIGHTS, allow_uncalibrated=True)
         self.assertFalse(decision.accepted)
+        self.assertTrue(any("grasped=unknown_from_world_state_consistent" in reason
+                            for reason in decision.rejection_reasons))
+
+    def test_place_ready_requires_ordered_release_not_terminal_relation_alone(self):
+        visual = CandidateVisualEvidence(
+            target_motion=0.1, anchor_motion=0.0,
+            target_anchor_distance_before=0.4, target_anchor_distance_after=0.2,
+            target_anchor_affinity_before=0.2, target_anchor_affinity_after=0.5,
+            target_gripper_distance_before=0.1, target_gripper_distance_after=0.1,
+            target_gripper_affinity_before=0.6, target_gripper_affinity_after=0.6,
+            relation_progress=0.3, visibility_confidence=0.9, cross_view_agreement=0.9,
+            relation_confidence=0.9, contact_confidence=0.9,
+            grasp_support_before=0.8, grasp_support_after=0.8,
+        )
+        attr = attribution(world=0.1, cause=CoarseCause.OBJECT_SHIFT)
+        belief = initial_belief(0)
+        update_belief(belief, attr, 2)
+        transport = parse_candidate_effect(0, actions_for(Stage.TRANSPORT), visual_evidence=visual)
+        self.assertEqual(transport.evidence["place_ready_support"], 0.0)
 
     def test_small_or_single_view_relation_regression_is_not_hard_rejection(self):
         visual = CandidateVisualEvidence(
@@ -419,6 +545,160 @@ class CandidateTests(unittest.TestCase):
         costly = evaluate_candidate(belief, attribution(), effect, 0.5, weights, query_cost=1.0)
         self.assertAlmostEqual(cheap.total_score - costly.total_score, 0.4)
         self.assertEqual(costly.components["query_cost"], 1.0)
+
+    def test_pairwise_utility_preserves_value_when_no_residual_evidence_exists(self):
+        safe_a = parse_candidate_effect(0, actions_for(Stage.APPROACH))
+        safe_b = parse_candidate_effect(1, actions_for(Stage.APPROACH))
+        feature_a = candidate_utility_features(safe_a, 0.2, attribution())
+        feature_b = candidate_utility_features(safe_b, 0.8, attribution())
+        model = fit_pairwise_utility([(feature_a, feature_b)], steps=300)
+        accepted = [
+            evaluate_candidate(initial_belief(0), attribution(), safe_a, 0.2,
+                               WEIGHTS, allow_uncalibrated=True),
+            evaluate_candidate(initial_belief(0), attribution(), safe_b, 0.8,
+                               WEIGHTS, allow_uncalibrated=True),
+        ]
+        chosen, scores = select_with_utility(
+            accepted, {0: feature_a, 1: feature_b}, model
+        )
+        self.assertEqual(chosen.candidate_id, 1)
+        self.assertGreater(scores[1], scores[0])
+
+    def test_near_equal_utility_returns_to_official_value(self):
+        size = len(CANDIDATE_UTILITY_FEATURE_NAMES)
+        model = CandidateUtilityModel(
+            np.zeros(size), np.ones(size), np.zeros(size), 0.0
+        )
+        low = np.zeros(size); low[0] = 0.50
+        high = np.zeros(size); high[0] = 0.505
+        decisions = [
+            CandidateDecision(0, True, 0.50, 0.50, (), {"dependency_risk": 0.1, "uncertainty": 0.1}),
+            CandidateDecision(1, True, 0.505, 0.505, (), {"dependency_risk": 0.1, "uncertainty": 0.1}),
+        ]
+        chosen, _ = select_with_utility(decisions, {0: low, 1: high}, model)
+        self.assertEqual(chosen.candidate_id, 1)
+
+    def test_learned_utility_cannot_override_value_with_pareto_dominated_risk(self):
+        size = len(CANDIDATE_UTILITY_FEATURE_NAMES)
+        weights = np.zeros(size); weights[1] = 1.0
+        model = CandidateUtilityModel(
+            np.zeros(size), np.ones(size), weights, 0.0
+        )
+        learned = np.zeros(size); learned[0] = 0.20; learned[1] = 2.0
+        anchor = np.zeros(size); anchor[0] = 0.80
+        decisions = [
+            CandidateDecision(0, True, 0.20, 0.20, (), {"dependency_risk": 0.8, "uncertainty": 0.9}),
+            CandidateDecision(1, True, 0.80, 0.80, (), {"dependency_risk": 0.3, "uncertainty": 0.4}),
+        ]
+        chosen, scores = select_with_utility(
+            decisions, {0: learned, 1: anchor}, model
+        )
+        self.assertGreater(scores[0], scores[1])
+        self.assertEqual(chosen.candidate_id, 1)
+
+    def test_candidate_utility_is_explicitly_conditioned_on_attribution(self):
+        visual = CandidateVisualEvidence(
+            target_motion=0.3, anchor_motion=0.0,
+            target_anchor_distance_before=0.6, target_anchor_distance_after=0.2,
+            target_anchor_affinity_before=0.0, target_anchor_affinity_after=0.4,
+            target_gripper_distance_before=0.3, target_gripper_distance_after=0.15,
+            target_gripper_affinity_before=0.1, target_gripper_affinity_after=0.4,
+            relation_progress=0.6, visibility_confidence=0.9,
+            cross_view_agreement=0.9, relation_confidence=0.9,
+            contact_confidence=0.8, relation_score_before=0.1,
+            relation_score_after=0.8, grasp_support_before=0.2,
+            grasp_support_after=0.7,
+        )
+        effect = parse_candidate_effect(
+            0, actions_for(Stage.APPROACH), visual_evidence=visual
+        )
+        normal_features = candidate_utility_features(
+            effect, 0.5, attribution(cause=CoarseCause.NORMAL)
+        )
+        shift_features = candidate_utility_features(
+            effect, 0.5,
+            attribution(world=0.1, cause=CoarseCause.OBJECT_SHIFT),
+        )
+        index = CANDIDATE_UTILITY_FEATURE_NAMES.index("shift_relation_recovery")
+        self.assertGreater(shift_features[index], normal_features[index])
+        self.assertFalse(np.allclose(shift_features, normal_features))
+
+    def test_projected_cause_prevents_unselected_head_from_rewarding_candidate(self):
+        visual = CandidateVisualEvidence(
+            target_motion=0.2, anchor_motion=0.0,
+            target_anchor_distance_before=0.5, target_anchor_distance_after=0.2,
+            target_anchor_affinity_before=0.1, target_anchor_affinity_after=0.5,
+            target_gripper_distance_before=0.3, target_gripper_distance_after=0.1,
+            target_gripper_affinity_before=0.1, target_gripper_affinity_after=0.5,
+            relation_progress=0.5, visibility_confidence=0.9,
+            cross_view_agreement=0.9, relation_confidence=0.9,
+            contact_confidence=0.9, relation_score_before=0.1,
+            relation_score_after=0.8, grasp_support_before=0.1,
+            grasp_support_after=0.8,
+        )
+        effect = parse_candidate_effect(
+            0, actions_for(Stage.GRASP), visual_evidence=visual
+        )
+        # Reproduce a calibrated hierarchical result whose final projection is
+        # object shift even though the auxiliary direct head has a larger
+        # execution-deviation logit.  Ranking must follow the final projection.
+        attr = AttributionOutput(
+            {
+                ConsistencyFactor.OBSERVATION_RELIABLE.value: 0.9,
+                ConsistencyFactor.WORLD_STATE_CONSISTENT.value: 0.2,
+                ConsistencyFactor.EXECUTION_CONTACT_CONSISTENT.value: 0.4,
+                ConsistencyFactor.TASK_STAGE_CONSISTENT.value: 0.9,
+                ConsistencyFactor.CAUSE_RESOLVED.value: 0.9,
+            },
+            {
+                CoarseCause.NORMAL.value: 0.04,
+                CoarseCause.VISUAL_OCCLUSION.value: 0.01,
+                CoarseCause.OBJECT_SHIFT.value: 0.17,
+                CoarseCause.EXECUTION_CONTACT_DEVIATION.value: 0.77,
+                CoarseCause.UNKNOWN.value: 0.01,
+            },
+            CoarseCause.OBJECT_SHIFT, 0.8, 0.4,
+            EvidenceQuality(True, True, True, False), "block_002",
+        )
+        features = candidate_utility_features(effect, 0.5, attr)
+        world_index = CANDIDATE_UTILITY_FEATURE_NAMES.index(
+            "world_routed_relation_score_delta"
+        )
+        execution_index = CANDIDATE_UTILITY_FEATURE_NAMES.index(
+            "execution_routed_grasp_support_delta"
+        )
+        self.assertNotEqual(features[world_index], 0.0)
+        self.assertEqual(features[execution_index], 0.0)
+
+    def test_pairwise_utility_cannot_select_rejected_candidate(self):
+        approach = parse_candidate_effect(0, actions_for(Stage.APPROACH))
+        lift = parse_candidate_effect(1, actions_for(Stage.LIFT))
+        feature_a = candidate_utility_features(approach, 0.2, attribution())
+        feature_b = candidate_utility_features(lift, 0.9, attribution())
+        model = fit_pairwise_utility([(feature_b, feature_a)], steps=300)
+        decisions = [
+            CandidateDecision(0, True, 0.2, 0.2, (), {}),
+            CandidateDecision(1, False, 0.9, None, ("grasped=false",), {}),
+        ]
+        chosen, _ = select_with_utility(decisions, {0: feature_a, 1: feature_b}, model)
+        self.assertEqual(chosen.candidate_id, 0)
+
+    def test_policy_uses_utility_only_after_hard_gate(self):
+        a = actions_for(Stage.APPROACH)
+        b = actions_for(Stage.APPROACH)
+        effect_a = parse_candidate_effect(0, a)
+        effect_b = parse_candidate_effect(1, b)
+        feature_a = candidate_utility_features(effect_a, 0.2, attribution())
+        feature_b = candidate_utility_features(effect_b, 0.8, attribution())
+        model = fit_pairwise_utility([(feature_a, feature_b)], steps=300)
+        result = select_hard_gate_value_tiebreak(
+            mode=SelectorMode.LEARNED_HARD_GATE,
+            belief=initial_belief(0), attribution=attribution(), block_index=2,
+            candidate_actions=[a, b], official_values=[0.2, 0.8],
+            utility_model=model,
+        )
+        self.assertEqual(result.selected_candidate_id, 1)
+        self.assertIn("learned_utility", result.decisions[0].components)
 
 
 class RefinerContractTests(unittest.TestCase):

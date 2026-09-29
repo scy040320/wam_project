@@ -5,6 +5,13 @@ from .candidate_effects import (
     build_candidate_visual_evidence, localize_candidate_visual_evidence,
     candidate_effect_record, parse_candidate_effect,
 )
+from .candidate_utility import (
+    FEATURE_NAMES as CANDIDATE_UTILITY_FEATURE_NAMES,
+    CandidateUtilityModel,
+    candidate_utility_features,
+    fit_pairwise_utility,
+    select_with_utility,
+)
 from .calibration import HeadThreshold, build_attribution_output
 from .contrastive import cross_task_factor_contrastive_loss
 from .contracts import (
@@ -26,6 +33,10 @@ from .evidence_routing import (
     CommandExecutionEvidence, EvidenceRoute, EvidenceRoutingDecision,
     LEARNED_FACTOR_NAMES, evaluate_command_execution, route_evidence,
 )
+from .closed_loop import (
+    BestSeedSelection, ClosedLoopCommand, ClosedLoopDecision, RecoveryBudget,
+    RecoveryState, apply_recovery_budget, select_best_seed,
+)
 
 __all__ = [
     "ActionRefinementRequest", "ActionRefinementResult", "AttributionOutput",
@@ -42,4 +53,8 @@ __all__ = [
     "cross_task_factor_contrastive_loss",
     "SelectorMode", "SelectionResult", "refresh_from_current_observation",
     "select_hard_gate_value_tiebreak", "select_value_only",
+    "CANDIDATE_UTILITY_FEATURE_NAMES", "CandidateUtilityModel",
+    "candidate_utility_features", "fit_pairwise_utility", "select_with_utility",
+    "BestSeedSelection", "ClosedLoopCommand", "ClosedLoopDecision",
+    "RecoveryBudget", "RecoveryState", "apply_recovery_budget", "select_best_seed",
 ]

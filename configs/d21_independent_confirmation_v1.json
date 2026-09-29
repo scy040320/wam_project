@@ -1,0 +1,31 @@
+{
+  "protocol": "d21_independent_confirmation_v1",
+  "frozen_at": "2026-09-29",
+  "purpose": "One-shot independent validation of the frozen value-anchored, attribution-conditioned candidate utility ranker.",
+  "model_schema": "d21_value_anchored_source_routed_residual_v4",
+  "candidate_pool": {
+    "k": 8,
+    "state": 49,
+    "conditions": ["object_shift", "execution_contact_deviation"],
+    "object_shift_meters": [0.0625, -0.03, 0.005]
+  },
+  "cells": [
+    {"task_id": 13, "state": 49, "instruction": "put the black bowl at the front on the plate", "target": "akita_black_bowl_1", "anchor": "plate_1", "relation": "on", "subgoal": "front_bowl_on_plate"},
+    {"task_id": 32, "state": 49, "instruction": "put the ketchup in the top drawer of the cabinet", "target": "ketchup_1", "anchor": "wooden_cabinet_1_top_level", "relation": "inside", "subgoal": "place_ketchup_in_top_drawer"},
+    {"task_id": 34, "state": 49, "instruction": "put the yellow and white mug to the front of the white mug", "target": "white_yellow_mug_1", "anchor": "white_coffee_mug_1", "relation": "in_front_of", "subgoal": "place_yellow_mug_front_of_white"}
+  ],
+  "gate": {
+    "minimum_covered_scenarios": 3,
+    "learned_successes_must_exceed_value_only": true,
+    "minimum_task_wins": 1,
+    "maximum_task_harms": 0
+  },
+  "rules": [
+    "Task membership, state, conditions, K and gate are frozen before candidate outcomes are generated.",
+    "These tasks and state were not used to fit the D21 candidate utility ranker.",
+    "The frozen D18 attribution model, D16 parser, hard gate and D21 utility model cannot be changed from these outcomes.",
+    "Every scenario is retained, including candidate pools with zero or eight successes.",
+    "Oracle is a post-outcome ceiling only and is never deployable.",
+    "This confirmation pool cannot be used for training, threshold selection, feature design or calibration of this frozen version."
+  ]
+}
