@@ -1,0 +1,33 @@
+{
+  "protocol": "d20_d21_task50_frozen_k8_threeway_v1",
+  "frozen_candidate_source": "outputs/candidate_reranking_task50_state_expansion_20260929_v1",
+  "task_id": 50,
+  "states": [32, 34, 35, 37, 38, 39],
+  "moment_id": 0,
+  "condition": "object_shift",
+  "candidate_count_per_scenario": 8,
+  "candidate_regeneration_allowed": false,
+  "tracks": {
+    "value_only": "argmax official Cosmos value",
+    "outcome_oracle": "post-outcome success, then minimum steps, then minimum WAM calls",
+    "learned": "frozen D18-v18i attribution plus V6 belief/effect hard gate; value tie-break"
+  },
+  "primary_metrics": [
+    "candidate_pool_coverage",
+    "conditional_selection_success_rate_when_pool_covered",
+    "overall_success_rate",
+    "strict_improvements_and_harms_vs_value_only",
+    "steps_and_wam_calls_when_both_tracks_succeed"
+  ],
+  "frozen_constraints": {
+    "d18_thresholds_unchanged": true,
+    "selector_weights_tuned_on_this_pool": false,
+    "ground_truth_visible_to_learned_selector": false,
+    "outcomes_visible_to_learned_selector": false
+  },
+  "limitations": [
+    "six scenarios from one task are a mechanism pilot, not a final independent main experiment",
+    "D18-v18i previously failed its one-shot normal-recall confirmation and is diagnostic only",
+    "two scenarios have no successful candidate, so no selector can rescue them"
+  ]
+}
