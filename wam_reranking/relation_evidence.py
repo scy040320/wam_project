@@ -79,6 +79,17 @@ RELATION_BINDINGS: dict[tuple[int, int], RelationBinding] = {
     (70, 0): RelationBinding("chocolate pudding", "plate", "right_of"),
     (78, 0): RelationBinding("black book", "front caddy compartment", "inside"),
     (81, 0): RelationBinding("black book", "front caddy compartment", "inside"),
+    # Preregistered candidate-coverage pool (2026-09-29).  Only public task
+    # language and BDDL semantics are used; no rollout or outcome was viewed
+    # when these bindings were frozen.
+    (11, 0): RelationBinding("top drawer", "cabinet frame", "articulated"),
+    (18, 0): RelationBinding("frying pan", "stove", "on"),
+    (27, 0): RelationBinding("wine bottle", "wine rack", "on"),
+    (35, 0): RelationBinding("microwave door", "microwave frame", "articulated"),
+    (46, 0): RelationBinding("alphabet soup", "basket", "inside"),
+    (57, 0): RelationBinding("cream cheese", "tray", "inside"),
+    (68, 0): RelationBinding("yellow white mug", "right plate", "on"),
+    (86, 0): RelationBinding("middle book", "cabinet shelf", "inside"),
 }
 
 

@@ -42,6 +42,7 @@ The official Cosmos rule is `argmax(value)`. CF-WAM first removes candidates tha
 | D19–D21 decision mechanism | V5 source-aware predicate gates, relation evidence, explicit fallbacks and value-only tie-breaking are implemented and covered by 46 local unit tests (2 optional Torch tests skipped) |
 | Independent D19–D21 gate | Completed on task78/state35 and task81/state36 under clean/object-shift/execution conditions. Value-only, oracle-attribution and learned-attribution each achieved 0/6 because none of the 24 direct candidates or six requery fallbacks succeeded |
 | Current bottleneck | Candidate-pool coverage, not demonstrated selector quality. The V5 rules are frozen; the six independent scenarios are retained as a negative result and are not used for post-hoc rule tuning |
+| Preregistered coverage qualification | Running on eight previously unused LIBERO-90 tasks (`11/18/27/35/46/57/68/86`), one fixed state per task, three fixed conditions and `K=4`; every generated candidate is executed and every qualification failure is retained |
 | Three-valued object-centric belief | Implemented; calibrated `true/false/unknown` factor states are preserved |
 | Dependency DAG and minimal invalidation | Implemented |
 | Rule-based candidate-effect parser | Implemented |
@@ -49,7 +50,7 @@ The official Cosmos rule is `argmax(value)`. CF-WAM first removes candidates tha
 | Closed-loop Cosmos candidate reranking | Integrated for the small independent gate; promotion is blocked until a preregistered task pool establishes a non-zero oracle ceiling |
 | Belief-conditioned action refiner | Interface only; training data not collected yet |
 
-The repository contains mechanism code, public contracts and tests, not checkpoints, datasets, or a final benchmark claim. The latest independent D19–D21 gate is a valid negative result: V5 caused no observed clean harm, but the frozen candidate generator supplied no successful action block for any of the six scenarios, so neither oracle nor learned reranking could improve outcomes. The next protocol must report candidate-pool coverage/oracle ceiling separately from selector performance conditional on a successful candidate being present.
+The repository contains mechanism code, public contracts and tests, not checkpoints, datasets, or a final benchmark claim. The latest completed independent D19–D21 gate is a valid negative result: V5 caused no observed clean harm, but the frozen candidate generator supplied no successful action block for any of the six scenarios, so neither oracle nor learned reranking could improve outcomes. A preregistered qualification pool is now running and reports candidate-pool coverage separately from selector performance conditional on a successful candidate being present.
 
 ## Environment
 
@@ -103,6 +104,7 @@ tests/
   test_relation_evidence_temporal.py
 docs/
   D19_D21_V5_GATE.md
+  D19_D21_COVERAGE_PROTOCOL.md
 ```
 
 ## Evaluation contract
