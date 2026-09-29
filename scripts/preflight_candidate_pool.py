@@ -34,9 +34,14 @@ def main() -> None:
     base = load_module(args.base_collector.resolve())
     cfg = base.build_config(args.snapshot.resolve(), 1)
     suite = benchmark.get_benchmark_dict()["libero_90"]()
-    states = {int(protocol["screen"]["state"]), int(protocol["held_state"]["state"])}
+    task_rows = protocol.get("tasks", protocol.get("cells"))
+    if not task_rows:
+        raise ValueError("protocol must define tasks or cells")
+    shared_states = None
+    if "held_state" in protocol and "state" in protocol["screen"]:
+        shared_states = {int(protocol["screen"]["state"]), int(protocol["held_state"]["state"])}
     checks = []
-    for row in protocol["tasks"]:
+    for row in task_rows:
         task_id = int(row["task_id"])
         task = suite.get_task(task_id)
         initial_states = suite.get_task_init_states(task_id)
@@ -44,10 +49,14 @@ def main() -> None:
         try:
             sim = getattr(env, "env", env).sim
             joints = {sim.model.joint_id2name(index) for index in range(sim.model.njnt)}
-            expected_joint = row["target"] if row["kind"] == "articulated_joint" else f"{row['target']}_joint0"
+            expected_joint = (
+                row["target"] if row.get("kind", "rigid_translation") == "articulated_joint"
+                else f"{row['target']}_joint0"
+            )
             failures = []
             if language != row["instruction"]:
                 failures.append("instruction_mismatch")
+            states = shared_states if shared_states is not None else {int(row["state"])}
             if max(states) >= len(initial_states):
                 failures.append("state_index_out_of_range")
             if expected_joint not in joints:

@@ -3,7 +3,7 @@
 from .belief import DEFAULT_GRAPH, DEFAULT_TASK_BINDINGS, DependencyGraph, initial_belief, update_belief
 from .candidate_effects import (
     build_candidate_visual_evidence, localize_candidate_visual_evidence,
-    parse_candidate_effect,
+    candidate_effect_record, parse_candidate_effect,
 )
 from .calibration import HeadThreshold, build_attribution_output
 from .contrastive import cross_task_factor_contrastive_loss
@@ -32,7 +32,7 @@ __all__ = [
     "BeliefFact", "BeliefState", "CandidateDecision", "CandidateEffect", "CandidateVisualEvidence",
     "CoarseCause", "ConsistencyFactor", "DEFAULT_GRAPH", "DEFAULT_TASK_BINDINGS",
     "DependencyGraph", "EvidenceQuality", "ScoreWeights", "Stage", "TaskBinding",
-    "TriValue", "HeadThreshold", "build_attribution_output", "build_candidate_visual_evidence", "localize_candidate_visual_evidence", "evaluate_candidate", "initial_belief", "parse_candidate_effect",
+    "TriValue", "HeadThreshold", "build_attribution_output", "build_candidate_visual_evidence", "localize_candidate_visual_evidence", "candidate_effect_record", "evaluate_candidate", "initial_belief", "parse_candidate_effect",
     "select_candidate", "update_belief", "PairedAuditDecision",
     "PairedAuditThresholds", "evaluate_clean_pair",
     "CommandExecutionEvidence", "EvidenceRoute", "EvidenceRoutingDecision",

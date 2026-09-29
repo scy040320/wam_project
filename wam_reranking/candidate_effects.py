@@ -9,6 +9,73 @@ import numpy as np
 from .contracts import CandidateEffect, CandidateVisualEvidence, Stage, TriValue
 
 
+def candidate_effect_record(effect: CandidateEffect) -> dict[str, object]:
+    """Project one candidate into the stable, auditable effect contract.
+
+    The legacy flat ``evidence`` mapping remains available for compatibility.
+    This structured view is used by evaluation and paper artifacts so that
+    target motion, relation change, grasp/release and trajectory risk cannot
+    be silently collapsed into one opaque score.
+    """
+    ev = effect.evidence
+
+    def number(name: str, default: float = 0.0) -> float:
+        value = float(ev.get(name, default))
+        if not np.isfinite(value):
+            raise ValueError(f"candidate effect field {name} must be finite")
+        return value
+
+    return {
+        "candidate_id": int(effect.candidate_id),
+        "stage": effect.stage.value,
+        "confidence": float(effect.confidence),
+        "target_displacement": {
+            "dx": number("target_delta_x"),
+            "dy": number("target_delta_y"),
+            "magnitude": number("target_displacement"),
+            "anchor_dx": number("anchor_delta_x"),
+            "anchor_dy": number("anchor_delta_y"),
+        },
+        "target_anchor_relation": {
+            "score_before": number("relation_score_before"),
+            "score_after": number("relation_score_after"),
+            "score_delta": number("relation_score_delta"),
+            "distance_delta": number("target_anchor_distance_delta"),
+            "affinity_delta": number("target_anchor_affinity_delta"),
+            "progress": number("relation_progress"),
+            "confidence": number("relation_confidence"),
+            "cross_view_agreement": number("cross_view_agreement"),
+        },
+        "grasp_release": {
+            "grasp_support_before": number("grasp_support_before"),
+            "grasp_support_after": number("grasp_support_after"),
+            "grasp_support_delta": number("grasp_support_delta"),
+            "predicted_grasp_support": number("predicted_grasp_support"),
+            "predicted_release_support": number("predicted_release_support"),
+            "close_strength": number("close_strength"),
+            "open_strength": number("open_strength"),
+            "contact_confidence": number("contact_confidence"),
+        },
+        "trajectory": {
+            "path_length": number("trajectory_path_length"),
+            "net_displacement": number("trajectory_net_displacement"),
+            "path_efficiency": number("trajectory_path_efficiency"),
+            "max_step": number("trajectory_max_step"),
+            "max_acceleration": number("trajectory_max_acceleration"),
+            "max_jerk": number("trajectory_max_jerk"),
+            "cumulative_excursion": number("trajectory_cumulative_excursion"),
+            "gripper_transitions": number("trajectory_gripper_transitions"),
+            "risk": number("trajectory_risk"),
+        },
+        "required_facts": dict(effect.required_facts),
+        "proposed_effects": {
+            name: {"value": value.value, "confidence": float(confidence)}
+            for name, (value, confidence) in effect.proposed_effects.items()
+        },
+        "hard_violations": dict(effect.hard_violations),
+    }
+
+
 def _centroid(array: np.ndarray) -> tuple[float, float, float]:
     """Return normalized x/y centroid and localization contrast quality."""
     array = np.clip(np.asarray(array, dtype=np.float64), 0.0, 1.0)

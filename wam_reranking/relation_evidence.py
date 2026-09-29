@@ -87,6 +87,7 @@ RELATION_BINDINGS: dict[tuple[int, int], RelationBinding] = {
     (27, 0): RelationBinding("wine bottle", "wine rack", "on"),
     (35, 0): RelationBinding("microwave door", "microwave frame", "articulated"),
     (46, 0): RelationBinding("alphabet soup", "basket", "inside"),
+    (50, 0): RelationBinding("alphabet soup", "basket", "inside"),
     (57, 0): RelationBinding("cream cheese", "tray", "inside"),
     (68, 0): RelationBinding("yellow white mug", "right plate", "on"),
     (86, 0): RelationBinding("middle book", "cabinet shelf", "inside"),

@@ -13,6 +13,7 @@ from wam_reranking import (
     structural_residual_grid, target_semantic_features,
     cross_task_factor_contrastive_loss,
     CandidateVisualEvidence, SelectorMode, build_candidate_visual_evidence,
+    candidate_effect_record,
     select_hard_gate_value_tiebreak, select_value_only,
 )
 from wam_reranking.refiner import apply_bounded_residual
@@ -362,6 +363,32 @@ class CandidateTests(unittest.TestCase):
         risky_effect = parse_candidate_effect(1, oscillatory)
         self.assertGreater(risky_effect.evidence["trajectory_risk"], smooth_effect.evidence["trajectory_risk"])
         self.assertGreater(risky_effect.evidence["trajectory_max_jerk"], smooth_effect.evidence["trajectory_max_jerk"])
+
+    def test_candidate_effect_record_has_four_explicit_evidence_groups(self):
+        visual = CandidateVisualEvidence(
+            target_motion=0.2, anchor_motion=0.01,
+            target_anchor_distance_before=0.5, target_anchor_distance_after=0.2,
+            target_anchor_affinity_before=0.1, target_anchor_affinity_after=0.4,
+            target_gripper_distance_before=0.4, target_gripper_distance_after=0.1,
+            target_gripper_affinity_before=0.1, target_gripper_affinity_after=0.5,
+            relation_progress=0.4, visibility_confidence=0.9,
+            cross_view_agreement=0.8, relation_confidence=0.85,
+            contact_confidence=0.75, target_delta_x=0.1, target_delta_y=-0.2,
+            relation_score_before=0.2, relation_score_after=0.8,
+            grasp_support_before=0.1, grasp_support_after=0.7,
+        )
+        record = candidate_effect_record(
+            parse_candidate_effect(3, actions_for(Stage.GRASP), visual_evidence=visual)
+        )
+        self.assertEqual(record["candidate_id"], 3)
+        self.assertEqual(
+            set(record) & {"target_displacement", "target_anchor_relation", "grasp_release", "trajectory"},
+            {"target_displacement", "target_anchor_relation", "grasp_release", "trajectory"},
+        )
+        self.assertAlmostEqual(record["target_displacement"]["magnitude"], np.hypot(0.1, -0.2))
+        self.assertAlmostEqual(record["target_anchor_relation"]["score_delta"], 0.6)
+        self.assertGreaterEqual(record["grasp_release"]["predicted_grasp_support"], 0.0)
+        self.assertGreaterEqual(record["trajectory"]["risk"], 0.0)
 
     def test_value_cannot_override_hard_violation(self):
         belief = initial_belief(0)

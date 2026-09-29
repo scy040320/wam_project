@@ -97,6 +97,7 @@ configs/
   d18_v15_data_roles_protocol.json
   candidate_pool_screening_v2.json
   candidate_pool_screening_v3_cached.json
+  candidate_pool_competence_conditioned_v1.json
 docs/
   METHOD.md
   EVALUATION_PROTOCOL.md
@@ -107,6 +108,7 @@ tests/
 scripts/
   preflight_candidate_pool.py
   analyze_candidate_pool_screen.py
+  analyze_competence_conditioned_pool.py
 docs/
   D19_D21_V5_GATE.md
   D19_D21_COVERAGE_PROTOCOL.md
@@ -153,7 +155,8 @@ explain mismatch
 - D18-v18i failed its one-shot task13/task37/task65 engineering confirmation and is used only as a frozen learned diagnostic track.
 - D19–D21 V5 is frozen after an independent task78/task81 evaluation. No rule is changed in response to those six scenarios.
 - The independent gate found zero successful candidates across 24 direct candidates and six requery fallbacks. Therefore it cannot establish a selector advantage, even with oracle attribution.
-- The next evaluation uses a two-stage frozen pool. S0 screens 16 tasks at state45 with `K=4`; only non-sentinel tasks with mixed success or measurable successful-run cost spread enter S1. S1 uses held state46, `K=8`, and clean/object-shift/execution conditions. Both stages report every rejected task and separate candidate coverage (oracle ceiling) from conditional selector accuracy and outcome improvement.
+- The first S0 screen used one shared state45 and produced 15 generator-limited tasks plus one exposed all-success sentinel; it is retained as a negative design result. The current preregistered pool uses task-state cells: clean `K=4` first establishes frozen-Cosmos competence, then every eligible cell receives the same 6.9 cm object-shift stress with `K=8`. It reports 0/K and K/K cells rather than hiding them and does not tune selector weights.
+- Candidate effects now have a stable structured export with four evidence groups per candidate: target displacement, target-anchor relation change, grasp/release support, and trajectory risk. Simulator state and candidate outcome are not inputs to this parser.
 - The original S0-v2 task list required 16 uncached T5-11B prompts. Two preparation attempts were killed before encoding by the cloud container's 62GiB cgroup while reading a 45GB monolithic checkpoint. The failure is retained. S0-v3 was therefore preregistered from exact texts already present in the same frozen T5 cache, based only on public task semantics and before any new rollout outcome.
 - Action-record reliability is not learned: the acquisition-contract availability bit applies a hard `unknown` rule and is masked from the neural input.
 - Existing features did not meet the preregistered feasibility thresholds for a 5 mm weak displacement. Those records map to `cause_unresolved / evidence_insufficient`; the method does not claim to identify their hidden physical cause.
