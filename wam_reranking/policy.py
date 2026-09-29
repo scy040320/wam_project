@@ -87,8 +87,14 @@ def select_hard_gate_value_tiebreak(
     visual_support: Sequence[float] | None = None,
     visual_evidence: Sequence[CandidateVisualEvidence | None] | None = None,
     hard_confidence: float = 0.75,
+    score_weights: ScoreWeights | None = None,
 ) -> SelectionResult:
-    """Apply attribution-aware belief gating, then official-value tie-break."""
+    """Apply belief gating and optionally candidate-specific calibrated scoring.
+
+    ``score_weights=None`` preserves the frozen Method-V5 value tie-break.
+    Passing calibrated weights enables the later D20 candidate-effect policy
+    without changing candidate generation or the safety gate.
+    """
     if mode not in {SelectorMode.ORACLE_HARD_GATE, SelectorMode.LEARNED_HARD_GATE}:
         raise ValueError("hard-gate selection requires oracle_hard_gate or learned_hard_gate mode")
     if len(candidate_actions) != len(official_values) or not candidate_actions:
@@ -100,6 +106,9 @@ def select_hard_gate_value_tiebreak(
     if len(visual_items) != len(candidate_actions):
         raise ValueError("visual_evidence length must match candidates")
 
+    weights = _VALUE_ONLY_WEIGHTS if score_weights is None else score_weights
+    if not weights.calibrated:
+        raise RuntimeError("candidate-effect score weights must be calibrated")
     update_belief(belief, attribution, block_index)
     refresh_from_current_observation(belief, attribution, block_index)
     decisions: list[CandidateDecision] = []
@@ -115,7 +124,7 @@ def select_hard_gate_value_tiebreak(
                 attribution,
                 effect,
                 float(value),
-                _VALUE_ONLY_WEIGHTS,
+                weights,
                 hard_confidence=hard_confidence,
             )
         )

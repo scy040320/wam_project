@@ -209,6 +209,16 @@ class CandidateVisualEvidence:
     cross_view_agreement: float
     relation_confidence: float = 0.0
     contact_confidence: float = 0.0
+    # Candidate-specific effect quantities.  Coordinates are normalized image
+    # displacements fused across the deployable primary and wrist cameras.
+    target_delta_x: float = 0.0
+    target_delta_y: float = 0.0
+    anchor_delta_x: float = 0.0
+    anchor_delta_y: float = 0.0
+    relation_score_before: float = 0.0
+    relation_score_after: float = 0.0
+    grasp_support_before: float = 0.0
+    grasp_support_after: float = 0.0
 
     def __post_init__(self) -> None:
         values = np.asarray(list(asdict(self).values()), dtype=np.float64)
@@ -217,6 +227,8 @@ class CandidateVisualEvidence:
         for name in (
             "visibility_confidence", "cross_view_agreement",
             "relation_confidence", "contact_confidence",
+            "relation_score_before", "relation_score_after",
+            "grasp_support_before", "grasp_support_after",
         ):
             if not 0.0 <= float(getattr(self, name)) <= 1.0:
                 raise ValueError(f"{name} must be in [0,1]")

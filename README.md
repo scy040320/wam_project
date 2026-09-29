@@ -39,13 +39,13 @@ The official Cosmos rule is `argmax(value)`. CF-WAM first removes candidates tha
 | Hierarchical attribution interface | D18-v18i is frozen for learned-track diagnostics; its one-shot task13/37/65 confirmation failed the normal-recall gate and is not presented as a deployment-ready attributor |
 | Evidence routing | Action-record reliability and explicit requested-versus-applied command deviation are auditable hard routes; unsupported causes abstain as `cause_unresolved / evidence_insufficient` |
 | Attribution engineering gate | Failed. On the frozen task13/37/65 confirmation, D18-v18i reached Macro-F1 0.717, unknown recall 0.694 and object-shift recall 0.650, but normal recall was 0.417; task65 object-shift recall was 0.20 |
-| D19–D21 decision mechanism | V5 source-aware predicate gates, relation evidence, explicit fallbacks and value-only tie-breaking are implemented and covered by 46 local unit tests (2 optional Torch tests skipped) |
+| D19–D21 decision mechanism | V6 now parses every candidate independently: target/anchor displacement, typed relation change, grasp/release support and trajectory risk. Source-aware predicate gates, explicit fallbacks and frozen V5 value tie-breaking remain available. 49 local and 49 isolated-cloud tests pass. |
 | Independent D19–D21 gate | Completed on task78/state35 and task81/state36 under clean/object-shift/execution conditions. Value-only, oracle-attribution and learned-attribution each achieved 0/6 because none of the 24 direct candidates or six requery fallbacks succeeded |
 | Current bottleneck | Candidate-pool coverage, not demonstrated selector quality. The V5 rules are frozen; the six independent scenarios are retained as a negative result and are not used for post-hoc rule tuning |
-| Preregistered coverage qualification | Running on eight previously unused LIBERO-90 tasks (`11/18/27/35/46/57/68/86`), one fixed state per task, three fixed conditions and `K=4`; every generated candidate is executed and every qualification failure is retained |
+| Non-bimodal coverage qualification | S0-v4 is running on 16 predeclared LIBERO-90 tasks at state45 with clean `K=4`. Tasks are stratified as generator-limited, selection-discriminative, cost-discriminative or trivial before any held-state test. task46 is a known mixed-outcome sentinel and cannot qualify the new pool. |
 | Three-valued object-centric belief | Implemented; calibrated `true/false/unknown` factor states are preserved |
 | Dependency DAG and minimal invalidation | Implemented |
-| Rule-based candidate-effect parser | Implemented |
+| Rule-based candidate-effect parser | V6 implemented; exposes candidate-specific target displacement, target–anchor relation scores, grasp/release evidence, path efficiency, jerk and trajectory risk without outcome or simulator-GT inputs |
 | Hard gate, soft score and explicit fallback | Implemented and tested; score weights intentionally blocked from deployment calibration |
 | Closed-loop Cosmos candidate reranking | Integrated for the small independent gate; promotion is blocked until a preregistered task pool establishes a non-zero oracle ceiling |
 | Belief-conditioned action refiner | Interface only; training data not collected yet |
@@ -95,6 +95,8 @@ configs/
   d18_v5_frozen_contract.json
   d18_v9_sealed_confirmation_protocol.json
   d18_v15_data_roles_protocol.json
+  candidate_pool_screening_v2.json
+  candidate_pool_screening_v3_cached.json
 docs/
   METHOD.md
   EVALUATION_PROTOCOL.md
@@ -102,6 +104,9 @@ docs/
 tests/
   test_belief_reranking.py
   test_relation_evidence_temporal.py
+scripts/
+  preflight_candidate_pool.py
+  analyze_candidate_pool_screen.py
 docs/
   D19_D21_V5_GATE.md
   D19_D21_COVERAGE_PROTOCOL.md
@@ -148,7 +153,8 @@ explain mismatch
 - D18-v18i failed its one-shot task13/task37/task65 engineering confirmation and is used only as a frozen learned diagnostic track.
 - D19–D21 V5 is frozen after an independent task78/task81 evaluation. No rule is changed in response to those six scenarios.
 - The independent gate found zero successful candidates across 24 direct candidates and six requery fallbacks. Therefore it cannot establish a selector advantage, even with oracle attribution.
-- The next evaluation freezes a task/state pool in advance and reports all qualification failures. It separates candidate coverage (oracle ceiling) from conditional selector accuracy and outcome improvement.
+- The next evaluation uses a two-stage frozen pool. S0 screens 16 tasks at state45 with `K=4`; only non-sentinel tasks with mixed success or measurable successful-run cost spread enter S1. S1 uses held state46, `K=8`, and clean/object-shift/execution conditions. Both stages report every rejected task and separate candidate coverage (oracle ceiling) from conditional selector accuracy and outcome improvement.
+- The original S0-v2 task list required 16 uncached T5-11B prompts. Two preparation attempts were killed before encoding by the cloud container's 62GiB cgroup while reading a 45GB monolithic checkpoint. The failure is retained. S0-v3 was therefore preregistered from exact texts already present in the same frozen T5 cache, based only on public task semantics and before any new rollout outcome.
 - Action-record reliability is not learned: the acquisition-contract availability bit applies a hard `unknown` rule and is masked from the neural input.
 - Existing features did not meet the preregistered feasibility thresholds for a 5 mm weak displacement. Those records map to `cause_unresolved / evidence_insufficient`; the method does not claim to identify their hidden physical cause.
 - Paired counterfactual data uses `clean_a` versus QC-only `clean_b` after identical snapshot restoration. Cached-query versus forced re-observation differences are diagnostic and never replace the unchanged clean-pair hard gates.

@@ -295,6 +295,73 @@ class CandidateTests(unittest.TestCase):
         )
         self.assertGreater(improved.relation_progress, 0.0)
         self.assertLess(regressed.relation_progress, 0.0)
+        self.assertGreater(improved.relation_score_after, improved.relation_score_before)
+        self.assertGreater(improved.target_delta_x, 0.0)
+
+    def test_directional_relations_use_signed_candidate_motion(self):
+        def blob(x, y):
+            out = np.zeros((32, 32), np.float32)
+            out[y-1:y+2, x-1:x+2] = 1.0
+            return out
+        anchor = blob(16, 16)
+        subject = blob(16, 16)
+        gripper = blob(16, 16)
+        left = build_candidate_visual_evidence(
+            current_subject_maps=(subject, subject),
+            predicted_subject_maps=(blob(8, 16), blob(8, 16)),
+            current_anchor_maps=(anchor, anchor), predicted_anchor_maps=(anchor, anchor),
+            current_gripper_maps=(gripper, gripper), predicted_gripper_maps=(gripper, gripper),
+            relation="left_of",
+        )
+        under = build_candidate_visual_evidence(
+            current_subject_maps=(subject, subject),
+            predicted_subject_maps=(blob(16, 24), blob(16, 24)),
+            current_anchor_maps=(anchor, anchor), predicted_anchor_maps=(anchor, anchor),
+            current_gripper_maps=(gripper, gripper), predicted_gripper_maps=(gripper, gripper),
+            relation="under",
+        )
+        self.assertGreater(left.relation_score_after, left.relation_score_before)
+        self.assertGreater(left.relation_progress, 0.0)
+        self.assertGreater(under.relation_score_after, under.relation_score_before)
+        self.assertGreater(under.relation_progress, 0.0)
+
+    def test_candidate_specific_relation_changes_affect_soft_ranking(self):
+        common = dict(
+            target_motion=0.2, anchor_motion=0.0,
+            target_anchor_distance_before=0.6, target_anchor_distance_after=0.3,
+            target_anchor_affinity_before=0.0, target_anchor_affinity_after=0.2,
+            target_gripper_distance_before=0.3, target_gripper_distance_after=0.2,
+            target_gripper_affinity_before=0.1, target_gripper_affinity_after=0.2,
+            relation_progress=0.3, visibility_confidence=0.9, cross_view_agreement=0.9,
+            relation_confidence=0.9, contact_confidence=0.9,
+            relation_score_before=0.2, grasp_support_before=0.2, grasp_support_after=0.5,
+        )
+        improved = CandidateVisualEvidence(**common, relation_score_after=0.8, target_delta_x=0.3)
+        regressed = CandidateVisualEvidence(**common, relation_score_after=0.1, target_delta_x=-0.2)
+        attr = attribution(world=0.1, cause=CoarseCause.OBJECT_SHIFT)
+        weights = ScoreWeights(0.8, 0.6, 0.4, 0.1, calibrated=True)
+        good = evaluate_candidate(
+            initial_belief(0), attr,
+            parse_candidate_effect(0, actions_for(Stage.APPROACH), visual_evidence=improved),
+            0.5, weights,
+        )
+        bad = evaluate_candidate(
+            initial_belief(0), attr,
+            parse_candidate_effect(1, actions_for(Stage.APPROACH), visual_evidence=regressed),
+            0.5, weights,
+        )
+        self.assertGreater(good.components["attribution_compatibility"], bad.components["attribution_compatibility"])
+        self.assertGreater(good.components["progress"], bad.components["progress"])
+        self.assertGreater(good.total_score, bad.total_score)
+
+    def test_trajectory_risk_distinguishes_smooth_and_oscillatory_actions(self):
+        smooth = actions_for(Stage.APPROACH)
+        oscillatory = smooth.copy()
+        oscillatory[:, 0] = np.where(np.arange(16) % 2 == 0, 0.8, -0.8)
+        smooth_effect = parse_candidate_effect(0, smooth)
+        risky_effect = parse_candidate_effect(1, oscillatory)
+        self.assertGreater(risky_effect.evidence["trajectory_risk"], smooth_effect.evidence["trajectory_risk"])
+        self.assertGreater(risky_effect.evidence["trajectory_max_jerk"], smooth_effect.evidence["trajectory_max_jerk"])
 
     def test_value_cannot_override_hard_violation(self):
         belief = initial_belief(0)

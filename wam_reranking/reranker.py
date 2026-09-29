@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
+import numpy as np
+
 from .contracts import (
     AttributionOutput, BeliefState, CandidateDecision, CandidateEffect, CoarseCause,
     ConsistencyFactor, ScoreWeights, Stage, TriValue,
@@ -76,7 +78,8 @@ def _candidate_preserves_contact_chain(effect: CandidateEffect) -> bool:
     return contact_confidence >= 0.55 and before_support >= 0.35 and continuity and commanded_sequence
 
 
-def _compatibility(attribution: AttributionOutput, stage: Stage) -> float:
+def _compatibility(attribution: AttributionOutput, effect: CandidateEffect) -> float:
+    stage = effect.stage
     score = 0.0
     if attribution.factor_state(ConsistencyFactor.OBSERVATION_RELIABLE) is not TriValue.TRUE:
         score += 0.8 if stage is Stage.OBSERVE else -0.6
@@ -86,7 +89,22 @@ def _compatibility(attribution: AttributionOutput, stage: Stage) -> float:
         score += 0.5 if stage in {Stage.OBSERVE, Stage.APPROACH, Stage.GRASP} else -0.8
     if attribution.factor_state(ConsistencyFactor.TASK_STAGE_CONSISTENT) is not TriValue.TRUE:
         score += 0.5 if stage in {Stage.OBSERVE, Stage.APPROACH} else -0.5
-    return score
+    evidence = effect.evidence
+    relation_confidence = float(evidence.get("relation_confidence", 0.0))
+    contact_confidence = float(evidence.get("contact_confidence", 0.0))
+    relation_delta = float(evidence.get("relation_score_delta", 0.0))
+    grasp_support = float(evidence.get("predicted_grasp_support", 0.0))
+    release_support = float(evidence.get("predicted_release_support", 0.0))
+    if attribution.factor_state(ConsistencyFactor.WORLD_STATE_CONSISTENT) is not TriValue.TRUE:
+        # After a world-state mismatch, candidate compatibility must depend on
+        # its own predicted subject--anchor recovery, not only a coarse stage.
+        score += relation_confidence * float(np.clip(2.0 * relation_delta, -1.0, 1.0))
+    if attribution.factor_state(ConsistencyFactor.EXECUTION_CONTACT_CONSISTENT) is not TriValue.TRUE:
+        if stage in {Stage.GRASP, Stage.LIFT, Stage.TRANSPORT}:
+            score += contact_confidence * grasp_support
+        elif stage is Stage.PLACE:
+            score += contact_confidence * release_support
+    return float(score)
 
 
 def evaluate_candidate(belief: BeliefState, attribution: AttributionOutput, effect: CandidateEffect,
@@ -138,9 +156,21 @@ def evaluate_candidate(belief: BeliefState, attribution: AttributionOutput, effe
     if rejection:
         return CandidateDecision(effect.candidate_id, False, official_value, None, tuple(rejection), {})
     risk += float(effect.evidence.get("relation_regression_soft", 0.0))
-    compatibility = _compatibility(attribution, effect.stage)
-    progress = {Stage.OBSERVE: 0.0, Stage.APPROACH: 0.2, Stage.GRASP: 0.4, Stage.LIFT: 0.6,
-                Stage.TRANSPORT: 0.7, Stage.PLACE: 1.0, Stage.UNCERTAIN: -0.2}[effect.stage]
+    risk += 0.5 * float(effect.evidence.get("trajectory_risk", 0.0))
+    compatibility = _compatibility(attribution, effect)
+    stage_progress = {Stage.OBSERVE: 0.0, Stage.APPROACH: 0.2, Stage.GRASP: 0.4, Stage.LIFT: 0.6,
+                      Stage.TRANSPORT: 0.7, Stage.PLACE: 1.0, Stage.UNCERTAIN: -0.2}[effect.stage]
+    relation_progress = (
+        float(effect.evidence.get("relation_score_delta", 0.0))
+        * float(effect.evidence.get("relation_confidence", 0.0))
+    )
+    if effect.stage in {Stage.GRASP, Stage.LIFT, Stage.TRANSPORT}:
+        manipulation_progress = float(effect.evidence.get("predicted_grasp_support", 0.0))
+    elif effect.stage is Stage.PLACE:
+        manipulation_progress = float(effect.evidence.get("predicted_release_support", 0.0))
+    else:
+        manipulation_progress = 0.0
+    progress = float(stage_progress + relation_progress + 0.25 * manipulation_progress)
     total = (official_value + weights.attribution_compatibility * compatibility
              + weights.progress * progress - weights.dependency_risk * risk
              - weights.uncertainty * uncertainty - weights.requery_cost * query_cost)

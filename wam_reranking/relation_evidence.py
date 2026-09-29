@@ -90,6 +90,27 @@ RELATION_BINDINGS: dict[tuple[int, int], RelationBinding] = {
     (57, 0): RelationBinding("cream cheese", "tray", "inside"),
     (68, 0): RelationBinding("yellow white mug", "right plate", "on"),
     (86, 0): RelationBinding("middle book", "cabinet shelf", "inside"),
+    # Preregistered non-bimodal pool S0/S1. These bindings were frozen from
+    # public task language before any pool rollout was generated.
+    (6, 0): RelationBinding("bottom drawer", "wooden cabinet frame", "articulated"),
+    (22, 0): RelationBinding("bottom drawer", "white cabinet frame", "articulated"),
+    (33, 0): RelationBinding("microwave door", "microwave frame", "articulated"),
+    (19, 0): RelationBinding("moka pot", "stove", "on"),
+    (36, 0): RelationBinding("white bowl", "plate", "on"),
+    (40, 0): RelationBinding("frying pan", "cabinet shelf", "on"),
+    (66, 0): RelationBinding("red mug", "right plate", "on"),
+    (47, 0): RelationBinding("cream cheese box", "basket", "inside"),
+    (49, 0): RelationBinding("tomato sauce", "basket", "inside"),
+    (56, 0): RelationBinding("butter", "tray", "inside"),
+    (59, 0): RelationBinding("tomato sauce", "tray", "inside"),
+    (69, 0): RelationBinding("chocolate pudding", "plate", "left_of"),
+    (74, 0): RelationBinding("black book", "left caddy compartment", "inside"),
+    (76, 0): RelationBinding("yellow white mug", "caddy", "right_of"),
+    (87, 0): RelationBinding("left black book", "cabinet shelf", "on"),
+    (89, 0): RelationBinding("right black book", "cabinet shelf", "under"),
+    # Cached-language S0/S1 revision after the uncached T5 load was blocked
+    # by the cloud cgroup memory limit. Selection used task semantics only.
+    (7, 0): RelationBinding("top drawer", "wooden cabinet frame", "articulated"),
 }
 
 
@@ -250,13 +271,17 @@ def typed_relation_features(
     o = _geometry(actual_subject, actual_anchor)
     relation = str(relation).lower()
     groups = ("directional", "on", "inside", "articulated")
-    if relation in {"toward", "in_front_of", "right_of"}: group = 0
+    if relation in {"toward", "in_front_of", "right_of", "left_of", "under"}: group = 0
     elif relation == "on": group = 1
     elif relation == "inside": group = 2
     else: group = 3
     onehot = np.eye(len(groups), dtype=np.float32)[group]
     if relation == "right_of":
         before, after = p[0], o[0]
+    elif relation == "left_of":
+        before, after = -p[0], -o[0]
+    elif relation == "under":
+        before, after = p[1], o[1]
     elif relation == "in_front_of":
         before, after = p[1], o[1]
     elif relation == "on":
