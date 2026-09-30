@@ -1,0 +1,85 @@
+{
+  "version": "d21_formal_896_v1",
+  "role": "grouped_attribution_conditioned_candidate_utility_train_validation",
+  "benchmark_suite": "libero_90",
+  "parent_attribution_schema": "d18_v22_frozen_render_observability_silver_v3",
+  "candidate_schema": "d21_attribution_conditioned_candidate_utility_v2_budget_corrected",
+  "tasks": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 44, 46, 57],
+  "states_per_task": [0, 1, 2, 3, 4, 5, 6, 7],
+  "moments": [0, 1],
+  "conditions": [
+    "clean",
+    "visual_occlusion",
+    "object_shift",
+    "execution_contact_deviation"
+  ],
+  "k": 4,
+  "expected_pools": 896,
+  "expected_candidate_outcomes": 3584,
+  "group_key": ["task_id", "state_index"],
+  "split": {
+    "train_states": [0, 1, 2, 3, 4, 5],
+    "validation_states": [6, 7],
+    "train_pools": 672,
+    "validation_pools": 224,
+    "rule": "both moments and all conditions for one task-state group remain together"
+  },
+  "pilot_groups": [
+    {"task": 0, "state": 0},
+    {"task": 1, "state": 0},
+    {"task": 2, "state": 0},
+    {"task": 3, "state": 0},
+    {"task": 4, "state": 0},
+    {"task": 5, "state": 0},
+    {"task": 6, "state": 0},
+    {"task": 7, "state": 0},
+    {"task": 8, "state": 0},
+    {"task": 9, "state": 0},
+    {"task": 20, "state": 0},
+    {"task": 44, "state": 4},
+    {"task": 46, "state": 6},
+    {"task": 57, "state": 1}
+  ],
+  "pilot_gate": {
+    "expected_pools": 112,
+    "expected_candidate_outcomes": 448,
+    "each_task_minimum_success_pools": 1,
+    "overall_success_pools_min": 14,
+    "overall_mixed_pools_min": 4,
+    "failed_candidates_min": 16,
+    "all_failed_pool_max_fraction": 0.5,
+    "failure_policy": "stop before full collection; never lower gates or swap tasks after observing outcomes"
+  },
+  "parallel_lane_ownership": {
+    "lane_a": [0, 3, 6, 9, 44],
+    "lane_b": [1, 4, 7, 20, 46],
+    "lane_c": [2, 5, 8, 57]
+  },
+  "budget": {
+    "official_episode_total_steps": 400,
+    "internal_num_queries_best_of_n": 1,
+    "retained_candidate_calls_per_pool": 4,
+    "candidate_remaining_steps": "400 - branch_endpoint_policy_step",
+    "fallback_requery_is_executed_and_charged_separately": true,
+    "same_budget_for_all_candidates_and_fallback": true
+  },
+  "required_ranker_inputs": [
+    "attribution_factor_probabilities",
+    "belief_trusted_and_invalidated_predicates",
+    "candidate_required_facts_and_proposed_effects",
+    "target_anchor_relation_change",
+    "contact_grasp_release_evidence",
+    "official_value",
+    "trajectory_risk_proxy",
+    "execution_and_wam_cost"
+  ],
+  "invariants": {
+    "same_pool_state": "all K candidates and fallback execute from the same exact runtime snapshot",
+    "same_condition_base": "four conditions for one task-state-moment share query, plan and branch start",
+    "no_gt_input": true,
+    "no_success_label_input_at_deployment": true,
+    "zero_coverage_pools_remain_in_denominator": true,
+    "risk_proxy_is_not_physical_safety_proof": true,
+    "lane_overlap_forbidden": true
+  }
+}

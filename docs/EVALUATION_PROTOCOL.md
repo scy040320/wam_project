@@ -1,23 +1,49 @@
 # Evaluation protocol
 
-All comparisons must use the same Cosmos checkpoint, candidate count `K`, action horizon, query budget and environment budget.
+## Fair comparison
 
-Required baselines are Cosmos `K=1`, Cosmos Best-of-N by official value, binary mismatch reject/replan, coarse-label attribution without a dependency graph, hierarchical attribution without propagation, and full hierarchical belief-constrained reranking.
+All methods use the same Cosmos checkpoint, initial state, intervention,
+candidate pool, action horizon, query budget, and episode execution budget.
+The required baselines are:
 
-Report task success, clean-scene degradation, unsafe-action proxies, false rejection, successful-run steps, query count and latency. A reranker is useful only if it changes selected actions for an auditable reason and improves a preregistered task/safety/step metric without unacceptable clean degradation.
+- Cosmos direct execution with `K=1`;
+- official value-only Best-of-N;
+- binary mismatch rejection or global replanning;
+- flat attribution without dependency propagation;
+- hierarchical attribution without dependency propagation;
+- the full belief-constrained selector;
+- an outcome oracle reported only as a ceiling.
 
-Split by episode or initial-state group. Blocks from the same trajectory must never cross training, validation and test splits. Simulator state and intervention labels may schedule or evaluate an experiment but must not enter deployment features. Weights and thresholds are frozen on the development split; oracle best-candidate results are an upper bound, not a deployable baseline.
+## Data separation
 
-## Paired counterfactual collection
+Split by `(task, initial state)`. Both intervention moments and all conditions
+from a group remain in the same split. `clean_b` is paired-restoration QC and
+never supervised training data. Confirmation data cannot be used for fitting,
+threshold selection, feature design, task eligibility, or early stopping.
 
-Every condition in a group starts from one complete runtime snapshot and uses the same query observation, predicted future and planned action block. Each arm performs the same reset-and-restore procedure before execution. `clean_a` is the normal model sample; `clean_b` is QC-only.
+Simulator state and intervention metadata may schedule and audit experiments,
+but they are excluded from deployment features. Candidate success and cost are
+training targets or evaluation outcomes, never selector inputs.
 
-The hard physical-pairing gate compares `clean_a` with `clean_b` after identical restoration. It retains the frozen simulation-state, dual-camera and proprioception thresholds. A previous-step cached observation compared with a forced observation after restore is diagnostic only: rebuilding the simulator observation cache is not itself a counterfactual branch mismatch.
+## Candidate-pool reporting
 
-Pilot shards must all pass strict audit before full collection begins. Dataset releases, audit revisions and failed diagnostic versions remain separately named; an audit-only repair must not silently mix raw samples, label schemas, splits or thresholds.
+Report three layers separately:
 
-## D18-v5 frozen development contract
+1. coverage: pools with at least one successful candidate;
+2. conditional selection: success among covered pools;
+3. overall performance: task success, harm relative to value-only, fallback,
+   and zero-coverage rates over every frozen pool.
 
-The public frozen contract is recorded in `configs/d18_v5_frozen_contract.json`. The development model retains four learned factors. Action-record reliability is evaluated by an exact acquisition-contract hard rule and is masked from the learned input. A weak physical intervention that is not supported by observable evidence is reported as `cause_unresolved / evidence_insufficient`, not as a correctly identified physical cause.
+Zero-coverage and all-success pools remain in the denominator. Tasks or states
+cannot be replaced after candidate outcomes are observed.
 
-Development and engineering gates are separate. Passing train/validation thresholds freezes the model and permits a one-shot untouched confirmation run; it does not establish engineering generalization. The proposed confirmation set, isolation rules and failure semantics are specified in `CONFIRMATION_PROTOCOL.md`.
+## Metrics
+
+Primary metrics are task success, clean-scene degradation, value-success harm,
+false rejection, and fallback frequency. Secondary efficiency metrics are
+successful-run steps, continuation WAM calls, latency, and risk proxies.
+Risk proxies must not be described as physical safety guarantees.
+
+All weights and thresholds are frozen on development data before independent
+evaluation. Oracle attribution and post-outcome best-candidate results are
+upper bounds, not deployable methods.

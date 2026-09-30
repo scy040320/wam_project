@@ -1,25 +1,56 @@
 # Method contract
 
-The public mechanism operates at a complete native action-block boundary. It does not claim within-block future prediction, exact 6D object state, or simulator-ground-truth access at deployment.
+## Scope
 
-## Hierarchical attribution and evidence routing
+CF-WAM operates at a complete native action-block boundary. It does not claim
+within-block future prediction, exact 6D object-state recovery, or
+simulator-ground-truth access at deployment.
 
-D18-v5 learns the five-way coarse cause plus four factors that have deployment evidence: visual corruption, object/environment-state change, execution/contact deviation, and cross-view conflict. Action-record reliability is not a learned head. The acquisition contract supplies `evidence.action_record_available`; an unavailable record deterministically projects to `unknown`, and that bit is masked from the neural input.
+## Hierarchical attribution
 
-The existing visual features did not meet the preregistered feasibility gate for identifying a 5 mm weak displacement. Such records therefore use `cause_unresolved / evidence_insufficient`. This is an abstention state, not a claim that the model identified a hidden physical intervention. Original intervention metadata is retained only for offline audit.
+The attributor consumes the previous block's predicted and real terminal
+observations, planned and applied actions, proprioception, and task language.
+It emits a coarse cause distribution plus four deployable evidence factors:
+
+- visual evidence corrupted;
+- object or environment state changed;
+- execution or contact deviated;
+- cross-view conflict.
+
+Action-record availability and explicit requested-versus-applied command
+deviation are acquisition-contract hard routes, not learned image features.
+Changes whose physical cause is not observable are assigned
+`cause_unresolved / evidence_insufficient`; the corresponding physical-factor
+loss is masked.
 
 ## Belief update
 
-Each task fact is `true`, `false`, or `unknown`, with confidence, evidence IDs and update time. A confident `false` world-state factor invalidates the target pose; an `unknown` factor propagates uncertainty without asserting a false physical fact. Execution/contact follows the same distinction. Observation unreliability must not by itself negate an already established physical state.
+Each task fact is `true`, `false`, or `unknown`, with confidence, provenance,
+evidence IDs, and update time. Attribution invalidates the minimum supported
+fact and propagates only through the dependency graph. Observation
+unreliability does not negate an already established physical state.
 
-## Candidate decision
+New observation evidence or a candidate's predicted effects may re-establish
+a fact only through its predicate-specific rule. A generic confidence increase
+cannot override a high-confidence contradiction.
 
-For each native `16 × 7` action block, the rule parser proposes a stage, prerequisites, effects and confidence. A candidate with a high-confidence prerequisite contradiction is rejected before scoring. Accepted candidates combine official value, attribution compatibility, expected progress, dependency risk and uncertainty. If none is feasible, the system emits `reobserve`, `requery`, or `safe_reject`.
+## Candidate parsing and selection
 
-## Planned action refinement
+For each native `16 × 7` action block, the parser exposes:
 
-After reranking is validated, matched records will link an original candidate, its execution result, and a better candidate or corrected action. The first trainable action-generation extension is an external belief-conditioned model producing a bounded `16 × 7` residual. An internal Cosmos adapter is considered only if experiments show that candidate-set coverage, rather than selection, is the limiting factor.
+- required and proposed facts;
+- target displacement;
+- target–anchor relation change;
+- grasp and release support;
+- trajectory smoothness and risk proxies.
 
-## Gate boundary
+Selection proceeds in two stages. The hard gate rejects candidates that
+violate a reliable prerequisite. The utility model then ranks the feasible
+set using official value, attribution compatibility, expected progress,
+dependency risk, uncertainty, and execution cost. Near-equal learned utility
+returns to official value, and a Pareto guard blocks a choice that is worse
+than the value anchor on both dependency risk and uncertainty.
 
-The frozen D18-v5 development contract passes its validation thresholds. Engineering status remains blocked until the untouched one-shot confirmation protocol in `CONFIRMATION_PROTOCOL.md` runs without feeding any result back into training, thresholds, rules or the silver-label schema.
+If no candidate is feasible, the controller emits an explicit `reobserve`,
+`requery`, `safe_reject`, or `safe_stop` command under a bounded recovery
+budget. An unexecuted fallback has an unobserved outcome.
