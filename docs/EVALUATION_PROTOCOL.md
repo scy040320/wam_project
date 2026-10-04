@@ -47,3 +47,22 @@ Risk proxies must not be described as physical safety guarantees.
 All weights and thresholds are frozen on development data before independent
 evaluation. Oracle attribution and post-outcome best-candidate results are
 upper bounds, not deployable methods.
+
+## Current bounded development admission
+
+On 2026-10-04 the researcher explicitly allowed downstream development with
+frozen attribution V8 despite task16's retained 2/5 local gate failure. This
+permission changes admission to the downstream comparison, not the original
+attribution gate result or threshold. Task16 is absent from the six-task
+candidate comparison, so its repair is not demonstrated downstream.
+
+Safe-residual switching is calibrated on train only. An official-value anchor
+may be retained when rejection is solely epistemic (`unknown`), but explicit
+false prerequisites and direct candidate violations are never overridden.
+Unexecuted fallbacks stay unobserved rather than being scored as failures.
+
+The current train/validation pool has been consumed in previous development.
+Its small positive comparison and exact policy replay are development evidence,
+not independent generalization or a claim that attribution alone caused the
+improvement. Report shared candidate generation separately from continuation
+calls and latency; paired-success cost comparisons are not total-system savings.

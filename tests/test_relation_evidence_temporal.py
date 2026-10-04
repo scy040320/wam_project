@@ -53,6 +53,19 @@ def test_visual_prototype_selects_same_instance():
     assert matched[1, 20, 18] > matched[1, 20, 46]
 
 
+def test_ordinal_prompt_disambiguates_identical_instances():
+    maps = np.stack([blob(32, 18) + blob(32, 48)] * 2)
+    tokens = np.ones((2, 64, 64, 2), np.float32)
+    front = instance_correspondence_maps(
+        maps, tokens, reference_index=0, prompt="front black bowl", ordinal_lock=True
+    )
+    back = instance_correspondence_maps(
+        maps, tokens, reference_index=0, prompt="back black bowl", ordinal_lock=True
+    )
+    assert front[1, 48, 32] > front[1, 18, 32]
+    assert back[1, 18, 32] > back[1, 48, 32]
+
+
 def test_relation_types_produce_distinct_contracts():
     subject, shifted, anchor = blob(20, 20), blob(24, 20), blob(40, 40)
     on = typed_relation_features(subject, shifted, anchor, anchor, "on")

@@ -163,6 +163,10 @@ class CandidateUtilityModel:
     intercept: float
     feature_names: tuple[str, ...] = FEATURE_NAMES
     schema: str = "d21_value_anchored_projected_cause_routed_residual_v5"
+    # A residual candidate may replace the official-value anchor only when
+    # its learned advantage exceeds this train-only calibrated margin.
+    # This keeps weak/noisy residuals from damaging a successful baseline.
+    switch_margin: float = UTILITY_EQUIVALENCE_TOLERANCE
 
     def __post_init__(self) -> None:
         size = len(self.feature_names)
@@ -173,6 +177,8 @@ class CandidateUtilityModel:
             raise ValueError("candidate utility model must be finite")
         if np.any(arrays[1] <= 0.0):
             raise ValueError("candidate utility scale must be positive")
+        if not np.isfinite(self.switch_margin) or self.switch_margin < 0.0:
+            raise ValueError("candidate utility switch_margin must be finite and non-negative")
 
     def score(self, features: np.ndarray) -> float:
         features = np.asarray(features, dtype=np.float64)
@@ -194,6 +200,7 @@ class CandidateUtilityModel:
             "scale": self.scale.tolist(),
             "weights": self.weights.tolist(),
             "intercept": float(self.intercept),
+            "switch_margin": float(self.switch_margin),
         }
 
     @classmethod
@@ -208,6 +215,7 @@ class CandidateUtilityModel:
             float(record["intercept"]),
             names,
             str(record["schema"]),
+            float(record.get("switch_margin", UTILITY_EQUIVALENCE_TOLERANCE)),
         )
 
 
@@ -262,9 +270,12 @@ def select_with_utility(
     if not accepted:
         return None, scores
     best_score = max(scores.values())
+    equivalence_tolerance = max(
+        UTILITY_EQUIVALENCE_TOLERANCE, float(model.switch_margin)
+    )
     equivalent = [
         item for item in accepted
-        if best_score - scores[item.candidate_id] <= UTILITY_EQUIVALENCE_TOLERANCE
+        if best_score - scores[item.candidate_id] <= equivalence_tolerance
     ]
     chosen = max(equivalent, key=lambda item: (item.official_value, -item.candidate_id))
 

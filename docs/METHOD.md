@@ -54,3 +54,10 @@ than the value anchor on both dependency risk and uncertainty.
 If no candidate is feasible, the controller emits an explicit `reobserve`,
 `requery`, `safe_reject`, or `safe_stop` command under a bounded recovery
 budget. An unexecuted fallback has an unobserved outcome.
+
+The adopted safe-residual policy preserves the official-value anchor when
+its only rejection reasons are unknown prerequisites. This is a baseline
+preservation rule, not a safety certificate: explicit false predicates and
+candidate-specific hard violations still forbid that candidate. A train-only
+calibrated utility margin controls deviations from the anchor. The attributor
+remains frozen while fitting this downstream utility model.

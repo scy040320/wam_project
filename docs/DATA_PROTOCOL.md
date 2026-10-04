@@ -2,10 +2,17 @@
 
 ## D18 attribution data
 
-The current development model combines non-overlapping, audited legacy data
-with the 4,800-branch expansion described in
-`configs/d18_expansion_4800_protocol.json`. The expansion contains 4,200
-formal train/validation samples and 600 paired `clean_b` QC branches.
+The frozen V8 model combines source-scoped, audited legacy records, the
+4,800-branch expansion, and qualified Main20 attribution records. After
+immutable exclusions, exact overlap replacement and conflicting-supervision
+checks, the formal membership is 5,200 train / 1,732 validation, not the sum
+of raw branch counts. `clean_b` and unpromoted confirmation records are not
+supervised samples. Earlier schemas and failed reports remain archived.
+
+Identity is source + benchmark suite + task + state + moment + arm, never a
+bare `sample_id` or `task_id`. A migration applies only to its source, and
+replacement requires an audited exact group match. Group splits are immutable
+unless an explicitly audited migration is recorded.
 
 The frozen observability contract routes pixel-equivalent physical changes to
 `evidence_insufficient` and masks unsupported physical-factor supervision.
@@ -14,22 +21,23 @@ separate audit manifests.
 
 ## D21 candidate-ranking data
 
-The formal protocol is `configs/d21_formal_896_protocol.json`:
+The current completed development comparison is frozen in
+`configs/joint_development_192_protocol.json`: LIBERO-90 tasks
+0/9/20/44/46/57, states0–7, moment0, four conditions, `K=4`.
+It contains 144 train pools (states0–5), 48 validation pools (states6–7)
+and 768 candidate outcomes. All 49 zero-coverage pools remain included.
+This is previously consumed development data, not independent confirmation.
 
-- 14 LIBERO-90 tasks;
-- 8 frozen states per task;
-- 2 action-block moments;
-- clean, visual occlusion, object shift, and execution/contact deviation;
-- 896 candidate pools and `K=4`, giving 3,584 executed candidate outcomes;
-- states 0–5 train and states 6–7 validation within every task;
-- grouping by `(task, state)` prevents leakage.
+`configs/d21_formal_896_protocol.json` preserves a historical collection
+proposal whose pilot did not qualify. It must not be presented as a completed
+896-pool dataset or restarted automatically. Main20 nested K16 stage
+qualification also remains failed; formal collection is not open.
 
 Each candidate record contains deployment-time attribution and belief inputs,
 parsed candidate effects, official value, and post-execution success, steps,
 WAM calls, latency, and risk proxies. The post-execution fields are targets and
 metrics only.
 
-Before the full dataset can run, a 112-pool pilot spanning all 14 tasks must
-pass the frozen coverage and integrity gates. A failed pilot stops the queue;
-the protocol does not lower thresholds or substitute tasks after outcomes are
-known.
+Outcome-based qualification is a development procedure and must be reported
+as such. Failed pools and tasks remain recorded. An independent experiment
+requires a separately preregistered eligibility procedure and task set.

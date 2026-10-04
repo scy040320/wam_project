@@ -1,0 +1,64 @@
+{
+  "train": {
+    "scenarios": 144,
+    "covered": 107,
+    "learned_successes": 102,
+    "unobserved_fallbacks": 0,
+    "value_successes": 101,
+    "oracle_successes": 107,
+    "improvements": 1,
+    "harms": 0
+  },
+  "validation": {
+    "scenarios": 48,
+    "covered": 36,
+    "learned_successes": 34,
+    "unobserved_fallbacks": 0,
+    "value_successes": 33,
+    "oracle_successes": 36,
+    "improvements": 1,
+    "harms": 0
+  },
+  "development_gate": {
+    "train_strictly_exceeds_value_only": true,
+    "train_zero_success_harm": true,
+    "validation_strictly_exceeds_value_only": true,
+    "validation_zero_success_harm": true,
+    "train_all_selected_outcomes_observed": true,
+    "validation_all_selected_outcomes_observed": true,
+    "task_state_group_leakage_absent": true,
+    "validation_used_once_after_freeze": true,
+    "explicit_false_and_candidate_hard_violations_not_overridden": true,
+    "passed": true
+  },
+  "d18_gate_all_passed": false,
+  "task16_retained_in_d18": true,
+  "d21_qualified_main20_ready": false,
+  "interpretation": "previously consumed 6-task development pool; not independent confirmation",
+  "deployment_replay_passed": true,
+  "frozen_v8_checkpoint_unchanged": true,
+  "attribution": {
+    "formal_train": 5200,
+    "formal_validation": 1732,
+    "macro_f1": 0.8214177293294398,
+    "normal_recall": 0.7896825396825397,
+    "unknown_recall": 0.6751592356687898,
+    "factor_recall": [
+      1,
+      0.8489583333333334,
+      0.9563492063492064,
+      0.9959016393442623
+    ],
+    "task16_observable_object_shift": {
+      "correct": 2,
+      "support": 5,
+      "recall": 0.4
+    },
+    "complete_gate_passed": false,
+    "checkpoint_sha256": "68b2b638f73c959fb170d39caecad63572427f7716f78fe4c9459ccaf8012bec"
+  },
+  "role": "previously_consumed_development",
+  "date": "2026-10-04",
+  "switch_margin_train_only": 0.012414387466111398,
+  "gate3_passed": false
+}

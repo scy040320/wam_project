@@ -31,23 +31,36 @@ The deployment path never receives simulator state, intervention labels,
 success labels, or post-execution candidate outcomes. Candidate outcomes are
 used only to train or evaluate the selector.
 
-## Current research status
+## Current research status (2026-10-04)
 
-- The D18 development gate uses 4,560 training and 1,296 validation samples.
-  Validation Macro-F1 is 0.832; recall is 0.813 for `normal`, 0.667 for
-  `unknown`, and 1.000/0.887/0.943/0.994 for the four learned evidence factors.
+- The frozen attribution model uses 5,200 training and 1,732 validation
+  samples (6,932 formal supervised records). Validation Macro-F1 is 0.8214;
+  recall is 0.7897 for `normal`, 0.6752 for `unknown`, and
+  1.0000/0.8490/0.9563/0.9959 for the four learned evidence factors.
+  Aggregate development requirements are met, but task16 observable object
+  shift is only 2/5: the original complete development gate remains **failed**.
+  Later repair variants were not promoted because they regressed other metrics.
 - Unobservable physical changes are routed to
   `evidence_insufficient` instead of forcing a pixel model to guess a hidden
   cause. Eighty invalid weak-joint supervision records are excluded by an
   immutable audit list; the raw data is not rewritten.
-- On the frozen D25 development pool, value-only succeeds in 66/80 scenarios,
-  the learned full method in 67/80, and the outcome oracle in 68/80. This is
-  development evidence, not an independent benchmark result.
-- A formal D21 candidate-ranking dataset is being collected under the frozen
-  896-pool protocol in `configs/d21_formal_896_protocol.json`. Its pilot must
-  pass coverage, pairing, budget, file, and hash gates before full collection.
-- Gate M3 and the main experiment remain open. This repository does not claim
-  a final cross-task improvement yet.
+- With this imperfect attributor frozen, the latest joint selector reuses an
+  audited six-task development pool: 192 pools, `K=4`, 768 candidate outcomes.
+  Train selection succeeds in 102/144 vs. value-only 101/144 (oracle 107/144);
+  validation succeeds in 34/48 vs. 33/48 (oracle 36/48). Each split has one
+  improvement and zero success harms. All 49 zero-coverage pools are retained.
+  Safe-residual calibration uses training data only; deployment replay agrees
+  on every pool and all final selected outcomes are observed.
+- This validation pool was previously consumed during development. These are
+  bounded development results, not independent confirmation, causal evidence
+  for attribution alone, or a main-experiment claim. Task16 is not in this
+  six-task candidate pool.
+- Main20 stage qualification still fails: nested `K=16` yields only three
+  qualified tasks and four stages. Formal Main20 ranking collection has not
+  started. The older 896-pool protocol is historical, not an active pipeline.
+- Gate3 and the main experiment remain open. See
+  [the current result record](docs/results/frozen_v8_joint_development_20261004.json)
+  and [reproduction notes](docs/REPRODUCING_CURRENT_RESULT.md).
 
 ## Components
 
@@ -58,6 +71,7 @@ used only to train or evaluate the selector.
 | `evidence_routing.py` | Hard evidence routes and unresolved-cause abstention |
 | `target_localization.py` | Task-language-conditioned visual residual pooling |
 | `relation_evidence.py` | Subject–anchor relation and temporal evidence |
+| `supervision_contract.py` | Observable-factor masks and source-scoped pairing |
 | `candidate_effects.py` | Auditable parsing of `16 × 7` action blocks |
 | `reranker.py` | Predicate gate, score decomposition, and fallback |
 | `candidate_utility.py` | Attribution-conditioned pairwise utility model |
@@ -90,6 +104,7 @@ configs/
   score_weights.template.json  auditable score interface
   d18_expansion_4800_protocol.json
   d21_formal_896_protocol.json
+  joint_development_192_protocol.json
   d25_d28_preregistered_development_v1.json
 docs/
   METHOD.md
@@ -100,6 +115,8 @@ scripts/
   audit_d25_candidate_pool.py
   analyze_d25_d27_ablation.py
   train_d21_candidate_utility.py
+  train_safe_residual_ranker.py
+  audit_selector_replay.py
   validate_d22_d24_functional.py
 tests/                          deterministic mechanism and protocol tests
 ```
@@ -131,8 +148,9 @@ proxies are diagnostic measurements, not claims of physical safety.
   mismatch detection is not claimed.
 - The candidate-effect parser is rule based and auditable.
 - `unknown` and `evidence_insufficient` are explicit abstention states.
-- D18 development success does not substitute for an independent engineering
-  gate, and D25 development gains do not substitute for Gate M3.
+- Aggregate attribution metrics do not erase task16's failed local gate.
+  Joint selection development gains do not substitute for Gate3 or an
+  independent engineering evaluation.
 - The action refiner and generator adapter remain future stages; they are not
   trained components in the current release.
 

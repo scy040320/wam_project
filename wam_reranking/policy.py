@@ -44,6 +44,14 @@ class SelectionResult:
 _VALUE_ONLY_WEIGHTS = ScoreWeights(0.0, 0.0, 0.0, 0.0, calibrated=True, requery_cost=0.0)
 
 
+def _epistemic_only_rejection(decision: CandidateDecision) -> bool:
+    """Return true only for unknown-state rejections without direct danger evidence."""
+    return bool(decision.rejection_reasons) and all(
+        "=unknown" in reason and not reason.startswith("candidate_evidence:")
+        for reason in decision.rejection_reasons
+    )
+
+
 def refresh_from_current_observation(
     belief: BeliefState, attribution: AttributionOutput, block_index: int
 ) -> None:
@@ -140,6 +148,31 @@ def select_hard_gate_value_tiebreak(
     if utility_model is None:
         chosen, fallback = select_candidate(decisions, attribution)
     else:
+        # Safe residual contract: when the official-value anchor is rejected
+        # solely because a prerequisite is unknown, there is no positive
+        # evidence that it is unsafe.  Preserve the baseline in that narrowly
+        # defined epistemic case.  Explicit false predicates and candidate
+        # hard violations are never overridden.
+        value_anchor = max(
+            decisions, key=lambda item: (item.official_value, -item.candidate_id)
+        )
+        if not value_anchor.accepted and _epistemic_only_rejection(value_anchor):
+            decisions = [
+                replace(
+                    item,
+                    accepted=True,
+                    total_score=item.official_value,
+                    rejection_reasons=(),
+                    components={
+                        **item.components,
+                        "baseline_preserving_epistemic_override": 1.0,
+                        "overridden_epistemic_rejection_count": float(
+                            len(item.rejection_reasons)
+                        ),
+                    },
+                ) if item.candidate_id == value_anchor.candidate_id else item
+                for item in decisions
+            ]
         chosen, utility_scores = select_with_utility(decisions, utility_features, utility_model)
         decisions = [
             replace(

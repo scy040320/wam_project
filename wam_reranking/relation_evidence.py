@@ -207,6 +207,7 @@ def instance_correspondence_maps(
     *,
     reference_index: int,
     prompt: str,
+    ordinal_lock: bool = False,
 ) -> np.ndarray:
     """Bind one language-selected instance across frames using a visual prototype.
 
@@ -236,9 +237,15 @@ def instance_correspondence_maps(
     if "right" in words: cx = 0.72
     if "front" in words: cy = 0.72
     if "back" in words: cy = 0.34
+    if ordinal_lock and "middle" in words: cy = 0.54
     if "top" in words: cy = 0.32
-    spatial = np.exp(-((xn-cx)**2+(yn-cy)**2)/(2*0.28**2)).astype(np.float32)
-    ref_weight = np.clip(resized[reference_index], 0, 1) * (0.35 + 0.65*spatial)
+    ordinal = ordinal_lock and bool(
+        words & {"left", "right", "front", "middle", "back", "top"}
+    )
+    sigma = 0.20 if ordinal else 0.28
+    spatial = np.exp(-((xn-cx)**2+(yn-cy)**2)/(2*sigma**2)).astype(np.float32)
+    spatial_gate = (0.05 + 0.95*spatial) if ordinal else (0.35 + 0.65*spatial)
+    ref_weight = np.clip(resized[reference_index], 0, 1) * spatial_gate
     ref_weight /= max(float(ref_weight.sum()), 1e-8)
     normalized = tok / np.maximum(np.linalg.norm(tok, axis=-1, keepdims=True), 1e-8)
     prototype = (normalized[reference_index] * ref_weight[..., None]).sum((0, 1))
@@ -247,7 +254,14 @@ def instance_correspondence_maps(
     # Exponentiation sharpens instance identity while semantic relevance keeps
     # the match within the named object class.
     appearance = np.exp((similarity - similarity.max((1, 2), keepdims=True)) / 0.12)
+    # Identical instances (for example three patterned bowls) can have nearly
+    # interchangeable DINO prototypes.  For language with an ordinal spatial
+    # qualifier, preserve that identity in every frame instead of letting the
+    # appearance term jump to a sibling instance.  The prior stays soft so a
+    # displaced object can still move within the frame.
     matched = np.clip(resized, 0, 1) * appearance
+    if ordinal:
+        matched *= spatial_gate[None]
     matched /= np.maximum(matched.max((1, 2), keepdims=True), 1e-8)
     if not np.isfinite(matched).all():
         raise RuntimeError("instance correspondence produced non-finite maps")

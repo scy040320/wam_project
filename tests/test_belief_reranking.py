@@ -190,6 +190,26 @@ class CandidateTests(unittest.TestCase):
         self.assertIsNone(result.selected_candidate_id)
         self.assertEqual(result.fallback, "reobserve")
 
+    def test_safe_residual_preserves_value_for_epistemic_only_rejection(self):
+        attr = attribution(world=0.1, cause=CoarseCause.OBJECT_SHIFT)
+        size = len(CANDIDATE_UTILITY_FEATURE_NAMES)
+        model = CandidateUtilityModel(
+            np.zeros(size), np.ones(size), np.zeros(size), 0.0,
+            switch_margin=0.05,
+        )
+        result = select_hard_gate_value_tiebreak(
+            mode=SelectorMode.LEARNED_HARD_GATE,
+            belief=initial_belief(0), attribution=attr, block_index=2,
+            candidate_actions=[actions_for(Stage.TRANSPORT)], official_values=[0.9],
+            utility_model=model,
+        )
+        self.assertEqual(result.selected_candidate_id, 0)
+        self.assertIsNone(result.fallback)
+        self.assertTrue(result.decisions[0].accepted)
+        self.assertEqual(
+            result.decisions[0].components["baseline_preserving_epistemic_override"], 1.0
+        )
+
     def test_rule_parser_stages(self):
         for stage in (Stage.APPROACH, Stage.GRASP, Stage.LIFT, Stage.TRANSPORT, Stage.PLACE):
             self.assertEqual(parse_candidate_effect(0, actions_for(stage)).stage, stage)
@@ -576,6 +596,25 @@ class CandidateTests(unittest.TestCase):
             CandidateDecision(1, True, 0.505, 0.505, (), {"dependency_risk": 0.1, "uncertainty": 0.1}),
         ]
         chosen, _ = select_with_utility(decisions, {0: low, 1: high}, model)
+        self.assertEqual(chosen.candidate_id, 1)
+
+    def test_train_calibrated_switch_margin_preserves_value_anchor(self):
+        size = len(CANDIDATE_UTILITY_FEATURE_NAMES)
+        weights = np.zeros(size); weights[1] = 1.0
+        model = CandidateUtilityModel(
+            np.zeros(size), np.ones(size), weights, 0.0,
+            switch_margin=0.20,
+        )
+        residual = np.zeros(size); residual[0] = 0.50; residual[1] = 0.15
+        anchor = np.zeros(size); anchor[0] = 0.60
+        decisions = [
+            CandidateDecision(0, True, 0.50, 0.50, (), {"dependency_risk": 0.1, "uncertainty": 0.1}),
+            CandidateDecision(1, True, 0.60, 0.60, (), {"dependency_risk": 0.1, "uncertainty": 0.1}),
+        ]
+        chosen, scores = select_with_utility(
+            decisions, {0: residual, 1: anchor}, model
+        )
+        self.assertGreater(scores[0], scores[1])
         self.assertEqual(chosen.candidate_id, 1)
 
     def test_learned_utility_cannot_override_value_with_pareto_dominated_risk(self):
