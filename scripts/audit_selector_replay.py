@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify that the frozen D21-v8 model reproduces training-report decisions via policy.py."""
+"""Verify that the frozen safe-residual model reproduces training-report decisions via policy.py."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ from wam_reranking import (
 
 
 def load_prepare(path: Path):
-    spec = importlib.util.spec_from_file_location("d21_v8_prepare", path)
+    spec = importlib.util.spec_from_file_location("joint_bundle_loader", path)
     module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(module)

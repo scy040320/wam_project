@@ -1,0 +1,32 @@
+{
+  "scope": "known trained tasks, unused initial states, multiblock closed loop",
+  "tasks": [0, 9, 46, 57],
+  "total_prespecified_scenarios": 64,
+  "pilot_scenarios": 16,
+  "remaining_scenarios": 48,
+  "candidate_count": 4,
+  "max_total_policy_steps": 400,
+  "max_after_fork_steps": 352,
+  "max_after_fork_wam_queries": 92,
+  "pilot_quality_and_coverage_passed": true,
+  "pilot_covered_pools": 14,
+  "pilot_mixed_pools": 5,
+  "pilot_covered_tasks": 4,
+  "methods": {
+    "value_only": {"success": 11, "gains": 0, "harms": 0, "fallback_episodes": 0},
+    "candidate_only": {"success": 12, "gains": 2, "harms": 1, "fallback_episodes": 0},
+    "flat": {"success": 11, "gains": 1, "harms": 1, "fallback_episodes": 0},
+    "no_dependency": {"success": 11, "gains": 1, "harms": 1, "fallback_episodes": 0},
+    "full": {"success": 11, "gains": 1, "harms": 1, "fallback_episodes": 0}
+  },
+  "engineering_fix": "one immutable public prefix, complete runtime snapshot, query observation and source action per task-state, shared across four conditions",
+  "repair_contract_tests_passed": 20,
+  "preserved_completed_parent_scenarios": 3,
+  "imported_clean_replay_differences": 0.0,
+  "pairing_tolerances_relaxed": false,
+  "formal_phase_status_at_recording": "running",
+  "known_task_mechanism_acceptance_passed": null,
+  "original_gate3_pass_claim": false,
+  "interpretation": "Pilot quality/coverage passed, not method-effect acceptance. Full method has not shown net success benefit and has one success harm. Models/rules remain frozen for the remaining 48 scenarios.",
+  "source": "candidate_reranking_known_task_closedloop_mechanism_20261004_v3_shared_source/pilot_audit.json"
+}

@@ -24,7 +24,7 @@ With an audited bundle and the same dependency versions:
 ```bash
 python scripts/train_safe_residual_ranker.py \
   --bundle BUNDLE_DIR \
-  --contract scripts/train_d21_candidate_utility.py \
+  --contract scripts/train_candidate_utility.py \
   --hard-gate-audit HARD_GATE_AUDIT.json \
   --output-root TRAINING_DIR
 

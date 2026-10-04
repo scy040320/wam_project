@@ -31,7 +31,7 @@ The deployment path never receives simulator state, intervention labels,
 success labels, or post-execution candidate outcomes. Candidate outcomes are
 used only to train or evaluate the selector.
 
-## Current research status (2026-10-04)
+## Current research status (2026-10-05)
 
 - The frozen attribution model uses 5,200 training and 1,732 validation
   samples (6,932 formal supervised records). Validation Macro-F1 is 0.8214;
@@ -61,6 +61,19 @@ used only to train or evaluate the selector.
 - Gate3 and the main experiment remain open. See
   [the current result record](docs/results/frozen_v8_joint_development_20261004.json)
   and [reproduction notes](docs/REPRODUCING_CURRENT_RESULT.md).
+- Known-task closed-loop mechanism acceptance uses four prespecified trained
+  tasks (0/9/46/57), four unused states per task, four conditions, and five
+  equal-budget methods. The 16-scenario pilot passed pairing and coverage
+  checks: 14 covered pools and five mixed pools. Pilot success was 11/16 for
+  value-only, 12/16 for candidate-only, and 11/16 for flat attribution,
+  no-dependency propagation, and the full method. The full method had one gain
+  and one success harm: mechanism benefit has **not** been established.
+  The remaining 48 scenarios are running with models and rules frozen.
+- Condition branches now reuse one immutable public prefix, complete runtime
+  snapshot, query observation, and source action per task/state. Three completed
+  outcomes from the stopped engineering version were preserved, with exact
+  source identity checks and zero-difference imported clean replays. Twenty
+  repair contract tests passed; pairing tolerances were not relaxed.
 
 ## Components
 
@@ -72,6 +85,7 @@ used only to train or evaluate the selector.
 | `target_localization.py` | Task-language-conditioned visual residual pooling |
 | `relation_evidence.py` | Subject–anchor relation and temporal evidence |
 | `supervision_contract.py` | Observable-factor masks and source-scoped pairing |
+| `shared_source.py` | Immutable once-per-group snapshot, observation and action identity |
 | `candidate_effects.py` | Auditable parsing of `16 × 7` action blocks |
 | `reranker.py` | Predicate gate, score decomposition, and fallback |
 | `candidate_utility.py` | Attribution-conditioned pairwise utility model |
@@ -102,22 +116,22 @@ wam_reranking/                  method implementation
 configs/
   task_bindings.json           public task bindings
   score_weights.template.json  auditable score interface
-  d18_expansion_4800_protocol.json
-  d21_formal_896_protocol.json
+  attribution_expansion_protocol.json
+  candidate_collection_protocol.json
   joint_development_192_protocol.json
-  d25_d28_preregistered_development_v1.json
+  mechanism_ablation_protocol.json
 docs/
   METHOD.md
   DATA_PROTOCOL.md
   EVALUATION_PROTOCOL.md
 scripts/
   preflight_candidate_pool.py
-  audit_d25_candidate_pool.py
-  analyze_d25_d27_ablation.py
-  train_d21_candidate_utility.py
+  audit_candidate_pool.py
+  analyze_mechanism_ablation.py
+  train_candidate_utility.py
   train_safe_residual_ranker.py
   audit_selector_replay.py
-  validate_d22_d24_functional.py
+  validate_functional_evidence.py
 tests/                          deterministic mechanism and protocol tests
 ```
 
@@ -125,6 +139,12 @@ Machine-specific launchers, checkpoints, raw datasets, videos, caches, and
 intermediate experiment versions are intentionally excluded. Failed studies
 remain recoverable from Git history and archived experiment manifests, but do
 not remain as competing public interfaces in the repository.
+
+Public filenames and entry points describe their function, not daily-plan
+numbers. Frozen schema identifiers and historical experiment identities are
+kept unchanged for compatibility; they are not new public interface names.
+Runtime snapshot files are trusted local experiment artifacts. Do not load
+pickled snapshots from untrusted sources.
 
 ## Evaluation contract
 

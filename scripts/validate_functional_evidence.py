@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Validate D22--D24 on frozen, already executed development evidence.
+"""Validate functional mechanism contracts on frozen, already executed development evidence.
 
 This is a functional/development audit.  It never regenerates candidates,
-selects tasks from outcomes, or upgrades D21's zero-coverage confirmation.
+selects tasks from outcomes, or upgrades the zero-coverage independent evaluation.
 """
 
 from __future__ import annotations
@@ -27,16 +27,16 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--training-report", type=Path, required=True)
     parser.add_argument("--model-record", type=Path, required=True)
-    parser.add_argument("--d20-summary", type=Path, required=True)
-    parser.add_argument("--d21-summary", type=Path, required=True)
+    parser.add_argument("--development-summary", type=Path, required=True)
+    parser.add_argument("--independent-summary", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
     args = parser.parse_args()
     args.output_root.mkdir(parents=True, exist_ok=False)
 
     training = load(args.training_report)
     model_record = load(args.model_record)
-    d20 = load(args.d20_summary)
-    d21 = load(args.d21_summary)
+    development = load(args.development_summary)
+    independent = load(args.independent_summary)
     rows = training["full_development"]["rows"]
     action_index = {}
     rejection_index = {}
@@ -129,12 +129,12 @@ def main() -> None:
             "unobserved_fallback_is_not_counted_as_failure": True,
         },
         "evidence_separation": {
-            "d20_development_overall": {
+            "development_development_overall": {
                 "learned_successes": training["full_development"]["learned_successes"],
                 "value_only_successes": training["full_development"]["value_successes"],
                 "oracle_successes": training["full_development"]["oracle_successes"],
             },
-            "d20_grouped_generalization": {
+            "development_grouped_generalization": {
                 "leave_one_task_out_learned": training["leave_one_task_out"]["learned_successes"],
                 "leave_one_task_out_value": training["leave_one_task_out"]["value_successes"],
                 "leave_one_task_out_harms": training["leave_one_task_out"]["fold_harms"],
@@ -142,10 +142,10 @@ def main() -> None:
                 "leave_one_state_out_value": training["leave_one_state_out"]["value_successes"],
                 "leave_one_state_out_harms": training["leave_one_state_out"]["fold_harms"],
             },
-            "d20_oracle_pool": d20["candidate_pool_coverage"],
-            "d21_independent_candidate_coverage": {
+            "development_oracle_pool": development["candidate_pool_coverage"],
+            "independent_independent_candidate_coverage": {
                 "covered": 0,
-                "total": int(d21["scenarios"]),
+                "total": int(independent["scenarios"]),
                 "rate": 0.0,
                 "preserved_negative_result": True,
             },
@@ -160,15 +160,15 @@ def main() -> None:
         "claims": {
             "closed_loop_functionality_verified": len(explainable) >= 10,
             "independent_downstream_benefit_verified": False,
-            "reason": "D21 independent pool candidate coverage was 0/6",
+            "reason": "Independent pool candidate coverage was 0/6",
         },
     }
     report_path = args.output_root / "d22_d24_functional_report.json"
     report_path.write_text(json.dumps(report, indent=2) + "\n")
     hashes = {
         "training_report": sha256(args.training_report),
-        "d20_summary": sha256(args.d20_summary),
-        "d21_summary": sha256(args.d21_summary),
+        "development_summary": sha256(args.development_summary),
+        "independent_summary": sha256(args.independent_summary),
         "functional_report": sha256(report_path),
     }
     (args.output_root / "evidence_hashes.json").write_text(json.dumps(hashes, indent=2) + "\n")

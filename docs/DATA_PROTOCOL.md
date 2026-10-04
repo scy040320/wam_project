@@ -19,7 +19,7 @@ The frozen observability contract routes pixel-equivalent physical changes to
 Raw records remain immutable; exclusions and schema migrations are stored as
 separate audit manifests.
 
-## D21 candidate-ranking data
+## Candidate-ranking data
 
 The current completed development comparison is frozen in
 `configs/joint_development_192_protocol.json`: LIBERO-90 tasks
@@ -28,7 +28,7 @@ It contains 144 train pools (states0–5), 48 validation pools (states6–7)
 and 768 candidate outcomes. All 49 zero-coverage pools remain included.
 This is previously consumed development data, not independent confirmation.
 
-`configs/d21_formal_896_protocol.json` preserves a historical collection
+`configs/candidate_collection_protocol.json` preserves a historical collection
 proposal whose pilot did not qualify. It must not be presented as a completed
 896-pool dataset or restarted automatically. Main20 nested K16 stage
 qualification also remains failed; formal collection is not open.

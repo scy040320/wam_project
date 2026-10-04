@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Train D21-v8 with a train-only calibrated, value-preserving residual policy."""
+"""Train the safe-residual ranker with a train-only calibrated, value-preserving residual policy."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ from wam_reranking import CandidateDecision, fit_pairwise_utility, select_with_u
 
 
 def load_module(path: Path):
-    spec = importlib.util.spec_from_file_location("d21_v8_contract", path)
+    spec = importlib.util.spec_from_file_location("candidate_utility_contract", path)
     module = importlib.util.module_from_spec(spec)
     assert spec.loader is not None
     spec.loader.exec_module(module)

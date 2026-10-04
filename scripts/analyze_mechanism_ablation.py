@@ -321,9 +321,9 @@ def main() -> None:
         subset = [x for x in rows if x["condition"] == condition]
         by_condition[condition] = {arm: aggregate(subset, arm) for arm in arms}
     summary["by_condition"] = by_condition
-    (args.output_root / "d25_d27_scenarios.json").write_text(json.dumps(rows, indent=2) + "\n")
-    (args.output_root / "d25_d27_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
-    with (args.output_root / "d25_d27_paired.csv").open("w", newline="", encoding="utf-8") as handle:
+    (args.output_root / "mechanism_scenarios.json").write_text(json.dumps(rows, indent=2) + "\n")
+    (args.output_root / "mechanism_summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+    with (args.output_root / "mechanism_paired.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.writer(handle); writer.writerow(("task", "state", "condition", "pool_covered", *arms))
         for row in rows:
             writer.writerow((row["task_id"], row["state"], row["condition"], row["candidate_pool_has_success"],

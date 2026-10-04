@@ -6,11 +6,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class FormalD21ProtocolTests(unittest.TestCase):
+class CandidateCollectionProtocolTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.protocol = json.loads(
-            (ROOT / "configs" / "d21_formal_896_protocol.json").read_text()
+            (ROOT / "configs" / "candidate_collection_protocol.json").read_text()
         )
 
     def test_expected_pool_and_candidate_counts(self):

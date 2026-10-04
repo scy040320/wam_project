@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Train the D21 pairwise candidate-utility ranker on development pools only."""
+"""Train the attribution-conditioned pairwise candidate-utility ranker on development pools only."""
 
 from __future__ import annotations
 

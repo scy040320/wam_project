@@ -34,10 +34,6 @@ Thumbs.db
 # Private launchers, reports and experiment exports (never part of the public interface)
 scripts/*_d[0-9]*
 tests/test_d[0-9]*
-!scripts/analyze_d25_d27_ablation.py
-!scripts/audit_d25_candidate_pool.py
-!scripts/train_d21_candidate_utility.py
-!scripts/validate_d22_d24_functional.py
 research_runs/
 private_reports/
 *.partial
