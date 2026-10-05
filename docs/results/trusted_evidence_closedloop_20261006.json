@@ -1,0 +1,43 @@
+{
+  "version": "known_task_trusted_evidence_arbitration_20261005_v8",
+  "role": "consumed_development_paired_regression_not_independent",
+  "scenarios": 64,
+  "successes": {
+    "value_only": 34,
+    "candidate_only": 38,
+    "full": 38
+  },
+  "full_vs_value": {
+    "gains": 4,
+    "harms": 0
+  },
+  "full_vs_candidate": {
+    "gains": 1,
+    "harms": 1
+  },
+  "cause_residual_gain": 0,
+  "attribution_score_increment_proven": false,
+  "component_necessity_proven": false,
+  "quality_passed": true,
+  "repair_target_passed": false,
+  "no_outcome_or_cost_change_vs_v6": true,
+  "paired_both_success": {
+    "vs_value": {
+      "n": 34,
+      "mean_steps_delta": -1.3235294117647058,
+      "mean_calls_delta": -0.47058823529411764,
+      "median_steps_delta": 0,
+      "median_calls_delta": 0
+    },
+    "vs_candidate": {
+      "n": 37,
+      "mean_steps_delta": -0.5945945945945946,
+      "mean_calls_delta": -0.21621621621621623,
+      "median_steps_delta": 0,
+      "median_calls_delta": 0
+    }
+  },
+  "efficiency_benefit_established": false,
+  "original_gate3_pass_claim": false,
+  "completion_audit_sha256": "8cc17c0ee25c12a522dc180dd7d594d0ae695de838e66edf9565c5671ac72aa0"
+}

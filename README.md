@@ -22,7 +22,7 @@ flowchart LR
     C --> E[Auditable candidate-effect parser]
     D --> G[Predicate gate]
     E --> G
-    G --> R[Attribution-conditioned utility<br/>with value anchor and risk guard]
+    G --> R[Candidate-effect utility<br/>cause residual currently disabled<br/>with value anchor and evidence routing]
     R --> X[Execute candidate]
     R --> F[Reobserve / requery / safe stop]
 ```
@@ -31,7 +31,33 @@ The deployment path never receives simulator state, intervention labels,
 success labels, or post-execution candidate outcomes. Candidate outcomes are
 used only to train or evaluate the selector.
 
-## Current research status (2026-10-05)
+## Current research status (2026-10-06)
+
+- Frozen trusted-evidence policy V8 completed 64 consumed development scenes:
+  value-only 34 successes, candidate-only 38, full 38. Full has four gains and
+  zero success harms versus value-only, but one gain and one harm versus
+  candidate-only. V8 changes no outcome or execution cost relative to V6.
+- The learned cause-score gain is **zero**. Attribution remains active in
+  belief updates, predicate gates and evidence routing, but its incremental
+  benefit and dependency-graph necessity have not been established. Training
+  calibration at gain 0.125 tied gain zero; gain 0.25 introduced a harm.
+  This is not evidence of a beneficial jointly learned cause correction.
+- A fixed four-arm, known-task/new-state mechanism study is now launched:
+  value-only, candidate-only, attribution+ranking without dependency edges,
+  and full. Tasks 0/9/46/57 use two audited unused states each, four conditions,
+  K=4, and identical 400-step/92-postfork-query budgets: 32 scenes, 128
+  actual arm executions. Two mutually exclusive lanes run a 16-scene quality
+  pilot then the remaining 16 scenes, without outcome-based scene filtering
+  or automatic tuning. Full and no-dependency differ only in graph edges.
+  See [the frozen protocol](configs/known_task_fixed_budget_ablation.json)
+  and [mechanism study contract](docs/FIXED_BUDGET_MECHANISM_ABLATION.md).
+- This is main-experiment **preparation**, not a launched 20-task main study,
+  original Gate3 approval, or evidence of generalization to unseen tasks.
+  Attribution's task16 local gate remains failed. All failed scenes stay in
+  the denominator; costs are compared on paired jointly successful scenes,
+  charging logical WAM queries even when realizations are shared.
+
+### Preserved earlier results
 
 - The frozen attribution model uses 5,200 training and 1,732 validation
   samples (6,932 formal supervised records). Validation Macro-F1 is 0.8214;
@@ -110,6 +136,9 @@ used only to train or evaluate the selector.
 | `evidence_residual.py` | Shared candidate backbone and bounded cause residual |
 | `source_scoped_policy.py` | Factor-specific belief confidence and uncertainty routing |
 | `shared_query_cache.py` | Outcome-free immutable candidate realization sharing |
+| `evidence_arbitration.py` | Trusted affirmative evidence and source-aware routing |
+| `mechanism_ablation.py` | Frozen four-arm interface; graph-edge-only ablation |
+| `closedloop_metrics.py` | Paired successes, success harms, steps and logical queries |
 | `refiner.py` | Interface for a future bounded action-residual model |
 
 ## Installation

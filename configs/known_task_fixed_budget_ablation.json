@@ -1,0 +1,110 @@
+{
+  "version": "known_task_fixed_budget_ablation_20261006_v1",
+  "client_date": "2026-10-06",
+  "role": "fixed_known_task_new_state_mechanism_ablation_not_original_gate3",
+  "benchmark_suite": "libero_90",
+  "tasks": [
+    0,
+    9,
+    46,
+    57
+  ],
+  "task_states": {
+    "0": [
+      35,
+      36
+    ],
+    "9": [
+      14,
+      15
+    ],
+    "46": [
+      14,
+      15
+    ],
+    "57": [
+      14,
+      15
+    ]
+  },
+  "methods": [
+    "value_only",
+    "candidate_only",
+    "no_dependency",
+    "full"
+  ],
+  "conditions": [
+    "clean",
+    "visual_occlusion",
+    "object_shift",
+    "execution_contact_deviation"
+  ],
+  "scenario_count": 32,
+  "arm_execution_count": 128,
+  "pilot_scenarios": 16,
+  "lane_ownership": {
+    "0": [
+      0,
+      9
+    ],
+    "1": [
+      46,
+      57
+    ]
+  },
+  "k": 4,
+  "internal_best_of_n": 1,
+  "source_block": 2,
+  "offset": 4,
+  "moment_id": 0,
+  "budget": {
+    "total_policy_steps": 400,
+    "prefix_policy_steps": 48,
+    "remaining_policy_steps": 352,
+    "prefix_wam_calls": 3,
+    "postfork_wam_call_limit": 92,
+    "one_actual_fallback_round": true
+  },
+  "query_model_signature": "e5ea9b370710faf6ad0f1ef59ddfbf369f4483909aa1baea2f96943883bd32bb",
+  "execution_contract": "research_runs/known_task_closedloop_source_scoped_20261005_v6/run_paired_regression.py",
+  "policy_reference": "known_task_trusted_evidence_arbitration_20261005_v8",
+  "cause_residual_gain": 0,
+  "no_dependency_changes_only_graph_edges": true,
+  "no_retraining": true,
+  "source_once_per_task_state": true,
+  "all_arms_reexecuted": true,
+  "identical_request_uses_same_generated_payload": true,
+  "each_arm_pays_logical_queries_even_cache_hit": true,
+  "new_state_membership_outcome_independent": true,
+  "no_pool_discard": true,
+  "pilot_gate": "pairing_and_budget_and_file_integrity_only_not_scientific_success",
+  "quality_thresholds": {
+    "sim_max_abs": 0.001,
+    "sim_p95": 0.0001,
+    "proprio_max_abs": 0.001,
+    "image_mean_abs": 2,
+    "image_p95": 8,
+    "fraction_gt5": 0.06,
+    "psnr_min": 30
+  },
+  "scientific_criteria": {
+    "full_strictly_exceeds_value_only": true,
+    "zero_success_harm_vs_value_only": true,
+    "zero_success_harm_vs_candidate_only": true,
+    "attribution_increment": "no_dependency versus candidate_only; same ranker weights",
+    "dependency_increment": "full versus no_dependency; only graph edges differ",
+    "efficiency": "paired_both_success_steps_and_logical_calls_mean_median; no cache saving claim",
+    "no_significance_claim_from_small_sample": true,
+    "no_component_necessity_claim_if_no_increment": true
+  },
+  "no_unseen_task_generalization_claim": true,
+  "original_gate3_pass_claim": false,
+  "main20_experiment_not_started": true,
+  "no_automatic_policy_iteration": true,
+  "scientific_failure_action": "finish_fixed_membership_then_report_and_stop_without_tuning",
+  "engineering_failure_action": "stop_preserve_evidence_no_automatic_retry",
+  "disk_stop_free_gib": 15,
+  "frozen_input_count": 164,
+  "cloud_protocol_sha256": "02d1ccd7649bdc85117054de99f11a44740db46c4c5d0680d936b3dfc2ecd688",
+  "dependencies": "Complete execution source closure is hashed in the archived cloud protocol; not bundled as turnkey public execution."
+}
