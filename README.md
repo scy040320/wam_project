@@ -61,14 +61,30 @@ used only to train or evaluate the selector.
 - Gate3 and the main experiment remain open. See
   [the current result record](docs/results/frozen_v8_joint_development_20261004.json)
   and [reproduction notes](docs/REPRODUCING_CURRENT_RESULT.md).
-- Known-task closed-loop mechanism acceptance uses four prespecified trained
-  tasks (0/9/46/57), four unused states per task, four conditions, and five
-  equal-budget methods. The 16-scenario pilot passed pairing and coverage
-  checks: 14 covered pools and five mixed pools. Pilot success was 11/16 for
-  value-only, 12/16 for candidate-only, and 11/16 for flat attribution,
-  no-dependency propagation, and the full method. The full method had one gain
-  and one success harm: mechanism benefit has **not** been established.
-  The remaining 48 scenarios are running with models and rules frozen.
+- The completed original five-arm, 64-scenario closed-loop study obtained
+  value-only 38, candidate-only 39, and full 34 successes. All failed scenes
+  and the flat/no-dependency ablations are retained. Subsequent numerical
+  query differences motivated a shared-request replay, not removal of harms.
+- Frozen source-scoped full policy V6 has now completed all 64 consumed
+  development scenes with re-executed controls and an outcome-free shared
+  query cache. Value-only succeeds in 34/64; candidate-only, the matched V4
+  full reference, and V6 each succeed in 38/64. V6 has four gains and no
+  success harm versus value-only, but one gain and one harm versus
+  candidate-only. Execution/pairing/budget quality passes; the historical
+  repair target (40 successes and zero harm to both controls) **fails**.
+- V6's cause-residual gain is frozen at zero. Attribution still affects
+  belief, gating and baseline routing; learned cause-score benefit and the
+  necessity of attribution or the dependency graph are **not demonstrated**.
+  On 37 jointly successful full/candidate-only scenes, mean total steps are
+  149.84/150.43 and logical WAM calls 30.46/30.68. This small descriptive
+  difference does not establish an efficiency benefit or include attribution
+  compute overhead. The two controls' observed success union is 39 scenes,
+  not a measured candidate-pool oracle ceiling.
+- This replay consumes existing development scenes, not fresh independent
+  confirmation. Cache hits still pay each arm's logical query budget and
+  must not be advertised as deployment query savings. See the
+  [frozen full-policy record](docs/results/source_scoped_closedloop_20261005.json)
+  and [source-scoped reproduction contract](docs/SOURCE_SCOPED_CLOSED_LOOP.md).
 - Condition branches now reuse one immutable public prefix, complete runtime
   snapshot, query observation, and source action per task/state. Three completed
   outcomes from the stopped engineering version were preserved, with exact
@@ -91,6 +107,9 @@ used only to train or evaluate the selector.
 | `candidate_utility.py` | Attribution-conditioned pairwise utility model |
 | `policy.py` | Value-only and belief-constrained selection paths |
 | `closed_loop.py` | Best-seed adapter and bounded recovery budget |
+| `evidence_residual.py` | Shared candidate backbone and bounded cause residual |
+| `source_scoped_policy.py` | Factor-specific belief confidence and uncertainty routing |
+| `shared_query_cache.py` | Outcome-free immutable candidate realization sharing |
 | `refiner.py` | Interface for a future bounded action-residual model |
 
 ## Installation
