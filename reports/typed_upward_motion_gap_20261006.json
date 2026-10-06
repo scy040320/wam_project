@@ -1,0 +1,72 @@
+{
+  "schema": "typed_upward_motion_bounded_gap_report_v1",
+  "scope": "offline_supervision_only_not_deployment_features",
+  "observation_source": "known_task_recovery_observation_audit_20261006_v5_motion_typed_support_full",
+  "existing_literal_sidecars": "known_task_recovery_observation_audit_20261006_v5_motion_typed_support_full_labels_v3_perspective",
+  "source_candidates": 160,
+  "source_pools": 40,
+  "original_collector_truth_masks_models_and_labels_modified": false,
+  "training_started": false,
+  "new_cloud_module_executed": false,
+  "new_cloud_sidecars_generated": false,
+  "new_full160_module_pass_claimed": false,
+  "cloud_execution_limit": "New local module transmission/execution was rejected by approval review; stopped without changing encoding or bypassing the rejection.",
+  "readonly_original_record_diagnostics": {
+    "contact_statistics_reference": "step >= 2; patch counts are not independent candidates",
+    "support_contact_patches": 22648,
+    "patches_passing_original_collector_interface_contract": 0,
+    "actual_RGB_cross_role_boundary_pixels_ge2": 6956,
+    "patches_with_each_role_depth_matched_pixel_ge1": 742,
+    "actual_boundary_and_both_role_depth_intersection": 471,
+    "contact_center_depth_not_matched": 22579,
+    "role_surface_depth_not_matched": 21906,
+    "both_roles_not_present_at_contact_patch": 13855,
+    "local_registration_or_texture_insufficient": 16624,
+    "nonworld_typed_support_descriptors": 3704,
+    "typed_support_local_RGB_registration_passed": 2957,
+    "typed_support_intervals_start_ge2": 6440,
+    "typed_support_actual_RGB_projection_tracks_verified": 4997,
+    "support_false_typed_pair_views": 1820,
+    "support_false_both_actual_identities_fresh_and_local_RGB_passed": 1001,
+    "these_1001_pairs_with_four_connected_target_support_masks": 1001,
+    "negative_support_witnesses_under_original_complete_boundary_gap_rule": 0,
+    "paired_target_support_actual_projection_relative_track_windows": 2510,
+    "relative_actual_motion_norm_ge_original_2px": 2191,
+    "relative_actual_projection_fit_le_original_2px": 2510,
+    "above_noise_prefix_world_vertical_certificates_inferred_from_these_counts": false
+  },
+  "diagnosis": [
+    "Typed support actual RGB identity and actual/projection tracks are often available; zero literal interface masks must not be called universal invisibility.",
+    "Actual RGB adjacency is not a visible 3D contact interface: all existing support contact patches fail at least one unchanged depth/registration/texture gate.",
+    "All 1001 otherwise eligible no-contact pair/views have target/table silhouette adjacency. Projected tabletop coverage cannot prove or disprove 3D clearance.",
+    "The original builder does not extract typed support motion or vertical-reference witnesses and deliberately passes no lift motion. This omission is distinct from insufficient literal contact evidence.",
+    "Separate primary/wrist tracks do not establish the same actual RGB landmark across views. Existing records contain no audited actual cross-view landmark pairs; simulator body points cannot fill this gap."
+  ],
+  "new_distinct_auxiliary_contract": {
+    "module": "wam_reranking/typed_upward_motion.py",
+    "module_sha256": "b18a53d99fa03eb0dfc2f93c038eefa4780254d4923b7d7cbaed331bb0cb65bc",
+    "tests": "tests/test_typed_upward_motion.py",
+    "tests_sha256": "7a69ff82ea0698060c46afb2a323506ee7766971351d4023965bdff58652f6ca",
+    "names": ["typed_upward_motion", "carried_and_raised"],
+    "automatically_maps_to_original_lifted_atom": false,
+    "physical_Y": "Immutable candidate-scoped rise >= frozen 0.01m from the same real reference step >=2; not deployment input.",
+    "visual_evidence": "Full causal prefix, same typed nonworld support, independently registered textured actual RGB roles, >=3 unique actual LK correspondences per role, original 1px point/FB gates, 2px motion/reprojection fit and >=2px signed world-vertical relative motion strictly above 3x own candidate repeat noise.",
+    "world_direction": "At least 3 independently audited same actual RGB target landmarks bound to existing primary and wrist LK tracks; saved camera calibration and actual endpoints triangulate each landmark, all actual rises >= frozen 1cm. Single-view vectors or separate view corners are insufficient.",
+    "missing_evidence_result": "value=null, mask=false; never a negative lift/contact/grasp label",
+    "composite_carry": "Only a current matching V2 carrying-positive certificate enables distinct carried_and_raised; does not unmask literal contact or lift."
+  },
+  "local_verification": {
+    "new_synthetic_CPU_tests_passed": 24,
+    "existing_V1_V2_contract_tests_passed": 59,
+    "existing_separation_tests_passed": 11,
+    "total_passed": 94,
+    "not_an_empirical_positive_yield_or_training_readiness_claim": true
+  },
+  "finite_next_contract": {
+    "first_action": "Audit only a predeclared small set of existing development train/val sequences for >=3 same actual RGB landmarks simultaneously visible and trackable across both calibrated views. Preserve failed and ambiguous matches in the denominator.",
+    "required_new_annotation": "Source/candidate/reference/end scope, actual-image evidence hashes, actual_RGB correspondence audit basis, and primary/wrist target LK track indices for each distinct same landmark. No GT point correspondence.",
+    "stop_condition": "If the bounded actual-image audit cannot produce genuine same-landmark matches, report this exact field unavailable; do not change thresholds or silently use simulator point correspondence.",
+    "possible_later_capture_requires_separate_authorization": "Two consumed development starts, fixed hold/upward arms, first two real stationary reference steps, unchanged persistent input corruption and same-arm repeat QC; retain all failed/terminal/no-recovery results. Declare finite membership and execution cap before collection.",
+    "explicit_reobserve_conflict_note": "Availability recovery is not semantic conflict resolution. A conflict-resolution target separately needs a pre-probe same-entity contradictory proposition with independent evidence and post-probe actual cross-view same-entity agreement; otherwise its mask stays false. After-probe observations are Y only, never preexecution X."
+  }
+}

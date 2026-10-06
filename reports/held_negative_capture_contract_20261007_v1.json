@@ -1,0 +1,66 @@
+{
+  "schema": "held_at_use_independent_negative_capture_contract_v1",
+  "status": "predeclared_metadata_only_no_visual_certificate_no_fit",
+  "purpose": "Private offline Y evidence for a narrow currently-held predicate; not force closure or generic grasp classification.",
+  "source_scope": ["dataset", "suite", "task", "state", "candidate_id", "observed_block_id", "source_step"],
+  "source_membership": {
+    "history": "Frozen task46/state10 execution-deviation and task46/state13 clean full_repaired block6-to7 native K4 records only; exact source/query/snapshot hashes remain mandatory.",
+    "old_belief": "grasped/lifted/place_ready UNKNOWN cannot be converted to an attribution-caused old TRUE-to-invalid need.",
+    "held_Y": "An independent actual-use or boundary16 state label is possible only under this new certificate; it cannot backfill an earlier prerequisite or deployment X.",
+    "split": "Source task/state/split inherited without movement; same-start pool members remain together. Repeat QC is not a new candidate or label count."
+  },
+  "inherited_numeric_gates": {
+    "actual_rgb_registration_mean_abs_max": 2.0,
+    "actual_rgb_registration_p95_max": 8.0,
+    "actual_rgb_registration_fraction_gt5_max": 0.06,
+    "actual_rgb_registration_psnr_min": 30.0,
+    "own_role_visible_pixels_min": 16,
+    "actual_rgb_boundary_witness_pixels_per_role_min": 2,
+    "actual_rgb_contrast_floor": "max(2,3*same_candidate_role_repeat_rgb_mean_abs)",
+    "actual_complete_role_boundary_gap_px_min": 2.0,
+    "actual_complete_role_boundary_gap_noise_rule": "strictly greater than 3*max(target,full_hand same-candidate repeat noise)",
+    "own_actual_rgb_geometry_verified_tracks_min": 3,
+    "same_candidate_qpos_qvel_and_proprio_max_abs": 0.001,
+    "release_actual_aperture_increase_m_min": 0.004,
+    "release_actual_relative_separation_m_min": 0.003,
+    "original_release_no_double_finger_contact_frames": 2
+  },
+  "new_predeclared_conservative_restrictions": {
+    "negative_sustained_real_control_boundary_frames": 3,
+    "complete_target_and_hand": "Full uniquely bound target subtree and full hand: gripper root body subtree plus explicitly bound robot mount body's own geoms; palm is mandatory, not two-finger union. Robot-arm contact also recorded and must be absent for the proposed sufficient negative.",
+    "collision_vs_visual": "Separate collision and visual meshes by complete IDs and declared model roles; preserve all subtree geom metadata. Simulator masks establish annotation scope, not actual-RGB identity or visibility.",
+    "complete_actual_silhouette": "The whole target and relevant full hand silhouette must be unobstructed and independently observable in the same reliable view across all three frames; a visible finger subset or 16px geometric co-presence is insufficient. No unobserved palm or hidden target part is certified by GT projection alone.",
+    "physical_exclusions": "Complete contact-ID table proves no target-fullhand or target-any-robot contact; no target robot ancestry, active equality attachment, mocap attachment, or unexplained drive/plugin/external-force dependency. Unsupported or missing constraint data is unknown.",
+    "no_new_metric_tuning": "No result-selected new physical distance threshold is introduced. Physical min-distance, if collected, remains a diagnostic until a separately approved measurement contract; existing image-gap, registration and original release thresholds are unchanged.",
+    "causal_timing": "Only frames at or before the declared actual-use deadline may certify that use. Boundary16 recovery cannot satisfy use0 or any earlier use. Cross-block prior carry requires explicit source-identity bridge and continuous hashes, without replacing candidate IDs.",
+    "kind": "Rigid passive targets only for this sufficient held-negative proposal; articulated whole entities are not lifted/grasped by this contract."
+  },
+  "capture_fields_and_sources": {
+    "full_hand_root": "robot.gripper.root_body, robot.robot_model.eef_name, exact sim.model.body_parentid subtree (selected arm explicit for bimanual)",
+    "geom_table": "sim.model geom integer IDs, geom_bodyid, geom_contype/conaffinity/group; robot.gripper.contact_geoms and visual_geoms retained as declared roles; None names never delete an ID",
+    "contact_pairs": "For every i in range(sim.data.ncon): exact geom1/geom2 integer IDs with complete model geom-to-body table",
+    "constraints": "sim.model.neq/eq_type/eq_objtype/eq_obj1id/eq_obj2id/eq_data and CURRENT sim.data.eq_active; model.eq_active0 is not substituted; site equalities resolve model.site_bodyid and joint equalities resolve jnt_bodyid, never treating arbitrary object IDs as bodies",
+    "structural_attachment": "Exact target body parent chain, all robot subtrees, model.body_mocapid, body_jntadr/body_jntnum/jnt_type/jnt_bodyid; unresolved tendon/flex/distance/unknown active constraint types stay unknown. Rigid eligibility must have exactly one freejoint at the bound root and separate frozen task-kind provenance.",
+    "other_drives": "model actuator transmission and joint mapping, nplugin, target data.xfrc_applied/qfrc_applied and model.dof_bodyid; absent fields do not mean no drive",
+    "visual_evidence": "Actual original RGB, full-hand/palm and target role masks/depth, independent causal actual RGB tracking and local registration, all boundaries, same-candidate repeated RGB and centroid noise. Must be added by a separate observer, not fabricated by metadata helper.",
+    "hashes": "Exact source snapshot/action/RGB/proprio and producer/observer source SHA256, same candidate/split/time and repeat-QC hashes; caller verifies actual content, not self-declared flags"
+  },
+  "labels": {
+    "held_negative": "Only when the new full physical-plus-actual-RGB certificate is complete for three frames; metadata helper never issues this label.",
+    "release": "Requires earlier certified carrying, subsequent actual opening/contact loss and relative separation under the original measurement gates plus new actual loss/separation observability. Negative held alone is not an event.",
+    "placed": "Release is not successful placement or correct goal relation. Terminal success cannot prove an earlier release time.",
+    "missing": "No certificate, carry=None, zero literal finger contact, missing metadata, unknown type, cached frame0, or open request alone never becomes False."
+  },
+  "invariants": {
+    "metadata_role": "offline_supervision_only",
+    "deployment_allowed": false,
+    "legacy_carried_and_masks_unchanged": true,
+    "old_797_or_160_Y_is_admitted_by_this_contract": false,
+    "no_model_or_env_construction": true,
+    "no_step_reset_render_or_cosmos_query": true,
+    "no_action_budget_change": true,
+    "no_new_training_or_single_head_fit": true,
+    "whole_training_gate_pass": false,
+    "whole_training_still_requires": "All actually active goal/use heads have source-bound before/predicted X, independently certified positives and negatives, exact same-pool/same-time contrasts, split isolation and controls. Metadata counts and replay QC cannot satisfy this gate."
+  }
+}

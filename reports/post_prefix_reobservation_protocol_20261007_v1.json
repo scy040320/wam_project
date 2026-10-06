@@ -1,0 +1,43 @@
+{
+  "schema": "preexecution_fixed_post_prefix_AUX_protocol_v1",
+  "version": "known_task_post_prefix_reobservation_auxiliary_20261007_v1",
+  "status_at_freeze": "local_tests_passed_not_deployed_or_started",
+  "qualification_report_sha256": "cc5049c43aa855a828a567ddce7814d638bc0dbccbc2eb6e7aa376b5ef1948a7",
+  "source_observation_manifest_sha256": "a514c79aaa5e9e1018460a6ec81b0488fef1a21d96cb2e5dce1d550ad0d66f36",
+  "source_groups": [
+    {"task": 57, "state": 10, "cause": "unknown", "candidate_id": 0, "split": "train", "original_applied_prefix_steps": 4,
+     "applied_sha256": "3ab9b26d0b39d96105c1b168a50e11ec3a1a4c3b4b3fe896f298f897aa27f337",
+     "gripper_source_zero_based_row": 3, "gripper_column": 6, "literal_applied_gripper": 1.0012516975402832, "fixed_AUX_gripper_after_controller_clip": 1.0},
+    {"task": 57, "state": 13, "cause": "unknown", "candidate_id": 0, "split": "val", "original_applied_prefix_steps": 2,
+     "applied_sha256": "6aa7d67f7d7b9741c2981186384c5497e72edd4d9fb405e8f23e5965268de624",
+     "gripper_source_zero_based_row": 1, "gripper_column": 6, "literal_applied_gripper": -1.0085175037384033, "fixed_AUX_gripper_after_controller_clip": -1.0}
+  ],
+  "fixed_arms": ["hold", "peek_left", "peek_right", "peek_up"],
+  "arm_step_contract": {"steps": 16, "first_two": "zero EEF displacement", "steps_zero_based_2_through_9": "left/right x=-/+0.2 or up z=0.2; hold zero", "remaining_EEF": "zero", "all_grippers": "constant clipped last VERIFIED original applied prefix gripper, same across arms, selected preexecution"},
+  "budget": {"source_prefix_reconstruction_passes": 2, "source_prefix_action_steps": 6, "AUX_main_executions": 8, "AUX_QC_executions": 16, "AUX_16step_execution_cap": 24, "AUX_action_step_cap": 384},
+  "new_full_runtime_snapshot_after_verified_exact_original_prefix": true,
+  "reset_restore_full_runtime_before_every_AUX_capture_and_QC": true,
+  "actual_dual_RGB_and_proprio_prefix_verification_frozen_gates": true,
+  "before": "sourcehashed real original postaction frame4/frame2 and only its historical causal tracking/repeat evidence through the prefix; new arm frame0 is the same actual post-prefix state, not cached query",
+  "teacher_render_never_becomes_before_ranking_X": true,
+  "future_arm_images_never_backfill_before": true,
+  "persistent_primary_corruption_unchanged": true,
+  "full_runtime_restore_exact_no_relaxation": true,
+  "prefix_contact_QC_requires_literal_bool": true,
+  "availability_gate_and_noise_thresholds_unchanged": true,
+  "availability_only_silver_Y": true,
+  "cross_view_conflict_resolved": {"value": null, "mask": false},
+  "target_absence_claimed": false,
+  "pure_camera_only_sensing_claimed": false,
+  "native_candidate_pool_recovery_or_benefit_claimed": false,
+  "zero_recovery_retained_no_outcome_retry_or_source_replacement": true,
+  "old_data_models_and_labels_modified": false,
+  "training_started": false,
+  "CPU_tests": {"count": 31, "passed": true, "test_sha256": "a935cd541bcd20f779ede98c50180d44e8f031ad3c5b6d85b62e1a85c4c0ef59"},
+  "compile_passed": true,
+  "code_sha256": {
+    "post_prefix_reobservation_collect.py": "1b6e3440bc43191032da19c0fe119d03cf4b47e025023d3fdbe2c9e468aab362",
+    "post_prefix_reobservation_launch.py": "1b02d5ddcc82a71d646d8ef77c8c3af632a6c484e5a270b43ecd798740b69b86",
+    "post_prefix_reobservation_supervision.py": "6e96942373da528600696b841944e0457dbb0c000ed94c4df202682eddcebbc9"
+  }
+}

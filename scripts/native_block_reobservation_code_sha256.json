@@ -1,0 +1,8 @@
+{
+  "native_block_reobservation_collect.py": "4e52c2d3b72a4af7c2a96c33d135f3c07c24bd15cb9d2d46e0bee37512d6990d",
+  "native_block_reobservation_supervision.py": "49dc3b2dfebcef29f03d7fe3062bed27389f65b3b3858bef8381227a635c23a6",
+  "native_block_reobservation_launch.py": "1d3a59b8bbce6a2a732dae575f8c588424871bca75062422121e1338257d4806",
+  "native_recovery_block_boundary_protocol_20261007_v1.json": "db810caf0b3df00e2a193c21570e91ea172c1758b06fa3d8c23abe76e9e9f3b5",
+  "native_recovery_block_boundary_protocol_20261007_v2.json": "1ae72c37d7dc738a2704f51ad0db3e3dd61e85516d65da1d4ee2d6aff309a90c",
+  "hand_contact_supervision.py": "eb68e7686acf2a1094984970fc24d41a3a54259a06738c924b5618c4a52bad9b"
+}

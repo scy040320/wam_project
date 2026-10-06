@@ -1,0 +1,33 @@
+{
+  "schema": "candidate_recovery_supervision_v1",
+  "contract_revision": 3,
+  "model_alias": "V9",
+  "label_schema": "candidate_recovery_labels_v2",
+  "inherits": ["candidate_recovery_supervision_v1", "recovery_aux_relabelling_v2"],
+  "feature_schema": "cause_dependency_recovery_features_v3_libero_command",
+  "feature_count": 604,
+  "parent_V8_preserved": true,
+  "libero_gripper": {"positive": "close_command", "negative": "open_command", "zero": "neutral_not_release", "command_is_not_physical_grasp": true},
+  "coupled_chain": ["frozen_attribution_probabilities", "source_scoped_belief", "dependency_paths", "candidate_specific_recovery_evidence", "shared_latent_auxiliary_and_ranking"],
+  "label_source": "frozen_actual_RGB_observer_and_measured_requested_applied_commands",
+  "silver_not_human_or_physical_truth": true,
+  "quality_threshold": 0.5,
+  "observer_numeric_precision": {"float32_matmul_precision": "highest", "cuda_matmul_allow_tf32": false, "cudnn_allow_tf32": true, "historical_teacher_replay": "10 examples bitwise", "canonical_sidecars_not_raw_recollection": true},
+  "unobservable_physical_predicates_masked": ["target_pose_current", "target_reachable", "grasped", "lifted", "place_ready", "placed", "execution_consistent"],
+  "supervised_targets": ["target_visible", "receptacle_visible", "command_consistent", "target_evidence_available", "receptacle_evidence_available", "relation_support_2d"],
+  "relation_units": "image_space_proxy",
+  "target_encoding": {"raw_after": "[0,1]", "raw_transition": "after-before in [-1,1]", "fit_transition": "0.5+0.5*raw_transition", "decode_transition": "2*p-1", "transition_mask": "both endpoints observable", "masked_targets": "do_not_supervise"},
+  "data_roles": {
+    "old_192_pools": "144 train / 48 val; terminal success-first preferences only",
+    "historical_797": "638 train / 159 val; selected-arm masked auxiliary; not full counterfactuals",
+    "supplement_40_pools": "4 known tasks x 2 consumed groups x 5 causes x K4; 160 first-block arms; no terminal-task success labels",
+    "qc": "8 clean-B, never train",
+    "split": "suite/task/state whole group; source-independent group identity",
+    "sealed_32_and_future_128": "excluded from training or thresholds"
+  },
+  "training": {"seed": 0, "epochs": 300, "latent_width": 8, "rank_weight": 1.0, "masked_auxiliary_weight": 0.25, "l2": 0.001, "learning_rate": 0.03, "optimizer": "full_batch_adam", "residual_cap": 0.1, "rank_head_initial_zero": true, "forced_nonzero_residual": false, "validation_fitting": false, "train_only_normalization_and_support": true},
+  "controls": ["value_only", "frozen_candidate_backbone", "full_recovery", "same_model_masked_attribution", "same_model_shuffled_attribution", "same_model_no_dependency", "matched_architecture_retrained_masked_attribution"],
+  "selection_wrapper": "identical margin/tie/guard for full and controls; no outcome input",
+  "acceptance": {"train_strictly_better_value_only": true, "val_noninferior_value_only": true, "zero_success_harm": true, "attribution_additional_benefit_vs_candidate_only_reported_separately": true, "score_sensitivity_not_benefit": true, "no_automatic_128_or_main_experiment": true},
+  "known_limits": ["observer max-view quality is not cross-view instance certification", "no physical grasp/contact recovery ground truth", "historical auxiliary has selection bias", "same-pool replay is not a new real closed-loop test", "frozen V8 retains its original local gate failure"]
+}

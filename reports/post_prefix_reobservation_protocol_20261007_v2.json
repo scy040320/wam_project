@@ -1,0 +1,32 @@
+{
+  "schema": "preexecution_fixed_post_prefix_AUX_environment_only_revision_v2",
+  "version": "known_task_post_prefix_reobservation_auxiliary_20261007_v2",
+  "inherits_frozen_protocol": "post_prefix_reobservation_protocol_20261007_v1.json",
+  "inherited_protocol_sha256": "144523247360245d06a00899a21f8b4a2c93aa968b37781a2054a6e223d69274",
+  "V1_failure_retained": "LIBERO import input EOF before any prefix reconstruction or arm, zero simulator action executions",
+  "V1_output_lock_log_not_overwritten": true,
+  "V2_only_semantic_delta": "none; runtime environment compatibility only",
+  "runtime_environment": {
+    "LIBERO_CONFIG_PATH": "project_root/.libero; existing nonempty config.yaml mandatory and SHA recorded; never rewritten",
+    "PYTHONPATH": "new frozen code directory:verified frozen reference dependency directory:project_root",
+    "MUJOCO_GL": "egl", "PYOPENGL_PLATFORM": "egl", "OPENBLAS_NUM_THREADS": "1", "OMP_NUM_THREADS": "1", "MKL_NUM_THREADS": "1"
+  },
+  "source_groups": [
+    {"task": 57, "state": 10, "cause": "unknown", "candidate_id": 0, "split": "train", "prefix": 4, "fixed_gripper": 1.0},
+    {"task": 57, "state": 13, "cause": "unknown", "candidate_id": 0, "split": "val", "prefix": 2, "fixed_gripper": -1.0}
+  ],
+  "fixed_arms": ["hold", "peek_left", "peek_right", "peek_up"],
+  "budget": {"prefix_reconstruction_passes": 2, "prefix_action_steps": 6, "main_16step_arms": 8, "QC_16step_executions": 16, "total_AUX_executions": 24},
+  "before": "verified actual original candidate postaction prefix frame and historical causal evidence only; never cached query or teacher render",
+  "availability_Y_only_no_semantic_conflict_or_native_pool_claim": true,
+  "frozen_gates_snapshot_equality_actions_gripper_source_and_zero_result_retention_unchanged": true,
+  "training_started": false,
+  "tests": {"passed": true, "count": 32, "sha256": "300d1d16c9fdbe9f5851b5e67e74227195616272e1e3881bcb550fbdbd57aeea"},
+  "compile_passed": true,
+  "code_sha256": {
+    "post_prefix_reobservation_collect.py": "2fec17fa6c7c5c58b9582b1dfa4d847adf021c24dc1b15c603f3e4fa60a286c3",
+    "post_prefix_reobservation_launch.py": "d0776d9be6560778e7756e21569efaa5b6c72ef1902c3ad5fa22e4d955ada91a",
+    "post_prefix_reobservation_supervision.py": "6e96942373da528600696b841944e0457dbb0c000ed94c4df202682eddcebbc9"
+  },
+  "status_at_freeze": "tests_passed_before_V2_deployment"
+}

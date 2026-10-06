@@ -1,0 +1,52 @@
+{
+  "schema": "candidate_recovery_supervision_v1",
+  "contract_revision": 2,
+  "experiment_alias": "recovery_conditioned_ranker_V9",
+  "parent_deployment": "frozen_V8_preserved",
+  "inherits": {
+    "coarse_classes": ["normal", "visual_occlusion", "object_shift", "execution_contact_deviation", "unknown"],
+    "attribution_unknown_threshold": 0.64,
+    "factor_threshold": 0.5,
+    "action_chunk_shape": [16,7],
+    "predicate_thresholds": "wam_reranking.reranker.PREDICATE_HARD_THRESHOLDS",
+    "data_roles": "train/val按suite/task/state整组隔离；QC与confirmation不混入正式训练"
+  },
+  "connected_chain": ["frozen_attribution", "source_scoped_belief", "dependency_provenance", "ordered_candidate_recovery_trace", "recovery_conditioned_ranking"],
+  "routes": {
+    "normal": "检验候选是否维持可靠事实；没有支持的异常时保持排序主干，不强行修正。",
+    "visual_occlusion": "降低观测与位姿新鲜度；保留已观察到的抓持，使用可靠腕部证据或显式重观察，不以未来画面证明现在可见。",
+    "object_shift": "旧位姿失效并传播依赖；新观测可恢复定位，抓持另核验；候选按重接近/重抓取/操作关系证据匹配。",
+    "execution_contact_deviation": "命令执行记录与接触状态分开；偏差不等于掉落，逐候选核验当前抓持、重抓取和释放顺序。",
+    "unknown": "不猜具体物理原因；显式编码缺失证据及候选所需前提，支持重观察/重新查询/保守保留，不强行给已知原因正标签。"
+  },
+  "multi_label": "共享五因子可同时激活，粗类别不是单一路由开关。",
+  "observation_rules": {
+    "initial_assumptions_are_not_observations": true,
+    "commanded_close_is_not_successful_grasp": true,
+    "terminal_prediction_cannot_satisfy_entry_requirement": true,
+    "predicted_effects_never_write_current_belief": true,
+    "observation_evidence_names_its_reliable_primary_or_wrist_source": true,
+    "unreliable_execution_record_cannot_certify_physical_falsehood": true,
+    "articulated_task_does_not_require_lifting_the_drawer": true,
+    "image_relation_support_is_not_physical_safety_certificate": true
+  },
+  "supervision": {
+    "deployable_inputs": ["attribution_probabilities_and_quality", "current_observation_supported_belief", "DAG_paths", "candidate_actions", "candidate_predicted_effects_with_timestamps", "official_value", "trajectory_risk_proxy"],
+    "required_actual_block_evidence": ["primary_sequence", "wrist_sequence", "proprio_sequence", "requested_actions", "applied_actions", "executed_length", "step_indices", "candidate_id", "snapshot_sha256", "query_observation_sha256", "planned_actions_sha256"],
+    "predicate_labels": "独立supervision文件，记录before/after三值、证据质量、可见性mask、时间与来源；不可见不监督，禁止从最终成功反推块内恢复。",
+    "minimum_unmasked_label_quality": 0.5,
+    "evidence_availability_head": "unknown恢复仅监督证据是否从缺失变为可用，不能给不可观察物理原因提供正标签；与物理状态恢复标签分开。",
+    "allowed_label_evidence": ["observed_image_support", "measured_command_difference", "proprio_support"],
+    "excluded_deployment_fields": ["success", "terminal_state", "risk_proxy_sim_contacts", "intervention_label", "predicate_recovery_labels"],
+    "legacy_role": "原成功/成本标签保留作终局排序辅助，不自动升级为正式恢复监督。"
+  },
+  "training_plan": {
+    "start_only_after_recovery_training_audit": true,
+    "primary_objective": "实际可观测的谓词恢复辅助监督与池内成功偏好联合；成功优先，不用步数奖励替代成功。",
+    "loss_weights": "须在拟合前另冻结；本合同不自行确定或调参。",
+    "calibration": "仅train；保持现有门槛，记录全部伤害和fallback。",
+    "controls": ["value_only", "candidate_only", "protocol_oracle_recovery", "predicted_recovery", "fixed_model_masked_attribution", "fixed_model_shuffled_attribution", "no_dependency_propagation"],
+    "qualification": "正确归因须有相对仅排序的可复核额外收益且不增加成功伤害；成功相同可报告共同成功场景成本，不能冒充成功率增益。",
+    "independent_128": "仅有收益并冻结后另行推进，当前不启动。"
+  }
+}

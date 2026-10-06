@@ -1,0 +1,30 @@
+{
+  "schema": "sourcehashed_zero_action_restore_interpretation_v1",
+  "diagnostic_source": "research_runs/known_task_post_prefix_reobservation_restore_diagnostic_20261007_v1/restore_only_diagnostic.json",
+  "diagnostic_sha256": "51452819fd006463691c2c4385c2c50b7e01275f2e968029c5d6695b8664d6e3",
+  "snapshot_sha256": "33ea49036d62526fc286ec5736d0a4131f1705f6085ba8eb812db2176d1dc778",
+  "prefix_proof_sha256": "9303378a70e5f3eebc007c4fe4c283d060e36c3d1c36147ac79443b8aa674c6e",
+  "diagnostic_env_step_calls": 0,
+  "only_different_fields": ["runtime.sim_data.qacc", "runtime.sim_data.qacc_warmstart"],
+  "each_difference": {"elements": 45, "max_abs": 1773.479239061131, "p95_abs": 494.20169358175434},
+  "exact_unchanged_snapshot_fields": ["sim_state", "timestep", "sim_model", "sim_data.ctrl", "sim_data.act", "sim_data.mocap_pos", "sim_data.mocap_quat", "sim_data.userdata", "sim_data.qfrc_applied", "sim_data.xfrc_applied", "robots.controllers", "robots.interpolators"],
+  "actual_original_proprio_error": 0.00017700657374363285,
+  "frozen_proprio_gate": 0.001,
+  "frozen_fork_sha256": "e8588c5ba3718d6a9d1b1f64832bb66d9a835c3b935fd0ee8a450ac90e9c9070",
+  "call_order_evidence": [
+    "frozen collect_snapshot_fork.py:143 calls sim.forward",
+    "145-146 restores saved qacc and qacc_warmstart",
+    "150-153 controller.update(force=True); actual robosuite base_controller.py:139 calls sim.forward",
+    "161 returns raw_observation",
+    "raw_observation:166 calls sim.forward again AFTER saved solver state was restored",
+    "actual robosuite environment.step:389 calls forward before control/simulation substeps"
+  ],
+  "warmstart_is_not_ignored_cache": true,
+  "warmstart_evidence": "https://mujoco.readthedocs.io/en/2.3.7/programming/simulation.html",
+  "minimal_proposed_fix": "new wrapper calls frozen restore, reapplies exact saved qacc/qacc_warmstart after its final observation refresh, immediately asserts complete runtime bitwise equality, and does not call forward/render/getobs after reapplication; same wrapper for main and both QC",
+  "old_fork_not_modified": true,
+  "full_runtime_equality_not_removed": true,
+  "RGB_proprio_local_tracking_repeat_noise_gates_not_changed": true,
+  "V3_execution_started": false,
+  "training_started": false
+}

@@ -1,0 +1,345 @@
+{
+  "schema": "limited_direct_recovery_training_readiness_v2",
+  "review_date": "2026-10-06",
+  "review_mode": "read_only_code_and_existing_evidence_audit",
+  "scope": {
+    "new_training_started": false,
+    "new_collection_started": false,
+    "frozen_models_modified": false,
+    "old_labels_modified": false,
+    "allowed_new_artifact": "this admission report only",
+    "technical_integrity_is_not_training_readiness": true
+  },
+  "decision": {
+    "direct_recovery_training_ready_now": false,
+    "admitted_predicate_deadline_heads": 0,
+    "reason": "No reviewed predicate has an independently audited valid-at-use-time mapping with certified positive and negative candidates at the same deadline in the same original pool. Existing missing certificates remain masked, not negative.",
+    "all_five_causes_or_all_nine_predicates_required_for_first_limited_fit": false,
+    "staged_fit_allowed_in_principle": true,
+    "staged_fit_scope": "Enable only independently admitted (predicate, use_deadline) pairs; every other head stays masked and contributes exactly zero.",
+    "ordinary_terminal_rank_training_is_a_separate_possible_task": true,
+    "ordinary_terminal_rank_gain_must_not_be_claimed_as_attribution_recovery_gain": true
+  },
+  "source_artifacts": [
+    {
+      "role": "immutable_canonical_training_input",
+      "path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/known_task_recovery_v9_training_20261006_v2_canonical_precision_inputs/training_input.json",
+      "sha256": "5f556eed5735a038ed3254c79fc4fcbc7ba17e53ab9853a6560a23e3b6ab5816",
+      "producer_training_audit_payload_sha256": "23016bbcf9ccd06be30fd729734b5a84aa9aaf69955f455e1b96b5e26ba6d727"
+    },
+    {
+      "role": "full_observed_atom_overlay_audit",
+      "path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/known_task_recovery_observation_input_overlay_20261006_v2_namespace_scoped_full/input_audit.json",
+      "sha256": "2f52f5ed8748d54c88860b8a4404d95b636a4c1922d641fb34d6643fc2bc1ff8",
+      "technical_passed": true,
+      "training_ready": false
+    },
+    {
+      "role": "full_perspective_observation_certificate_audit",
+      "path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/known_task_recovery_observation_audit_20261006_v5_motion_typed_support_full_labels_v3_perspective/observability_label_audit.json",
+      "sha256": "16f27c40aa8d16e008dc851be4b95abd62280e7c925802cf6c4f6797952a177d",
+      "technical_passed": true,
+      "training_ready": false
+    },
+    {
+      "role": "independent_historical_chain_certificate_audit",
+      "path": "F:/南大课题/课题转向/候选动作重排序实验结果/恢复证据标签汇总_20261006/观察证书修复/历史释放证书审计/historical_observation_certificate_audit.json",
+      "sha256": "4f46dbd763e02ed85f28a6e99e8e2d7082ffe14fb7dc84babcd54ad689a7cb31",
+      "raw_producer_pilot_audit_sha256": "62a75b10abc1a7a56b1cbc20f4d8c27845223861d1036bae1f5f23af083ceb9b",
+      "frozen_membership_sha256": "f25b93bb2cdefad83df841ed35e9376b7f5853ce70dbe84972501b43d9ad3c18"
+    },
+    {
+      "role": "bounded_reobservation_auxiliary_audit",
+      "path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/known_task_reobservation_auxiliary_20261006_v3_frozen_environment/completion_audit.json",
+      "sha256": "e9cec064e2ed2e73fcfb56c4c5d68c85931b73cf1b7f2ce325a17132ff74253f",
+      "technical_passed": true,
+      "ranking_training_ready": false
+    }
+  ],
+  "reviewed_code": [
+    {"path": "wam_reranking/direct_recovery.py", "sha256": "289ef1c73d70fca2c1d3cc56f74f84037b341c4b2308de64944c60ce0e7bf12b"},
+    {"path": "wam_reranking/recovery_contract.py", "sha256": "26c13d935ecc5f77c94695a3af700e845a19d8270e6ba5bd77ce0bacba78dbc3"},
+    {"path": "wam_reranking/recovery_label_contract.py", "sha256": "8983eca5476a2452662775f4bd7c6c9ba767016b376021bbcf34b81b04cbf9f1"},
+    {"path": "scripts/prepare_recovery_training.py", "sha256": "22768e58464d7de8fd79f0c0acb72212b96dfd5899ab98c84eee699ce98de8f1"},
+    {"path": "scripts/prepare_observed_event_overlay.py", "sha256": "827ca0cce24063b55ef5b83d91042c3bc809ba61132c7c462a5e8f57a9cec7ec"}
+  ],
+  "retained_membership": {
+    "rank_rows": 768,
+    "rank_train_rows": 576,
+    "rank_val_rows": 192,
+    "rank_native_pools": 192,
+    "rank_train_pools": 144,
+    "rank_val_pools": 48,
+    "rank_K": 4,
+    "auxiliary_rows": 957,
+    "auxiliary_train_rows": 718,
+    "auxiliary_val_rows": 239,
+    "historical_selected_arm_rows": 797,
+    "paired_first_block_auxiliary_rows": 160,
+    "paired_first_block_pools": 40,
+    "paired_first_block_train_candidates": 80,
+    "paired_first_block_val_candidates": 80,
+    "feature_schema": "cause_dependency_recovery_features_v3_libero_command",
+    "feature_names_count": 604,
+    "target_names_count": 26,
+    "input_old_targets_and_masks_retained": true,
+    "native_rank_pools_are_not_replaced_by_selected_historical_or_constructed_probes": true
+  },
+  "deployment_input_provenance": {
+    "new_overlay_actual_execution_is_Y_only": true,
+    "original_604_feature_gt_freedom_independently_confirmed": false,
+    "future_execution_x_leakage": null,
+    "inherited_source_producer_gt_leakage_claim": false,
+    "producer_audit_claim_does_not_become_new_certification": true,
+    "source_builder_review": [
+      "Native rank before observations use current_primary/current_wrist; candidate commands are planned actions and visual proxies come from the candidate prediction record. Terminal success/steps/calls/risk are written only as supervision/report fields.",
+      "Historical and paired auxiliary before observations take observer map indices 0/1 only; future map indices 2/3 are used for Y labels, not before-observation support. Candidate visual records and planned actions form candidate X.",
+      "The reviewed producer still inherits prediction/source timing claims from frozen source records. This bounded audit does not independently reopen all 6033 hashed source files or prove every original visual record free of future inputs."
+    ],
+    "direct_raw_schema": "preexecution_candidate_command_visual_v1",
+    "direct_raw_feature_count": 46,
+    "direct_raw_contents": "14 planned-command timing fields plus 16 predicted visual values and their literal availability masks",
+    "current_160_raw_visual_reconstruction_complete": 160,
+    "canonical_rows_do_not_export_typed_needs_and_use_deadlines": true,
+    "required_before_training": "Hash-bound outcome-free typed need/requirement producer with validated source timing; actual teacher predicates must not define X, missing needs, candidate stages, or requirement times."
+  },
+  "existing_observation_coverage": {
+    "overlay_frames": 2720,
+    "same_pool_same_step_certified_positive_negative_candidate_contrasts": {
+      "train": {"left_contact": 0, "right_contact": 0, "carried": 0, "supported": 0, "lifted": 0, "released": 0, "joint_changed": 0},
+      "val": {"left_contact": 0, "right_contact": 0, "carried": 0, "supported": 0, "lifted": 0, "released": 0, "joint_changed": 0}
+    },
+    "certified_frame_counts": {
+      "train": {
+        "left_contact": {"positive": 2, "negative": 51},
+        "right_contact": {"positive": 21, "negative": 391},
+        "carried": {"positive": 277, "negative": 0},
+        "joint_changed": {"positive": 34, "negative": 0},
+        "supported": {"positive": 0, "negative": 0},
+        "lifted": {"positive": 0, "negative": 0},
+        "released": {"positive": 0, "negative": 0}
+      },
+      "val": {
+        "left_contact": {"positive": 1, "negative": 69},
+        "right_contact": {"positive": 45, "negative": 388},
+        "carried": {"positive": 242, "negative": 0},
+        "joint_changed": {"positive": 0, "negative": 0},
+        "supported": {"positive": 0, "negative": 0},
+        "lifted": {"positive": 0, "negative": 0},
+        "released": {"positive": 0, "negative": 0}
+      }
+    },
+    "historical_chain": {
+      "train_frames": 68,
+      "val_frames": 72,
+      "train_certified_carried_frames": 49,
+      "val_certified_carried_frames": 49,
+      "train_raw_physical_release_events": 1,
+      "val_raw_physical_release_events": 0,
+      "train_certified_release_events": 0,
+      "val_certified_release_events": 0,
+      "frames_are_correlated_selected_arm_evidence_not_98_new_native_pool_rows": true,
+      "different_candidate_ids_across_chain_bridge_preserved": true,
+      "short_tail_valid_lengths_train_val": [3, 7],
+      "release_mask_reason": "Missing verified own target RGB relative-motion tracks and own negative-contact separation witnesses; physical release alone is not an observable predicate certificate."
+    },
+    "reobservation": {
+      "captured_arms": 8,
+      "physical_executions_including_repeats": 24,
+      "train_recovery_positive_arms": 0,
+      "val_recovery_positive_arms": 0,
+      "cross_view_conflict_resolved_certificates": 0,
+      "reason": "Previously available wrist evidence prevents treating these executions as evidence-recovery positives."
+    }
+  },
+  "old_label_reuse_limits": {
+    "legacy_visible_predicate_labels_have_no_certified_false_examples": true,
+    "target_evidence_available_after": {
+      "historical_train": {"positive": 595, "negative": 43},
+      "historical_val": {"positive": 150, "negative": 9},
+      "paired_train": {"positive": 80, "negative": 0},
+      "paired_val": {"positive": 80, "negative": 0}
+    },
+    "target_evidence_available_transition": {
+      "historical_train": {"positive": 30, "zero": 575, "negative": 33},
+      "historical_val": {"positive": 6, "zero": 147, "negative": 6},
+      "paired_train": {"positive": 0, "zero": 80, "negative": 0},
+      "paired_val": {"positive": 12, "zero": 68, "negative": 0}
+    },
+    "paired_endpoint_availability_mixed_pools_train_val": [0, 0],
+    "command_consistent_after_all_957_positive": true,
+    "relation_support_2d_is_continuous_proxy_not_physical_predicate": true,
+    "old_physical_predicate_supervision_masks_all_zero": ["target_pose_current", "target_reachable", "grasped", "lifted", "place_ready", "placed", "execution_consistent"],
+    "reuse": "Selected historical availability and 2D relation labels remain legitimate auxiliary/proxy targets in their original scope. They do not supply same-pool counterfactual at-use physical predicate supervision."
+  },
+  "cause_predicate_scope": [
+    {
+      "cause": "normal",
+      "need_scope": [],
+      "existing_use": "Reliable invariance/hard-negative regression and ordinary effect prediction supervision.",
+      "limit": "Direct recovery need is zero by design; normal ordinary ranking gains cannot prove attribution gains."
+    },
+    {
+      "cause": "visual_occlusion",
+      "need_scope": ["target_visible", "target_pose_current", "receptacle_visible"],
+      "existing_use": "Historical evidence-availability auxiliary labels and explicitly reobserved RGB diagnostics.",
+      "missing": "Certified relevant-entity evidence restored at the planned use time, with observable absence/insufficiency and same-pool candidate contrast.",
+      "limit": "Evidence availability is not automatically physical visibility, fresh current pose, grasping, or lifting. Occlusion does not invalidate carrying."
+    },
+    {
+      "cause": "object_shift",
+      "root": "target_pose_current",
+      "dag_possible_descendants": ["target_reachable", "grasped", "lifted", "place_ready", "placed"],
+      "existing_use": "Observable carried positives may support a separately audited scoped held-at-use positive mapping; 2D relation remains proxy.",
+      "missing": "Current-pose predicate certificate, or legal held-at-use positive/negative same-time native candidate contrasts for a genuinely required propagated fact.",
+      "limit": "Joint movement or target displacement diagnoses change; it does not establish current pose, reachability, placing, or every graph descendant."
+    },
+    {
+      "cause": "execution_contact_deviation",
+      "root": "execution_consistent",
+      "dag_possible_descendants": ["grasped", "lifted", "place_ready", "placed"],
+      "existing_use": "Command agreement is an auditable separate channel; certified carrying positives are potential holding evidence under a new predicate contract.",
+      "missing": "Observable successful restoration of the specific physical prerequisite, with independently witnessed negative cases at use.",
+      "limit": "A future candidate cannot change whether the previous action block executed consistently. Future command agreement does not establish contact success; finger contact alone is not grasped."
+    },
+    {
+      "cause": "unknown",
+      "need_scope": ["target_visible", "target_pose_current", "receptacle_visible"],
+      "existing_use": "Explicit reobservation/fallback and uncertainty accounting.",
+      "missing": "Actual resolution of the relevant visual ambiguity at use, not a guessed hidden physical cause.",
+      "limit": "Generic initial unknown does not count as an attribution-created invalid fact. Unknown physical heads can stay zero without blocking a limited admitted visibility or holding study."
+    }
+  ],
+  "proposed_held_at_use_mapping_review_not_enabled": {
+    "mapping_enabled": false,
+    "proposed_semantic_scope": "The target is currently carried/held by the end effector sufficiently to support the next scoped motion. This is not force closure, robust grasp stability, or a precise grasp pose guarantee.",
+    "sufficient_positive": "Existing physical carrying plus its independently certified sustained same-view actual target/EEF common-motion evidence at the exact use time, entity identity intact, no support, existing >=5mm common 3D motion and <=3mm drift thresholds retained.",
+    "positive_need_not_require_every_fingertip_contact_to_be_visible": true,
+    "why": "The narrow holding claim can be supported by target/EEF sustained actual motion; demanding a separate positive contact surface certificate for both fingers would add a new, unnecessary observation requirement to this scoped predicate.",
+    "negative_requires": "Independent actual relative separation/loss-of-carrying at the exact use deadline, with retained entity identities and sufficient RGB witnesses; a certified release may support holding-negative only under a separately audited mapping.",
+    "invalid_negative": ["missing carrying certificate", "no common-motion excitation", "object supported while possibly grasped", "finger contact not visible", "release physics true without observable certificate"],
+    "entry_time_limit": "A future carrying prediction cannot repair deadline 0. Reliable current observation can reestablish current belief separately; candidate prefix certificates can supervise only later planned use times.",
+    "same_pool_contrast_missing_now": true,
+    "cannot_map_to": ["lifted", "place_ready", "placed"]
+  },
+  "code_contract_gaps_before_any_direct_fit": [
+    {
+      "id": "outcome_free_typed_bridge",
+      "status_at_review": "missing",
+      "evidence": "Canonical rows expose 604 features but no typed RecoveryNeed/CandidateRequirement/deadline provenance. No reviewed production bridge constructs these from RecoveryContext and source-aware changes.",
+      "required": "Use predicted attribution and actual-before belief changes, actual route roots and DAG paths, planned command requirements, non-GT trace probabilities, and exact candidate use deadlines."
+    },
+    {
+      "id": "cause_path_validation",
+      "status_at_review": "not_enforced_by_RecoveryNeed_dataclass_alone",
+      "evidence": "RecoveryNeed currently validates membership and provenance strings but accepts arbitrary object_shift/execution predicate combinations and a declared propagated flag.",
+      "required": "The independent bridge/admission audit must reject incorrect route roots, non-descendant facts, generic initial unknown, and fabricated propagation."
+    },
+    {
+      "id": "actual_use_time",
+      "status_at_review": "requires_semantic_audit",
+      "evidence": "command_requirements uses coarse stage rules; transport/place facts can remain deadline 0 and grasp/lift facts use generic stage times. A certified event at step16 cannot silently establish a prerequisite required earlier.",
+      "required": "Bind deadline j to the physical prefix before action j uses that predicate; never move the deadline merely to fit existing certificates. Deadline0 future-head guard remains unchanged."
+    },
+    {
+      "id": "atom_to_predicate_mapping",
+      "status_at_review": "not_admitted",
+      "required": "Freeze independent predicate-at-use contracts and masks. Contact is not grasped, joint_changed is not target_pose_current, released is not placed, and early carrying is not still-held after release."
+    }
+  ],
+  "bridge_preparation_appendix": {
+    "review_date": "2026-10-07",
+    "status": "independent_outcome_free_bridge_synthetic_contract_tests_passed_not_fitted",
+    "original_gap_entries_are_historical_review_findings_not_overwritten": true,
+    "code": {
+      "path": "wam_reranking/direct_recovery_context.py",
+      "schema": "predicted_before_context_to_direct_recovery_input_v1",
+      "sha256": "b1a13445a73d62fc1b22b9735aed7f44ec93b33899cb3b987f5a314d7657fc83"
+    },
+    "tests": {
+      "path": "tests/test_direct_recovery_context.py",
+      "sha256": "29f64f8efd171f93ed0bedd099778d1002ea4f1cb8ea91ad9e6cf30c04585719",
+      "new_bridge_tests_passed": 23,
+      "direct_score_tests_passed": 33,
+      "effect_only_control_tests_passed": 4,
+      "total_independently_rerun_passed": 60
+    },
+    "verified": [
+      "Current before fact must still be attribution-owned, updated in the current block and carry the matching attribution source id. Refreshed actual True/False observations, candidate predictions, and stale source ids do not create attribution needs.",
+      "Object-shift paths start at target_pose_current and execution-deviation paths start at execution_consistent; every propagated edge must exist in the actual supplied graph. Visibility/unknown routes cannot receive physical-grasp credit.",
+      "Generic initial UNKNOWN to propagated UNKNOWN, previously FALSE, candidate_prediction and unverified initial_observation masked to UNKNOWN do not become this block's new attribution-created need.",
+      "Normal produces no recovery needs. No admitted heads produces exactly the frozen backbone score.",
+      "The required-use time comes from the existing planned command requirements; it is not moved to a later certified event to unlock a score.",
+      "Route mass and invalidation confidence enter need weight; requirement confidence is applied once by the existing direct scorer, not squared.",
+      "Raw candidate commands and predicted visual value/masks remain identical under masked and no-DAG controls. Extra GT field names cannot enter the raw feature allowlist."
+    ],
+    "review_findings_corrected_before_this_sha": [
+      "Earlier bridge revision multiplied requirement confidence both in need construction and in scoring. This double attenuation is removed and covered by a score-weight regression.",
+      "Earlier bridge revision accepted a propagated UNKNOWN to UNKNOWN update as a new attribution deficit. A concrete default-BeliefState replay produced object_shift.grasped weight0.65025; after the fix the same replay produces zero needs."
+    ],
+    "required_use_time_current_rules": {
+      "approach": "declared visibility/pose prerequisites at step0",
+      "grasp": "declared pose/reachability prerequisites at planned first-close index, or0 when unavailable",
+      "lift": "declared grasp prerequisite at planned first-up index, or0 when unavailable",
+      "transport": "declared grasp/lift prerequisites at step0",
+      "place": "declared lifted/receptacle prerequisites at step0; place_ready at planned first-release index, or0 when unavailable"
+    },
+    "limits": [
+      "These synthetic tests establish source/path/score-interface wiring, not a trained model, label admission, real selection improvement or closed-loop efficacy.",
+      "The factory deliberately credits only a current-block TRUE-to-invalid change with positive old confidence. Cross-block existing deficits require independently preserved before-provenance; they are not reconstructed from rewritten sources.",
+      "If multiple factors sequentially invalidate the same fact in one block, later changes may see old UNKNOWN and receive no new credit. This conservatively avoids duplicate deficit claims but can under-credit later causes; a future multi-cause extension must preserve the original before fact instead of relaxing the UNKNOWN guard.",
+      "Existing coarse stage timing is inherited unchanged. Each enabled predicate still needs an independently audited meaning at the actual use time. OBSERVE/UNCERTAIN currently have no declared candidate prerequisites; this bridge alone does not make a reobservation scorer.",
+      "A typed dataclass or allowlisted name is not a full audit of every upstream X source. Existing before/predicted producer provenance restrictions and the old 604-source independent-certification limitation remain."
+    ],
+    "deployment_enabled": false,
+    "training_started": false,
+    "admitted_heads_after_bridge_review": 0,
+    "training_ready_after_bridge_review": false,
+    "original_success_gates_thresholds_and_cap_unchanged": true
+  },
+  "minimal_finite_next_step": {
+    "first": "Audit existing 40 paired pools for one explicitly scoped holding-at-later-use predicate and independently visible loss-of-holding at that same use time; use current RGB and lineage without new Cosmos queries.",
+    "do_not_relabel": "Absence of a carrying certificate stays unknown. Do not reuse early positive plus later negative as same-time opposition.",
+    "if_no_admitted_contrast": "Request a separately frozen bounded, non-outcome-selected paired recovery probe with both recoverable and non-recovering candidates. Keep its membership, raw feature producer, and role independent of old native pools.",
+    "probe_role_limit": "A constructed probe without real terminal outcomes is auxiliary head supervision only, never a native terminal-rank row. If its before/predicted feature distribution differs from native raw46, report OOD and do not extrapolate silently.",
+    "first_fit_does_not_require": ["all nine predicates", "all five causes with positive certificates", "universal fingertip visibility", "new world-up/lift certificates when not the selected admitted predicate", "perfect held-out-task generalization"],
+    "stop_rule": "Once the bounded predefined feasibility sample is exhausted, report an observation/contrast gap and stop that head; do not keep inventing thresholds or chasing complete certificate coverage."
+  },
+  "first_limited_fit_admission": {
+    "one_or_more_predicate_deadline_pairs_suffices": true,
+    "per_enabled_pair_required": [
+      "Audited predicate semantics at the actual planned use deadline, with direct manifest and observation-contract hashes.",
+      "Train certified positives AND independently certified negatives at that exact deadline.",
+      "At least one source-native same-pool/same-deadline opposing candidate contrast, not an early-versus-late contrast.",
+      "Separate task/state groups for fit and validation; correlated frames or selected historical arms are not counted as independent native pools.",
+      "Before-only raw candidate information and source-aware predicted need; no teacher missing state or actual future input.",
+      "A real candidate requirement for that predicate and nonzero attribution-origin need; labels cannot invent a requirement simply to activate scoring.",
+      "Frozen raw-support/OOD guards, residual cap, reference candidate, selection wrapper, tie rule and fallback accounting."
+    ],
+    "unadmitted_heads": "masked labels and zero recovery score",
+    "loss_recommendation_not_executed": "Train admitted raw46→predicate-valid-at-use heads with masked binary supervision and same-pool contrasts. Any success-first ranking loss uses only genuine native terminal outcomes. Direct score is bounded need×(candidate recovery probability-reference recovery probability); no independent unrestricted ranking bypass.",
+    "gain_not_forced": true,
+    "tiny_one_pair_scope": "Nonzero admission counts can establish interface feasibility only; they cannot establish stable task effectiveness. Independent validation coverage and uncertainty must be reported before wider claims."
+  },
+  "fair_controls": {
+    "common_to_all": ["raw46 fingerprint", "candidate ids", "frozen backbone scores", "planned requirements/deadlines/confidence", "reference candidate", "admitted heads and train support", "total residual cap0.1", "selection wrapper/tie/hard gates/fallback budget"],
+    "full": "predicted cause-specific still-missing needs multiplied by certified recovery probabilities",
+    "masked": "same model and raw information; only attribution/belief-derived needs are zero",
+    "shuffled": "same raw information and labels; only valid before-attribution/need channel is shuffled within frozen split and scope",
+    "no_dag": "same raw information and heads; remove only needs actually created by audited dependency propagation",
+    "effect_only": "same heads/raw/deadlines/reference/admission/cap, but no needs are read; isolates ordinary effect-prediction benefit",
+    "retrained_controls": "If compared after fitting, equal architecture, supervision availability, epochs, seed, optimization budget and split; do not weaken effect-only/raw information to manufacture attribution advantage.",
+    "no_dag_identical_when_no_active_propagated_need": "expected null contrast; cannot claim graph necessity",
+    "report": ["success@selection", "strict improvements", "success harms against value and frozen backbone", "selection switches", "OOD/inactive reasons", "per-candidate probability and cause-need score decomposition", "common-success steps and WAM calls when truly observed"],
+    "replay_not_closed_loop": true
+  },
+  "effectiveness_and_gate_claims": {
+    "existing_success_and_zero_harm_thresholds_not_lowered": true,
+    "known_task_effectiveness_requires": "Pre-frozen unused states, identical candidate/execution/query budgets, all failed pools retained, outcome-free selection, and reproducible extra benefit of full over equally informed effect-only/masked controls. Report costs on common successes.",
+    "coupling_wiring_is_not_trained_utility": true,
+    "small_development_fit_is_not_gate3": true,
+    "original_gate3_not_passed_by_this_audit": true,
+    "original_gate3_unmet_items_not_erased": "Attribution engineering prerequisite and prescribed four-task same-budget structural mechanism comparisons retain their original status. A narrowed known-task mechanism study must be named separately.",
+    "no_automatic_main_experiment": true
+  }
+}

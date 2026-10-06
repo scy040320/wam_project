@@ -31,7 +31,41 @@ The deployment path never receives simulator state, intervention labels,
 success labels, or post-execution candidate outcomes. Candidate outcomes are
 used only to train or evaluate the selector.
 
-## Current research status (2026-10-06)
+## Current research status (2026-10-07)
+
+The recovery-coupled selector is **not yet admitted for training**. Frozen
+attribution and selector models and their original results are retained.
+
+- The whole-training contract now distinguishes entry checks, future
+  predicate use times, and predeclared next-boundary observation goals.
+  Only real, before-derived active needs can create learned recovery heads.
+  Missing evidence is masked, not relabeled negative. All active targets and
+  the real full/masked/shuffled/no-dependency/effect-only producer must pass
+  together; synthetic control tests do not admit a training dataset.
+- A historical audit found after-quality records for 770 of 797 aligned
+  blocks. All 52 historical negative records were byte-checked; 50 also have
+  aligned after-quality and can be recomputed as observer auxiliary labels.
+  The 770 logical joins are **not** all byte-admitted training samples, and
+  selected-arm histories are not whole-pool counterfactual supervision.
+- One real four-candidate pool has its own observations, predictions and
+  actions, but lacks saved fresh query proprio and a trustworthy pre-update
+  belief. Private simulator state and post-selection belief cannot fill
+  those deployment-input gaps. Its true active recovery targets are unknown.
+- The Python-3.10-compatible bounded evidence probe was uploaded, hash-checked
+  and compiled on the original host. It stopped before its first policy query:
+  wrist pixel differences above 5 occupy 7.0648%, exceeding the frozen 6%
+  gate. Total consumption is 0 queries and 16 action steps, within the
+  cumulative caps of 8 queries and 288 steps. No scientific retry or training
+  was launched; failed artifacts and the saved source snapshot are retained.
+- A separate interface audit found that a converter projects a frozen normal
+  prediction to unknown while retaining normal confidence (0.01961). This
+  semantic mismatch is diagnosed, not fixed or claimed to explain a measured
+  selection failure. Models and thresholds were not changed.
+- Canonical restored clean-A/B comparisons are a **pending proposal**, not an
+  implemented comparison-contract change. Original Gate3 and the main study
+  remain unapproved. See [the recovery contract](docs/joint_recovery_training_contract.md).
+
+### Earlier frozen evidence
 
 - Frozen trusted-evidence policy V8 completed 64 consumed development scenes:
   value-only 34 successes, candidate-only 38, full 38. Full has four gains and
@@ -42,12 +76,12 @@ used only to train or evaluate the selector.
   benefit and dependency-graph necessity have not been established. Training
   calibration at gain 0.125 tied gain zero; gain 0.25 introduced a harm.
   This is not evidence of a beneficial jointly learned cause correction.
-- A fixed four-arm, known-task/new-state mechanism study is now launched:
+- A fixed four-arm, known-task/new-state mechanism study was launched:
   value-only, candidate-only, attribution+ranking without dependency edges,
   and full. Tasks 0/9/46/57 use two audited unused states each, four conditions,
   K=4, and identical 400-step/92-postfork-query budgets: 32 scenes, 128
-  actual arm executions. Two mutually exclusive lanes run a 16-scene quality
-  pilot then the remaining 16 scenes, without outcome-based scene filtering
+  actual arm executions. Its protocol used mutually exclusive lanes and a
+  16-scene quality pilot followed by the remaining 16 scenes, without outcome-based scene filtering
   or automatic tuning. Full and no-dependency differ only in graph edges.
   See [the frozen protocol](configs/known_task_fixed_budget_ablation.json)
   and [mechanism study contract](docs/FIXED_BUDGET_MECHANISM_ABLATION.md).
@@ -148,8 +182,8 @@ The standalone mechanism and unit tests require Python 3.10+ and NumPy:
 ```bash
 git clone https://github.com/scy040320/wam_project.git
 cd wam_project
-python -m pip install -e .
-python -m unittest discover -s tests -v
+python -m pip install -e ".[test]"
+python -m pytest tests -q
 ```
 
 Full robot experiments additionally require upstream
@@ -183,7 +217,7 @@ scripts/
 tests/                          deterministic mechanism and protocol tests
 ```
 
-Machine-specific launchers, checkpoints, raw datasets, videos, caches, and
+Shell orchestration, checkpoints, raw datasets, videos, caches, and
 intermediate experiment versions are intentionally excluded. Failed studies
 remain recoverable from Git history and archived experiment manifests, but do
 not remain as competing public interfaces in the repository.
@@ -193,6 +227,10 @@ numbers. Frozen schema identifiers and historical experiment identities are
 kept unchanged for compatibility; they are not new public interface names.
 Runtime snapshot files are trusted local experiment artifacts. Do not load
 pickled snapshots from untrusted sources.
+
+Archived-source diagnostic Python entry points require their pinned external
+artifacts; they are not a turnkey training pipeline. They must not be invoked
+as replacements for the whole-training gate or an approved experiment protocol.
 
 ## Evaluation contract
 

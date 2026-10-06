@@ -1,0 +1,41 @@
+{
+  "schema": "preexecution_fixed_post_prefix_AUX_restore_order_revision_v3",
+  "version": "known_task_post_prefix_reobservation_auxiliary_20261007_v3",
+  "inherits_original_fixed_actions_labels_and_source_protocol": "post_prefix_reobservation_protocol_20261007_v1.json",
+  "original_protocol_sha256": "144523247360245d06a00899a21f8b4a2c93aa968b37781a2054a6e223d69274",
+  "inherits_environment_only_revision": "post_prefix_reobservation_protocol_20261007_v2.json",
+  "environment_protocol_sha256": "65dd3720b3af071106dac1caa667a9114b26c940ced3e24be4046be8468f4404",
+  "V1_V2_failure_outputs_locks_and_old_fork_untouched": true,
+  "zero_action_restore_diagnostic_sha256": "51452819fd006463691c2c4385c2c50b7e01275f2e968029c5d6695b8664d6e3",
+  "restore_order_repair": {
+    "reason": "Frozen restore reapplies qacc/warmstart then calls controller update and final raw_observation.forward which overwrite them",
+    "method": "new PostPrefixFork wrapper delegates frozen restore, then reapplies EXACT saved qacc and qacc_warmstart after final observation forward; immediately captures and requires complete runtime bitwise equality; no extra forward/render/getobs INSIDE WRAPPER after writes; normal env.step forward/control/physics sequence unchanged",
+    "same_wrapper_for_all_main_and_QC": true,
+    "all_other_runtime_field_inequality_still_fails": true,
+    "full_equal_assert_not_removed": true,
+    "warmstart_not_treated_as_unimportant_derived_cache": true,
+    "no_physics_RGB_proprio_tracking_or_noise_threshold_change": true
+  },
+  "source10_existing_verified_prefix": {
+    "version": "known_task_post_prefix_reobservation_auxiliary_20261007_v2", "task": 57, "state": 10, "cause": "unknown", "candidate_id": 0,
+    "actual_original_prefix_steps": 4, "previous_AUX_steps": 0,
+    "snapshot_sha256": "33ea49036d62526fc286ec5736d0a4131f1705f6085ba8eb812db2176d1dc778",
+    "prefix_proof_sha256": "9303378a70e5f3eebc007c4fe4c283d060e36c3d1c36147ac79443b8aa674c6e",
+    "reuse_exact_existing_full_snapshot_and_proof": true, "new_prefix_reexecution_steps": 0, "fixed_gripper": 1.0
+  },
+  "source13": {"task": 57, "state": 13, "cause": "unknown", "candidate_id": 0, "actual_original_prefix_steps": 2, "fixed_gripper": -1.0, "one_new_prefix_reconstruction": true},
+  "fixed_arms": ["hold", "peek_left", "peek_right", "peek_up"],
+  "budget_across_all_versions": {"source_prefix_passes": 2, "source_prefix_steps": 6, "AUX_main_16step_executions": 8, "AUX_QC_16step_executions": 16, "AUX_total_execution_cap": 24},
+  "new_V3_only_prefix_passes": 1,
+  "before_and_labels_unchanged": "sourcehashed verified actual original prefix frame4/frame2 and historical causal evidence only; no query substitute, teacher RGB rankingX, future-backfill, semantic conflict resolution, target absence or native candidate pool claim",
+  "zero_recovery_retained_no_outcome_reselection_or_retry": true,
+  "tests": {"count": 37, "passed": true, "sha256": "b234b1feb249280e6fca1363c12ab74890c4fc9689f91e38ce398154647f1acb"},
+  "compile_passed": true,
+  "code_sha256": {
+    "post_prefix_reobservation_collect.py": "7238a4200e70132f9ec7b64a175802620cdde1001ea24e3c5bb2cdc530354e6d",
+    "post_prefix_reobservation_launch.py": "4a94cbf6acd71ff861b8b11a4c5fff84e7eb158950accba05cf1ef3c1d19d424",
+    "post_prefix_reobservation_supervision.py": "6e96942373da528600696b841944e0457dbb0c000ed94c4df202682eddcebbc9"
+  },
+  "status_at_freeze": "37CPUtests_passed_no_V3_launch_yet",
+  "training_started": false
+}

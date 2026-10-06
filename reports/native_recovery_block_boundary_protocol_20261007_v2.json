@@ -1,0 +1,36 @@
+{
+  "schema": "finite_native_block_boundary_recovery_proposal_v2",
+  "status": "parent_approved_for_bounded_source_audit_then_native_collection_no_fit",
+  "base_protocol_path": "reports/native_recovery_block_boundary_protocol_20261007_v1.json",
+  "base_protocol_sha256": "db810caf0b3df00e2a193c21570e91ea172c1758b06fa3d8c23abe76e9e9f3b5",
+  "version": "known_task_native_block_boundary_reobservation_20261007_v3_python310_compat",
+  "engineering_parent": {"version": "known_task_native_block_boundary_reobservation_20261007_v2", "protocol_sha256": "f7e5ab08ddc8060fb8d61327de46ebc165315ce07f23f452cb21489cf98e7402", "code_manifest_sha256": "4598b91cac1e08391642de3d358a2e37c19479cc574d864b781e5405a0a9bdbf", "parse_failure_log_sha256": "bdce6d117c98c8ac71f758afb9b5d19f0026bd7fb241e427b69db37eeec2edbd", "change": "Only replace Python3.11 subscript-star raw46 assembly with numerically identical concatenate/float array supported by Python3.10, and use a new engineering version name. All sources, seeds, labels, thresholds and total 8query/288action budget unchanged. Parent V2 never executed module: zero queries/actions.", "old_payload_and_failure_preserved": true},
+  "unchanged": ["two exact task9 sources", "prefix16", "all old source/dependency hashes", "native K4", "original parser and typed relation", "all numeric observation/QC gates", "8 query/288 action cap", "first complete K4 no-qualified-contrast stops next pool", "release section readonly deferred", "no fitting or training"],
+  "frozen_secondary_goal": {
+    "predicate": "observer_evidence_available",
+    "deadline": 16,
+    "kind": "epistemic_goal",
+    "purpose": "task_with_observation_recovery",
+    "source": "Declared before any new query from deployable actual-before observer insufficiency, not from executed candidate results",
+    "requires": ["before deployable observer availability is literal false", "predicted before cause is unknown or visual_occlusion", "before-only target task binding and ordinary X quality", "fixed same secondary goal for all native candidates"],
+    "native_action_stage_unchanged": true,
+    "native_Observe_or_pure_information_acquisition_claimed": false,
+    "entry_or_earlier_required_use_deadlines_unchanged": true,
+    "hard_gate_and_fallback_unchanged": true,
+    "negative": "Only explicit unusable actual-AFTER from SAME frozen deployment observer, complete own 17frame/QC and NO conflicting positive actual-RGB certificate certifies observer insufficiency. A positive actual-RGB certificate conflicting with deployment observer false is MASKED. Missing RGB certificate alone is UNKNOWN/maskfalse, not negative. No physical target absence, release/pose false or semantic conflict false is inferred.",
+    "qualification": "Positive requires SAME frozen deployment observer usable on actual-AFTER and actual target RGB/geometry identity certificate. Negative requires its explicit actual-AFTER unavailable record and complete own temporal/QC. Otherwise maskfalse. Qualified positive and negative required within exact common-start native K4. BEFORE must independently be deployment-observer false."
+  },
+  "seed_schedule": {
+    "formula": "10000000 + task*100000 + state*1000 + next_block4*16 + candidate_id",
+    "task9_state10_visual_occlusion": [10910064, 10910065, 10910066, 10910067],
+    "task9_state13_visual_occlusion": [10913064, 10913065, 10913066, 10913067],
+    "no_seed_retry_or_change": true
+  },
+  "execution": "First audit BOTH actual-prefix sources, then establish deployable before quality and predicted cause without GT. Only after every source gate passes may Cosmos weights load once. At most two sequential native K4 pools; complete the first attempted K4 and stop before any second-pool query if no qualified same-pool positive/negative goal contrast. One primary native capture plus one repeat per candidate, never two hidden extra replays.",
+  "after_observer_certificate": {"schema": "actual_after_frozen_deployment_observer_quality_v1", "role": "offline_supervision_only", "step": 16, "observer_code": "frozen observed_recovery.map_endpoint quality>=.5", "observer_code_sha256": "c6213b301b98fc90fadb3dfe0fe90f4e2d40b84f04c9b422dbce4072720b3654", "observer_model_sha256": "68b2b638f73c959fb170d39caecad63572427f7716f78fe4c9459ccaf8012bec", "source_refs": ["actual_after_rgb_sources primary/wrist HWC NPY", "subject_maps_source two-view NPY", "observer_code_source", "observer_model_source", "actual attribution JSON", "complete actual array SHA and frame index16", "query input hash", "verified prefix snapshot SHA"], "observer_input_lineage_sha256": "Canonical sorted compact JSON SHA256 over identity, step, actual_after_rgb_sources, subject_maps_source, observer_code_source, observer_model_source", "actual_rgb_measurement_verified": true, "no_physical_absence_claim": true, "maps_recompute_required": true},
+  "intermediate_frame_diagnostics": "Steps1..15 expose actual_rgb_certificate_available only; observer value=null/mask=false because no frozen deployment after-observer was run there. Step16 value/mask is assigned only by the final deploy-observer plus independent certificate rule. Actual before step0 false comes solely from frozen deployment-before insufficiency.",
+  "training_started": false,
+  "private_fullhand_metadata": {"module": "hand_contact_supervision.py", "sha256": "eb68e7686acf2a1094984970fc24d41a3a54259a06738c924b5618c4a52bad9b", "upstream_protocol_sha256": "76120cc258c052dce102ec6c446a82d46b82cf9d54228409bedea68a27254597", "added_step_reset_render": 0, "all_masks_and_held_negative_release_certificates": false, "role": "offline_supervision_only"},
+  "training_ready": false,
+  "whole_contract_pass_not_claimed": true
+}

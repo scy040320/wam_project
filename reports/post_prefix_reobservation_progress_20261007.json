@@ -1,0 +1,27 @@
+{
+  "schema": "bounded_postprefix_execution_progress_v1",
+  "training_started": false,
+  "fixed_start_sources": ["task57/state10/unknown/CID0/actual_prefix4/train", "task57/state13/unknown/CID0/actual_prefix2/val"],
+  "V1": {"pid": 37528, "phase": "failed_retained", "failure": "LIBERO config interactive input EOF", "prefix_action_steps": 0, "AUX_action_steps": 0, "QC_action_steps": 0},
+  "V2": {
+    "pid": 37753, "phase": "failed_retained", "failure": "full runtime bitwise restore inequality before first hold step",
+    "source_prefix_reconstructions_completed": 1, "source_prefix_action_steps": 4, "AUX_action_steps": 0, "QC_action_steps": 0,
+    "prefix_double_RGB_mean_abs_all_steps": 0.0, "prefix_proprio_max_abs_all_steps": 0.0,
+    "verified_new_full_runtime_snapshot_sha256": "33ea49036d62526fc286ec5736d0a4131f1705f6085ba8eb812db2176d1dc778"
+  },
+  "V3": {"pid": 38711, "phase": "complete", "passed": true, "AUX_main_executions": 8, "AUX_QC_executions": 16,
+    "new_original_prefix_action_steps": 2, "previous_verified_state10_prefix_reused": true,
+    "restore_order_repaired_without_removing_full_runtime_equality": true},
+  "availability_recovery_results": {"train": 4, "val": 4, "negative_endpoint_arms": 0},
+  "availability_recovery_result_claimed": true,
+  "same_pool_endpoint_discrimination": false,
+  "hold_control_recovered_in_both_groups": true,
+  "extra_peek_benefit_claimed": false,
+  "cross_view_semantic_conflict_resolved_mask": false,
+  "diagnostic_completed": "one zero-env.step restore-only field difference report; qacc/warmstart overwritten by frozen restore final raw_observation.forward",
+  "proposed_continuation_budget": "reuse already verified V2 state10 postprefix snapshot; reconstruct state13 once; total across versions exactly 2 source prefix passes (6 original steps), fixed8 main+16QC AUX cap unchanged",
+  "continuation_completed": true,
+  "old_data_models_and_labels_modified": false,
+  "outcome_source_reselection": false,
+  "native_candidate_pool_benefit_claimed": false
+}

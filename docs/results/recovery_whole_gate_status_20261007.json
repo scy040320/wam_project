@@ -1,0 +1,60 @@
+{
+  "record_date": "2026-10-07",
+  "status": "paused_by_researcher_after_source_gate_failure",
+  "training_started": false,
+  "local_code_checks": {
+    "pytest_passed": 1028,
+    "pytest_skipped": 2,
+    "pytest_collection_warnings": 2,
+    "staged_python310_ast_files": 99,
+    "python310_ast_errors": 0,
+    "code_checks_are_not_dataset_admission_or_benefit_evidence": true
+  },
+  "whole_training_gate_pass": false,
+  "new_benefit_claim": false,
+  "frozen_models_preserved": true,
+  "probe": {
+    "version": "known_task_native_block_boundary_reobservation_20261007_v3_python310_compat",
+    "manifest_sha256": "fb4480e3c679b20810a9ce4b4348f3bde36ef148b5d9d1f9aba5a6a934da5bc3",
+    "upload_hashes_and_python310_compilation_passed": true,
+    "queries_consumed": 0,
+    "actions_consumed": 16,
+    "cumulative_caps": {"queries": 8, "actions": 288},
+    "failed_metric": "wrist fraction of pixel-channel differences greater than 5",
+    "actual": 0.070648193359375,
+    "frozen_maximum": 0.06,
+    "other_image_and_proprio_gates_passed": true,
+    "diagnostic_extra_refresh_fixed_failure": false,
+    "source_artifacts_unchanged": true,
+    "no_scientific_retry": true,
+    "cache_timing_cause_proven": false
+  },
+  "historical_auxiliary_audit": {
+    "aligned_blocks": 797,
+    "logical_after_quality_joins": 770,
+    "missing_after_quality": 27,
+    "fully_byte_checked_old_negative_records": 52,
+    "old_negative_records_with_aligned_after_quality": 50,
+    "all_770_byte_admitted": false,
+    "whole_pool_counterfactual_supervision": false,
+    "old_labels_rewritten": false
+  },
+  "native_input_audit": {
+    "audited_pool_candidates": 4,
+    "source_files_rechecked": 24,
+    "fresh_query_proprio_saved": false,
+    "trustworthy_prior_saved": false,
+    "actual_active_targets": null,
+    "private_simulator_state_is_deployment_input": false
+  },
+  "interface_diagnostic": {
+    "frozen_raw_class": "normal",
+    "converted_class": "unknown",
+    "retained_normal_confidence": 0.019610485,
+    "fixed": false,
+    "observed_selection_failure_explained": false
+  },
+  "pending_proposal": "Canonical identically restored clean-A/B comparison; unchanged numeric gates; comparison-contract change requires approval and consumed actions must carry forward.",
+  "original_Gate3_passed": false,
+  "main_experiment_started": false
+}
