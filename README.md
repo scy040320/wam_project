@@ -31,39 +31,40 @@ The deployment path never receives simulator state, intervention labels,
 success labels, or post-execution candidate outcomes. Candidate outcomes are
 used only to train or evaluate the selector.
 
-## Current research status (2026-10-07)
+## Current research status (2026-10-08)
 
-The recovery-coupled selector is **not yet admitted for training**. Frozen
-attribution and selector models and their original results are retained.
+One bounded **terminal-utility residual** fit has completed on the original
+144 training and 48 consumed validation pools. It retains the complete frozen
+64-scene V8 policy, model, gates and evidence routing as its reference. This
+is not another execution of those 64 scenes, nor a retrained attributor.
 
-- The whole-training contract now distinguishes entry checks, future
-  predicate use times, and predeclared next-boundary observation goals.
-  Only real, before-derived active needs can create learned recovery heads.
-  Missing evidence is masked, not relabeled negative. All active targets and
-  the real full/masked/shuffled/no-dependency/effect-only producer must pass
-  together; synthetic control tests do not admit a training dataset.
-- A historical audit found after-quality records for 770 of 797 aligned
-  blocks. All 52 historical negative records were byte-checked; 50 also have
-  aligned after-quality and can be recomputed as observer auxiliary labels.
-  The 770 logical joins are **not** all byte-admitted training samples, and
-  selected-arm histories are not whole-pool counterfactual supervision.
-- One real four-candidate pool has its own observations, predictions and
-  actions, but lacks saved fresh query proprio and a trustworthy pre-update
-  belief. Private simulator state and post-selection belief cannot fill
-  those deployment-input gaps. Its true active recovery targets are unknown.
-- The Python-3.10-compatible bounded evidence probe was uploaded, hash-checked
-  and compiled on the original host. It stopped before its first policy query:
-  wrist pixel differences above 5 occupy 7.0648%, exceeding the frozen 6%
-  gate. Total consumption is 0 queries and 16 action steps, within the
-  cumulative caps of 8 queries and 288 steps. No scientific retry or training
-  was launched; failed artifacts and the saved source snapshot are retained.
-- A separate interface audit found that a converter projects a frozen normal
-  prediction to unknown while retaining normal confidence (0.01961). This
-  semantic mismatch is diagnosed, not fixed or claimed to explain a measured
-  selection failure. Models and thresholds were not changed.
-- Canonical restored clean-A/B comparisons are a **pending proposal**, not an
-  implemented comparison-contract change. Original Gate3 and the main study
-  remain unapproved. See [the recovery contract](docs/joint_recovery_training_contract.md).
+- The interface now retains timestamped `applied-requested` command evidence
+  from the previous complete block, separately from learned contact evidence.
+  Visibility, subject–gripper contact and subject–anchor relation have
+  predicate-specific masks. Low-quality container evidence no longer erases
+  otherwise admissible contact evidence; hard gates and thresholds are unchanged.
+- Source and input audits passed. One corrective success pair, 13 protective
+  pairs and 61 successful-cost pairs were available to one 1,200-step fit.
+  Post-execution outcomes are labels only, never deployment features. Forecasts
+  cannot certify a current physical fact or reopen a rejected candidate.
+- Training-only calibration selected residual gain **0**. Selection remains
+  103/144 on train and 33/48 on consumed validation, exactly matching the
+  complete V8 reference on these pools. There are no new successes, success
+  harms, or jointly-successful step/call savings relative to that reference.
+  Base preservation passes; the additional-utility gate **fails**.
+- Full, masked attribution, same-split shuffled attribution, no-dependency
+  and without-command controls share the same fit and frozen reference.
+  Unit-gain shadow diagnostics change five train and one validation choices
+  without outcome or paired-cost gains. They do not establish learned
+  attribution benefit or dependency-graph necessity.
+- Physical recovery-probability heads remain untrained: terminal success
+  labels are not same-time recovery supervision. Missing recovery evidence
+  remains masked. See [the recovery contract](docs/joint_recovery_training_contract.md)
+  and [bounded utility notes](docs/command_predicate_utility.md).
+- Frozen V8, its 64-scene results, earlier failed versions and raw evidence
+  are retained. No new collection, confirmation, closed-loop rollout or main
+  experiment was launched in this bounded fit. Original Gate3 remains open.
+  See [the preserved single-fit result](reports/command_predicate_utility_result_20261008.json).
 
 ### Earlier frozen evidence
 

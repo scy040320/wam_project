@@ -1,0 +1,91 @@
+{
+  "date": "2026-10-08",
+  "experiment": "known_task_full_v8_command_predicate_training_20261008_v10_v3",
+  "schema": "command_provenance_predicate_scoped_terminal_utility_v1",
+  "scope": "One bounded terminal-utility residual fit after the complete immutable 64-scene V8 policy; original offline train/consumed-validation pools",
+  "reference": {
+    "policy": "known_task_trusted_evidence_arbitration_20261005_v8",
+    "backbone_sha256": "d0780e6680bb99da07d7ced440f2b6604d8bcf489d3bb8455d46499024ac939f",
+    "attributor_sha256": "68b2b638f73c959fb170d39caecad63572427f7716f78fe4c9459ccaf8012bec",
+    "gates_routing_and_models_frozen": true
+  },
+  "dataset": {
+    "train_pools": 144,
+    "validation_pools": 48,
+    "candidate_count": 768,
+    "K": 4,
+    "validation_previously_consumed": true,
+    "all_failed_train_pools": 37,
+    "all_failed_validation_pools": 12,
+    "outcome_based_pool_exclusion": false
+  },
+  "fit": {
+    "count": 1,
+    "steps": 1200,
+    "learning_rate": 0.01,
+    "l2": 0.1,
+    "corrective_success_pairs": 1,
+    "protective_success_pairs": 13,
+    "successful_cost_pairs": 61,
+    "nonzero_weights": 20,
+    "pairwise_correction_cap": 0.1,
+    "minimum_switch_margin": 0.01,
+    "chosen_gain": 0.0,
+    "calibration": "training only",
+    "physical_recovery_probability_head_trained": false
+  },
+  "selection_results": {
+    "train": {
+      "full_v8": 103,
+      "new_residual": 103,
+      "value_only": 101,
+      "oracle": 107,
+      "new_success_improvements_vs_v8": 0,
+      "new_success_harms_vs_v8": 0,
+      "paired_success_steps_delta_mean_vs_v8": 0.0,
+      "paired_success_calls_delta_mean_vs_v8": 0.0
+    },
+    "validation": {
+      "full_v8": 33,
+      "new_residual": 33,
+      "value_only": 33,
+      "oracle": 36,
+      "new_success_improvements_vs_v8": 0,
+      "new_success_harms_vs_v8": 0,
+      "paired_success_steps_delta_mean_vs_v8": 0.0,
+      "paired_success_calls_delta_mean_vs_v8": 0.0
+    }
+  },
+  "unit_gain_shadow_diagnostic": {
+    "deployment_gain": false,
+    "full_train_changed_choices": 5,
+    "full_validation_changed_choices": 1,
+    "new_success_or_paired_cost_gain": false,
+    "masked_and_no_dependency_changed_choices": 0,
+    "shuffled_and_without_command_changed_choices_match_full": true,
+    "controls_modify_only_new_channel": true
+  },
+  "gate": {
+    "base_preservation_pass": true,
+    "additional_train_utility_gain": false,
+    "passed": false,
+    "gate3_passed": false,
+    "main_experiment_launched": false
+  },
+  "preservation": {
+    "new_model_sha256": "1cb2d0aa82b93c4fbfb31a93e5baea50e97e60749c0434da35496b600834d3f6",
+    "training_report_sha256": "8c80384e439a36d5ccdeec94c47b501221716b74ace4ef0cd7eea9744748219e",
+    "development_gate_report_sha256": "d76dff0e2877d8010e3b346c0b481db95551cad82024d98745474d6b27f42c5a",
+    "old_models_and_results_retained": true,
+    "new_queries": 0,
+    "new_actions": 0,
+    "real_closedloop_launched": false
+  },
+  "claim_limits": [
+    "This is not a rerun of the original 64 real closed-loop scenes.",
+    "Existing V8 improvements over value-only are not new residual gains.",
+    "Learned attribution increment and dependency graph necessity remain unproven.",
+    "Measured command mismatch does not certify physical contact failure.",
+    "Post-execution outcomes are supervision only, not deployment input."
+  ]
+}
