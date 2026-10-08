@@ -272,7 +272,18 @@ def localize_candidate_visual_evidence(
 
 def parse_candidate_effect(candidate_id: int, actions: np.ndarray, *, visual_support: float = 0.5,
                            visual_evidence: CandidateVisualEvidence | None = None,
-                           close_when_negative: bool = True) -> CandidateEffect:
+                           close_when_negative: bool = True,
+                           stage_semantics: str = "legacy_unordered_v1") -> CandidateEffect:
+    """Parse commands and forecast evidence without observing execution.
+
+    The default preserves the frozen baseline. New recovery contracts may
+    explicitly select ``ordered_release_v1``: an opening command at entry
+    is not a later release, and neutral commands are not release evidence.
+    This mode changes no numeric threshold and certifies no physical fact.
+    Existing recorded stages must never be silently rewritten with it.
+    """
+    if stage_semantics not in ("legacy_unordered_v1", "ordered_release_v1"):
+        raise ValueError("Explicit legacy or ordered-release stage semantics required")
     actions = np.asarray(actions, dtype=np.float64)
     if actions.shape != (16, 7) or not np.isfinite(actions).all():
         raise ValueError("candidate actions must be finite with shape (16,7)")
@@ -300,7 +311,8 @@ def parse_candidate_effect(candidate_id: int, actions: np.ndarray, *, visual_sup
     gripper_state = close_signal > 0.25
     gripper_transitions = int(np.count_nonzero(gripper_state[1:] != gripper_state[:-1]))
     closed_at_entry = bool(gripper_state[0])
-    open_after_closed = np.flatnonzero((~gripper_state) & np.maximum.accumulate(gripper_state))
+    release_signal = close_signal < -0.5 if stage_semantics == "ordered_release_v1" else ~gripper_state
+    open_after_closed = np.flatnonzero(release_signal & np.maximum.accumulate(gripper_state))
     release_index = int(open_after_closed[0]) if open_after_closed.size else 16
     closed_before_release = float(np.mean(gripper_state[:release_index])) if release_index else 0.0
     trajectory_risk = float(np.clip(
@@ -311,7 +323,8 @@ def parse_candidate_effect(candidate_id: int, actions: np.ndarray, *, visual_sup
         + 0.10 * np.clip((gripper_transitions - 2) / 3.0, 0.0, 1.0),
         0.0, 1.0,
     ))
-    if open_strength > 0.5 and closed_fraction > 0.2:
+    ordered_release = stage_semantics == "legacy_unordered_v1" or release_index < 16
+    if open_strength > 0.5 and closed_fraction > 0.2 and ordered_release:
         stage = Stage.PLACE
     elif close_strength > 0.5 and upward_after_close > 0.08:
         stage = Stage.LIFT
@@ -433,6 +446,10 @@ def parse_candidate_effect(candidate_id: int, actions: np.ndarray, *, visual_sup
                            - visual_evidence.grasp_support_after)),
             0.0, 1.0,
         ))
+        if stage_semantics == "ordered_release_v1" and release_index == 16:
+            # An initial opening cannot support release of an object that
+            # will only be grasped later. Endpoint affinity is not timing.
+            release_prediction = 0.0
         evidence["predicted_grasp_support"] = grasp_prediction
         evidence["predicted_release_support"] = release_prediction
         current_contact_support = float(np.clip(max(

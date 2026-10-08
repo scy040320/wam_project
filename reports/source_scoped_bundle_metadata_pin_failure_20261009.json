@@ -1,0 +1,14 @@
+{
+  "schema": "source_scoped_bundle_startup_failure_v1",
+  "version": "known_task_source_scoped_forecast_bundle_20261009_v1",
+  "error": "Explicit source block metadata must be independently pinned",
+  "before_output_creation": true,
+  "queries": 0,
+  "actions": 0,
+  "fits": 0,
+  "diagnosis": "RGB reextractor pins the sources it consumes but does not consume block.json. The independent earlier source manifests contain all 192 block.json entries; the inspected source SHA equals its existing frozen record.",
+  "repair": "Transfer metadata entries from already frozen source manifests; reject absent, changed or contradictory SHA records. Do not self-pin observed metadata or relax time alignment.",
+  "example_existing_SHA": "fe678eeaf47ecbe7fd037b7cf6b23a050535cbc90d7b353dfb37c53bc40372d8",
+  "thresholds_changed": false,
+  "old_results_modified": false
+}

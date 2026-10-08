@@ -1,0 +1,210 @@
+{
+  "schema": "continuous_score_identifiability_read_only_audit_v1",
+  "date": "2026-10-09",
+  "status": "diagnosis_only_no_new_fit",
+  "scope": "192 consumed original PRE candidate pools and recorded official continuation; NOT the earlier 64 real closed-loop scenes",
+  "source_version": "known_task_continuous_evidence_utility_20261009_v4_competition_training",
+  "sources": {
+    "inference_inputs": {
+      "path": "F:/南大课题/课题转向/候选动作重排序实验结果/连续证据评分与当前事实修复_20261009/完整竞争监督_v4/inference_inputs.json",
+      "sha256": "f027467c35b63f400eabac2b64556ae4818c3f4b5c7a1c05c447036ff2138ca9",
+      "terminal_labels_in_features": false
+    },
+    "model": {
+      "path": "F:/南大课题/课题转向/候选动作重排序实验结果/连续证据评分与当前事实修复_20261009/完整竞争监督_v4/soft_utility_model.json",
+      "sha256": "4a92aeeec0c00bf34193242fc5504f41ff7057df542e0e06424daeea35f1c96c"
+    },
+    "training_report": {
+      "path": "F:/南大课题/课题转向/候选动作重排序实验结果/连续证据评分与当前事实修复_20261009/完整竞争监督_v4/training_report.json",
+      "sha256": "4e4acfc80512c8a56db20d03ca099076c4d1f159a2cf918cb62665b951a02e9e"
+    },
+    "raw_source_hash_manifest": {
+      "path": "F:/南大课题/课题转向/候选动作重排序实验结果/连续证据评分与当前事实修复_20261009/完整竞争监督_v4/source_sha256.json",
+      "sha256": "7721ca4bf39d8bd7edfff18294879c226b3e366b612f7c51d5b76cc22a48b1af",
+      "source_count_from_input_audit": 3723
+    },
+    "corrective_train_raw_outcomes": {
+      "path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task9_state2_moment0/results.json",
+      "sha256": "5781499cd67a35381e08d9029bff2b374856c43956749f81853f7c9d2a67ba1c",
+      "read_only_cloud_hash_matches_source_manifest": true
+    },
+    "diagnosed_implementation": {
+      "path": "F:/南大课题/课题转向/wam_project/wam_reranking/soft_attribution_utility.py",
+      "sha256_at_audit": "b39f322bdedbf1bd736c0e10fa2f35b1441e27f043ca8243afd19846ee449ece"
+    }
+  },
+  "boundaries": {
+    "new_fit_count": 0,
+    "model_parameter_changes": 0,
+    "gain_changes": 0,
+    "configuration_changes": 0,
+    "threshold_changes": 0,
+    "new_queries": 0,
+    "new_actions": 0,
+    "new_real_closedloop": false,
+    "validation_used_for_geometric_or_gradient_diagnosis": false,
+    "geometry_scan_is_model_fit": false,
+    "geometry_scan_is_gain_selection": false,
+    "gate3_claim": false,
+    "learning_target": "terminal selection utility, NOT physical recovery probability"
+  },
+  "scope_checks": {
+    "input_unique_pools": 192,
+    "train_pools": 144,
+    "consumed_val_pools": 48,
+    "all_failed_pools_retained": 49,
+    "all_failed_train_pools_retained": 37,
+    "all_failed_val_pools_retained": 12,
+    "old_64_scene_closedloop_not_merged_into_this_replay": true,
+    "unexecuted_fallback_not_counted_as_failure": true,
+    "report_scope": "consumed original PRE pools and recorded official continuation; NOT new real closedloop",
+    "report_new_queries": 0,
+    "report_new_actions": 0,
+    "report_real_closedloop_launched": false
+  },
+  "existing_fit_record_not_a_new_fit": {
+    "schema": "continuous_after_forecast_terminal_utility_v2_full_competition",
+    "fit_count_this_version": 1,
+    "steps": 1200,
+    "learning_rate": 0.01,
+    "l2": 0.1,
+    "gain": 1.0,
+    "pairwise_cap": 0.1,
+    "deployment_margin": 0.01,
+    "corrective_training_margin": 0.02,
+    "corrective_pairs": 3,
+    "protective_pairs": 16,
+    "available_cost_pairs": 87,
+    "actual_cost_steps": 0,
+    "protected_train_pools": 90,
+    "blocked_updates": 0,
+    "complete_competitor_supervision": true,
+    "corrective_training_target_reached": false,
+    "training_deployment_delta_equivalence": true,
+    "training_deployment_top1_equivalence": true
+  },
+  "only_admitted_corrective_train_pool": {
+    "key": [9, 2, 0, "clean"],
+    "successful_candidate": 0,
+    "reference_candidate": 1,
+    "terminal_success_labels": [true, false, false, false],
+    "hard_accepted_failed_competitors": [1, 2, 3],
+    "label_role": "TRAIN terminal supervision only; not an inference input",
+    "anomalous_recovery_pool": false,
+    "continuous_world_anomaly": 0.013579972088336945,
+    "base_scores": [0.7398681454858246, 0.7542426095216298, 0.7153932131691374, 0.7590269680794338],
+    "final_logits": [0.7361791807180319, 0.010085492069798835, -1.250163414918673, 0.503898742130843],
+    "final_deltas": [0.02816950009271097, -0.0026678004737614464, -0.045588530859071, 0.020086831240121478],
+    "final_scores": [0.7680376455785356, 0.7515748090478683, 0.6698046823100664, 0.7791137993195553],
+    "final_gap_success_0_vs_failures_1_2_3": [0.016462836530667192, 0.09823296326846914, -0.011076153741019739],
+    "final_selected_candidate": 3,
+    "official_values": [0.6426447629928589, 0.6434187889099121, 0.6424987316131592, 0.6430929899215698],
+    "current_positive_delta_and_margin_eligible_candidates": [0, 3],
+    "current_top_score_candidate": 3,
+    "current_near_top_tied_candidates": [3],
+    "selection_method": "Apply unchanged fast_selection eligibility against reference 1: accepted, delta>reference_delta, score>reference_score+0.01. Among eligible candidates within 0.01 of their top score choose highest official value. Current 0 is 0.011076 below 3, so only 3 is in the near-top set. If both stay eligible, merely entering the near-top set does not select 0 because official_value[3]>official_value[0].",
+    "failure": "Successful candidate 0 beat the frozen reference 1 but still lost to accepted failed competitor 3.",
+    "other_corrective_candidate_excluded": {
+      "key": [9, 2, 0, "visual_occlusion"],
+      "candidate_id": 0,
+      "reason": "inactive_reference_difference"
+    }
+  },
+  "feature_geometry": {
+    "normalization": "bounded=clip(x,-TRAIN_support,TRAIN_support); z=clip((bounded-pool_mean(bounded))/TRAIN_scale,-4,4)",
+    "normalized_feature_difference_l2_0_vs_3": 0.10618627795751016,
+    "normalized_feature_cosine_0_vs_3": 0.9996308571441828,
+    "two_row_matrix_singular_values": [0.4122638025845237, 0.005231672899873896],
+    "two_row_matrix_condition": 78.80152495666557,
+    "final_weight_norm": 2.2064591034889247,
+    "final_l2_penalty": 0.24342308876845747,
+    "actual_pair_correction_0_vs_3": 0.008082668852589493,
+    "fixed_norm_row_space_circle_max_estimate": 0.008086797124000579,
+    "fixed_norm_lipschitz_upper_bound": 0.011714783983247682,
+    "pair_correction_to_exceed_competitor_3_by_deployment_margin": 0.029158822593609237,
+    "deployment_geometry_condition": "This target is sufficient in general. For this pool it is also the score-gap condition to exclude competitor 3 from the near-top set IF both 0 and 3 remain eligible, because value[3]>value[0]. It is not a universal necessary weight norm for every possible deployment correction: another weight direction could instead render competitor 3 ineligible. No such modified policy is fitted, selected or deployed in this audit.",
+    "required_pair_correction_for_training_margin": 0.039158822593609237,
+    "deploy_margin_geometry": {
+      "required_tanh_difference": 0.5831764518721847,
+      "minimum_weight_norm_estimate": 72.2282488386142,
+      "l2_penalty_estimate": 260.84599651463867,
+      "pair_logits_at_bound": [0.6307731316126488, -0.024597064134178906]
+    },
+    "train_margin_geometry": {
+      "required_tanh_difference": 0.7831764518721848,
+      "minimum_weight_norm_estimate": 104.22731168372582,
+      "l2_penalty_estimate": 543.1666250408265,
+      "pair_logits_at_bound": [0.6663855130303948, -0.20333596099722537]
+    },
+    "computed_method": {
+      "candidate_pair_source": "The sole admitted corrective TRAIN pool; val labels not accessed.",
+      "circle_scan": "Let A=[z0;z3]. SVD provides its two orthonormal row-space directions. Evaluate 200001 evenly spaced angles at the unchanged final weight norm. Record max 0.05*(tanh(Aw)[0]-tanh(Aw)[1]); no model record is produced or used.",
+      "lipschitz_bound": "Since tanh is 1-Lipschitz, abs(pair correction)<=0.05*norm(w)*norm(z0-z3). This upper bound at the existing norm is below the required switching correction.",
+      "minimum_norm_geometry": "For specified tanh difference t, let q=tanh(u0), u3=atanh(q-t), u0=atanh(q). Scan 400001 q values in (t-1,1), then 80 scalar golden-section refinements about the minimum. Minimum squared linear weight norm for these two logits is u^T*(A*A^T)^(-1)*u. Deployment t refers to the conditional score-gap target while both candidates remain eligible; training t refers to the actual fixed all-competitor 0.02 target. These are numerical geometry estimates, not refitted weights, deployed policy candidates, validation calibration or claims of a new successful selection.",
+      "penalty": "0.1/2*norm(w)^2, using the unchanged recorded L2 coefficient.",
+      "limitation": "This diagnoses current aggregated 20-dimensional linear+tanh representation. It does not prove every richer representation or every possible global policy is incapable of correcting the pool. The circle scan is a numerical estimate; the separate Lipschitz inequality supplies the norm-bound check."
+    }
+  },
+  "final_weight_gradient_diagnosis": {
+    "corrective_cohort_gradient_norm": 0.23198302833925408,
+    "l2_gradient_norm": 0.2206459103488925,
+    "corrective_l2_gradient_cosine": -0.9989780428825519,
+    "total_gradient_norm": 0.01526925852742341,
+    "protective_active_hinges": 0,
+    "protective_gradient_norm": 0.0,
+    "individual_corrective_gradient_norms_0_vs_1_2_3": [0.5823744324024696, 0.0007422934962542703, 0.11310963505737233],
+    "computed_method": "Read-only reconstruction at the saved final weights. For each admitted pair compute gap=base_i-base_j+0.05*(tanh(zi*w)-tanh(zj*w)); derivative=0.05/m*((1-ti^2)*zi-(1-tj^2)*zj). Corrective gradient is mean(-sigmoid(-(gap-2m)/m)*derivative). Protective violation is max(0,(-m-gap)/m), with gradient mean(-2*violation*derivative). L2 gradient is 0.1*w. Reconstruct original TRAIN protective pairs from cloud raw terminal outcome records, restricted to the exact 144 TRAIN keys; use terminal outcomes only to identify TRAIN supervision, never as scoring inputs. No parameter updates are performed.",
+    "interpretation": "At the saved final weights, successful protection and cost competition are not the main observed obstruction: protection hinges are inactive, no updates were blocked, and cost optimization never ran. Nearly opposing corrective and L2 gradients support a regularized compromise given near-collinear features.",
+    "limitation": "The final gradient snapshot alone does not prove protective pairs had no influence earlier in optimization."
+  },
+  "ordinary_vs_learned_content": {
+    "decomposition_space": "Pre-tanh raw logit difference u0-u3, not a causal decomposition of nonlinear deployment utility",
+    "all_physical_negative_after_relation_contribution": 0.22712618084581893,
+    "all_physical_negative_trajectory_risk_contribution": 0.005049199194950516,
+    "total_logit_difference": 0.23228043858718883,
+    "all_other_interaction_contribution": 0.00010505854641938966,
+    "ordinary_main_effect_fraction": 0.9995477081623472,
+    "ordinary_main_effect_percent": 99.95477081623472,
+    "computed_method": "Elementwise c=(z0-z3)*saved_weights; sum coordinates 17 and 18 for ordinary main effects and sum remaining coordinates separately. Uses saved TRAIN-only feature matrix and weights, without a fit.",
+    "conclusion": "The sole admitted corrective pool is clean. Even if it were corrected, its current score contrast is approximately 99.95 percent ordinary candidate AFTER main effects; it would not establish the extra value or necessity of learned attribution."
+  },
+  "existing_replay_results_not_new_execution": {
+    "train_full": {
+      "pools": 144,
+      "observed": 126,
+      "successes": 90,
+      "unobserved": 18,
+      "added_successes_vs_reference": 0,
+      "success_harms_vs_reference": 0,
+      "common_successes": 90,
+      "recorded_steps_delta_sum": -5,
+      "recorded_calls_delta_sum": 0
+    },
+    "consumed_val_full": {
+      "pools": 48,
+      "observed": 41,
+      "successes": 26,
+      "unobserved": 7,
+      "added_successes_vs_reference": 0,
+      "success_harms_vs_reference": 0,
+      "common_successes": 26,
+      "recorded_steps_delta_sum": -2,
+      "recorded_calls_delta_sum": 0
+    },
+    "interpretation": "Recorded PRE selection replay preserves the current frozen reference, but no new success or learned attribution benefit was established. Tiny recorded cost differences are not fresh real closed-loop results."
+  },
+  "recommended_next_step_not_executed": {
+    "action": "Audit existing deployable candidate-specific temporal and typed-relation evidence before proposing another representation or training run.",
+    "examples": [
+      "Ordered gripper open/close versus vertical motion within the candidate action block",
+      "Predicted trajectory or relation-type-specific endpoint information able to distinguish successful candidate 0 from failed candidate 3 across TRAIN comparisons",
+      "Source quality and current-fact certificates kept separate from forecast utility"
+    ],
+    "do_not": [
+      "Automatically lower L2, increase gain or repeat the unchanged 20-dimensional fit",
+      "Use consumed val wrong choices to add scene-specific exceptions",
+      "Use cached candidate-dependent BEFORE/delta features or simulator truth as deployment inputs",
+      "Treat forecast utility as a physical recovery certificate or claim Gate3 passed"
+    ]
+  }
+}

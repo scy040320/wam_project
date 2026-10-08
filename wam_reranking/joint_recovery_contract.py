@@ -592,7 +592,13 @@ def audit_whole_training(bundle, *, base_path):
             return None
     producer = check_artifact(bundle.get("input_producer_audit"), "whole_recovery_input_producer_audit_v1",
         INPUT_AUDIT_FLAGS + ("source_content_binding_verified", "before_attribution_belief_changes_bound"))
-    control_audit = check_artifact(bundle.get("control_contract_audit"), "whole_recovery_control_contract_audit_v1", CONTRACT_TESTS)
+    complete_control_ref = bundle.get("complete_pipeline_control_producer")
+    pipeline_audit = None
+    # The legacy contract is a need-score-only intervention. New current-block
+    # controls must be independently regenerated from actual upstream sources;
+    # old synthetic audit flags cannot certify that distinct intervention.
+    control_audit = (None if complete_control_ref is not None else check_artifact(
+        bundle.get("control_contract_audit"), "whole_recovery_control_contract_audit_v1", CONTRACT_TESTS))
     if bundle.get("preserved_inherited_rank_rows") != 768 or bundle.get("preserved_inherited_auxiliary_rows") != 957:
         failures.append("768_rank_and957_auxiliary_inheritance_not_preserved")
     if (not _sha(bundle.get("source_input_sha256_before")) or
@@ -642,27 +648,38 @@ def audit_whole_training(bundle, *, base_path):
         _strict_keys(controls, ("full", "masked", "shuffled", "no_dag", "effect_only"), "all actual control row tables")
         if any(not isinstance(controls[mode], list) for mode in controls):
             raise ValueError("explicit row list in every control required")
-        assert_equal_control_information(rows, *controls.values())
-        for mode in ("full", "masked", "no_dag", "effect_only"):
-            if digest(deployment_payload(controls[mode])) != digest(deployment_payload(control_rows(rows, mode))):
-                raise ValueError("unexpected need-channel change in control: " + mode)
-        control_hashes = {mode: digest(deployment_payload(control)) for mode, control in controls.items()}
-        if control_audit is None or control_audit.get("control_payload_sha256") != control_hashes:
-            raise ValueError("actual five control tables not bound to control audit")
-        expected_shuffled, expected_substitutions, expected_shuffle_audit = shuffled_recovery_need_weights(rows)
-        if (digest(deployment_payload(controls["shuffled"])) != digest(deployment_payload(expected_shuffled)) or
-            bundle.get("shuffled_substitution_table") != expected_substitutions):
-            raise ValueError("actual split-local weight shuffle or donor table disagrees with deterministic factory")
-        shuffle = control_audit.get("shuffled_before_source_audit")
-        if (not isinstance(shuffle, Mapping) or shuffle.get("passed") is not True or
-            shuffle.get("seed") != 0 or shuffle.get("donors_split_local") is not True or
-            shuffle.get("donors_cross_group") is not True or
-            shuffle.get("semantic_conflicts_masked_not_normalized_into_physical_needs") is not True or
-            not _sha(shuffle.get("factory_source_sha256")) or
-            shuffle.get("substitution_table_sha256") != expected_shuffle_audit["substitution_table_sha256"]):
-            raise ValueError("actual before-only fixed-seed shuffled donor lineage missing")
+        if complete_control_ref is not None:
+            from .whole_attribution_control_producer import audit_complete_pipeline_controls
+            actual = reader.json(complete_control_ref)
+            pipeline_audit = audit_complete_pipeline_controls(actual, rows, reader)
+            for mode in controls:
+                if digest(deployment_payload(controls[mode])) != digest(deployment_payload(actual["controls"][mode])):
+                    raise ValueError("actual upstream control table differs from source regeneration: " + mode)
+            # Same gate algorithm/wrapper/budget, not artificially identical
+            # outcomes. An upstream intervention legitimately changes belief.
+        else:
+            assert_equal_control_information(rows, *controls.values())
+            for mode in ("full", "masked", "no_dag", "effect_only"):
+                if digest(deployment_payload(controls[mode])) != digest(deployment_payload(control_rows(rows, mode))):
+                    raise ValueError("unexpected need-channel change in control: " + mode)
+            control_hashes = {mode: digest(deployment_payload(control)) for mode, control in controls.items()}
+            if control_audit is None or control_audit.get("control_payload_sha256") != control_hashes:
+                raise ValueError("actual five control tables not bound to control audit")
+            expected_shuffled, expected_substitutions, expected_shuffle_audit = shuffled_recovery_need_weights(rows)
+            if (digest(deployment_payload(controls["shuffled"])) != digest(deployment_payload(expected_shuffled)) or
+                bundle.get("shuffled_substitution_table") != expected_substitutions):
+                raise ValueError("actual split-local weight shuffle or donor table disagrees with deterministic factory")
+            shuffle = control_audit.get("shuffled_before_source_audit")
+            if (not isinstance(shuffle, Mapping) or shuffle.get("passed") is not True or
+                shuffle.get("seed") != 0 or shuffle.get("donors_split_local") is not True or
+                shuffle.get("donors_cross_group") is not True or
+                shuffle.get("semantic_conflicts_masked_not_normalized_into_physical_needs") is not True or
+                not _sha(shuffle.get("factory_source_sha256")) or
+                shuffle.get("substitution_table_sha256") != expected_shuffle_audit["substitution_table_sha256"]):
+                raise ValueError("actual before-only fixed-seed shuffled donor lineage missing")
     except Exception as error:
         failures.append("control_payload_binding:" + str(error))
+        pipeline_audit = None
     pool_bindings = {}
     for i, row in enumerate(rows):
         try:
@@ -689,6 +706,8 @@ def audit_whole_training(bundle, *, base_path):
                 and objectives[(n["predicate"], n["deadline"], n["kind"])]["confidence"] > 0)
         except Exception as error:
             failures.append("candidate:" + str(i) + ":" + str(error))
+    if pipeline_audit is not None:
+        active.update(tuple(key) for key in pipeline_audit["shared_active_heads"])
     if not active:
         failures.append("no_genuine_active_future_recovery_task_zero_head_fit_forbidden")
     report["active_heads"] = [list(k) for k in sorted(active)]
@@ -752,10 +771,16 @@ def audit_whole_training(bundle, *, base_path):
     report["entry0_is_before_verification_not_future_head_training"] = True
     report["raw_source_semantics_inherited_from_exact_bound_independent_producer_audit"] = True
     report["artifact_hash_or_role_string_alone_certifies_gt_free_x"] = False
-    report["current_control_scope"] = "direct_recovery_need_score_channel_only"
+    complete_ready = pipeline_audit is not None and pipeline_audit.get("complete_pipeline_controls_ready") is True
+    report["current_control_scope"] = ("current_block_shared_prior" if complete_ready else "direct_recovery_need_score_channel_only")
     report["input_supervision_and_direct_channel_contracts_passed"] = not failures
-    report["complete_pipeline_controls_ready"] = False
-    failures.append("complete_attribution_and_belief_control_producer_not_available")
-    report["passed"] = report["training_ready"] = False
+    report["complete_pipeline_controls_ready"] = complete_ready
+    report["complete_pipeline_control_audit"] = pipeline_audit
+    report["active_head_scope"] = ("union_nonzero_future_needs_across_all_five_controls" if complete_ready else "original_full_direct_need_channel")
+    report["same_admitted_heads_required_for_all_controls"] = True
+    report["not_history_reconstructed_closed_loop_ablation"] = True
+    if not complete_ready:
+        failures.append("complete_attribution_and_belief_control_producer_not_available")
+    report["passed"] = report["training_ready"] = not failures
     report["gate3_or_main_experiment_ready_claimed"] = False
     return report

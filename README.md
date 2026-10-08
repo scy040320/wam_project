@@ -31,40 +31,66 @@ The deployment path never receives simulator state, intervention labels,
 success labels, or post-execution candidate outcomes. Candidate outcomes are
 used only to train or evaluate the selector.
 
-## Current research status (2026-10-08)
+## Current research status (2026-10-09)
 
-One bounded **terminal-utility residual** fit has completed on the original
-144 training and 48 consumed validation pools. It retains the complete frozen
-64-scene V8 policy, model, gates and evidence routing as its reference. This
-is not another execution of those 64 scenes, nor a retrained attributor.
+Current work is bounded repair on the original **192 development pools**
+(144 train / 48 consumed validation, K=4), not a new 64-scene closed-loop
+study. The attributor, complete frozen V8 policy, original thresholds and
+historical outcomes remain preserved. No new WAM queries or environment
+actions were executed in this repair.
 
-- The interface now retains timestamped `applied-requested` command evidence
-  from the previous complete block, separately from learned contact evidence.
-  Visibility, subject–gripper contact and subject–anchor relation have
-  predicate-specific masks. Low-quality container evidence no longer erases
-  otherwise admissible contact evidence; hard gates and thresholds are unchanged.
-- Source and input audits passed. One corrective success pair, 13 protective
-  pairs and 61 successful-cost pairs were available to one 1,200-step fit.
-  Post-execution outcomes are labels only, never deployment features. Forecasts
-  cannot certify a current physical fact or reopen a rejected candidate.
-- Training-only calibration selected residual gain **0**. Selection remains
-  103/144 on train and 33/48 on consumed validation, exactly matching the
-  complete V8 reference on these pools. There are no new successes, success
-  harms, or jointly-successful step/call savings relative to that reference.
-  Base preservation passes; the additional-utility gate **fails**.
-- Full, masked attribution, same-split shuffled attribution, no-dependency
-  and without-command controls share the same fit and frozen reference.
-  Unit-gain shadow diagnostics change five train and one validation choices
-  without outcome or paired-cost gains. They do not establish learned
-  attribution benefit or dependency-graph necessity.
+- Shared current observations are now fused directly from actual CURRENT
+  maps. A full 192-pool / 768-candidate re-extraction passes exact invariance:
+  candidate forecasts no longer indirectly change the shared BEFORE fields.
+  The failed first extraction and its floating-point discrepancy are retained;
+  the equality tolerance was not relaxed.
+- New source-scoped inputs distinguish invalidation evidence from ordinary
+  unverified prerequisites, retain unresolved history, and give reliable
+  execution evidence its own soft mask. The learned execution/contact
+  probability is not a contact certificate. Historical TRUE and candidate
+  forecasts cannot certify current physical facts or reopen hard-rejected
+  candidates.
+- The new **26 ordinary + 364 interaction** feature bundle passes full input
+  and support audits: 4,106 source files and 1,344 variant histories verified.
+  All seven controls retain identical ordinary candidate features; masked
+  attribution and ranker-only interactions are exactly zero. Full and
+  no-dependency inputs differ in 160 pools. This representation has **not
+  been fitted or deployed**; input differences do not establish decision gains.
+- Two fixed terminal-utility fits completed before the new representation
+  was built. The latest source-isolated PRE channel selects 90/144 train
+  successes and 26/48 consumed-validation successes, matching its own
+  channel reference with zero added successes or success harms. Eighteen
+  train and seven validation exits remain **unobserved**, not failures.
+  Jointly successful total-step deltas sum to -5/-2 and logical-call deltas
+  to 0/0. These are small offline selection differences, not new real
+  closed-loop efficiency results or evidence of attribution necessity.
+  Supervision now compares a successful candidate with every admitted
+  failed competitor, not only the reference. Gain 1, cap 0.1, switch margin
+  0.01 and the 1,200-step fit were fixed; validation did not fit or tune them.
+- An audit of 160 actual first-block records verifies structural sources,
+  but lacks an absolute runtime PRE recipient binding. They were not
+  imported as current certificates for the original 192 pools. The 25
+  unexecuted exits mostly lack grasp/lift evidence (24 rigid, one articulated);
+  typed articulated gates already avoid requiring grasp/lift. Closed
+  gripper commands alone do not prove grasping, so hard gates remain intact.
+- The remaining corrective clean training pair has nearly identical PRE
+  features and no invalidation interaction. Repairing that ordinary-ranking
+  case would not by itself demonstrate cause-recovery utility. Typed joint
+  goal-direction evidence and trustworthy current physical witnesses remain
+  open issues. No additional blind fit, rollout or main experiment is queued.
+  See [the repair record](reports/continuous_evidence_repair_20261009.json)
+  and [the current-evidence contract](docs/current_evidence_routing_contract.md).
 - Physical recovery-probability heads remain untrained: terminal success
   labels are not same-time recovery supervision. Missing recovery evidence
   remains masked. See [the recovery contract](docs/joint_recovery_training_contract.md)
   and [bounded utility notes](docs/command_predicate_utility.md).
-- Frozen V8, its 64-scene results, earlier failed versions and raw evidence
-  are retained. No new collection, confirmation, closed-loop rollout or main
-  experiment was launched in this bounded fit. Original Gate3 remains open.
-  See [the preserved single-fit result](reports/command_predicate_utility_result_20261008.json).
+- The preceding October 8 fit selected calibrated gain **0**, preserving
+  103/144 train and 33/48 consumed-validation successes. Its reference and
+  feature contract differ from the October 9 source-isolated channel above;
+  these numbers must not be merged into one run or substituted for frozen
+  real closed-loop results. See [the preserved earlier fit](reports/command_predicate_utility_result_20261008.json).
+- Original Gate3 remains **not passed**. All unsuccessful studies, frozen
+  models and raw evidence remain retained.
 
 ### Earlier frozen evidence
 
@@ -172,6 +198,10 @@ is not another execution of those 64 scenes, nor a retrained attributor.
 | `source_scoped_policy.py` | Factor-specific belief confidence and uncertainty routing |
 | `shared_query_cache.py` | Outcome-free immutable candidate realization sharing |
 | `evidence_arbitration.py` | Trusted affirmative evidence and source-aware routing |
+| `shared_current_visual_baseline.py` | Actual CURRENT fusion independent of candidate forecasts |
+| `source_scoped_forecast_features.py` | Separate invalidation and unverified prerequisite interactions |
+| `soft_attribution_utility.py` | Fixed bounded utility fit with complete failed-competitor supervision |
+| `current_observation_window.py` | PRE time-window binding interface; not yet a runtime physical certificate |
 | `mechanism_ablation.py` | Frozen four-arm interface; graph-edge-only ablation |
 | `closedloop_metrics.py` | Paired successes, success harms, steps and logical queries |
 | `refiner.py` | Interface for a future bounded action-residual model |
@@ -222,6 +252,13 @@ Shell orchestration, checkpoints, raw datasets, videos, caches, and
 intermediate experiment versions are intentionally excluded. Failed studies
 remain recoverable from Git history and archived experiment manifests, but do
 not remain as competing public interfaces in the repository.
+
+The source modules and standalone tests are distinct from the pinned archival
+execution payload. Frozen runtime reproduction still requires the original
+`run_arbitrated_closedloop.py`, `prepare_d21_training_bundle_v7.py`, assets,
+and adjacent isolated-payload dependencies. A clean checkout does not by
+itself reproduce the full cloud training or robot pipeline. The feature
+support audit is available as `scripts/audit_source_scoped_feature_support.py`.
 
 Public filenames and entry points describe their function, not daily-plan
 numbers. Frozen schema identifiers and historical experiment identities are

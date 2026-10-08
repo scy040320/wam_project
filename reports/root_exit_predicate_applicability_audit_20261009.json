@@ -1,0 +1,4381 @@
+{
+  "schema": "root_exit_predicate_applicability_readonly_audit_v1",
+  "date": "2026-10-09",
+  "scope": "25 unobserved root exits in original192 consumed PRE pools, not new execution",
+  "boundaries": {
+    "fits": 0,
+    "new_queries": 0,
+    "new_actions": 0,
+    "new_RGB_inference_calls": 0,
+    "physical_witnesses_created": 0,
+    "belief_writes": 0,
+    "graphs_changed": 0,
+    "hard_threshold_changes": 0,
+    "models_changed": 0,
+    "candidates_changed": 0,
+    "automatic_ungating": false
+  },
+  "source_hashes": {
+    "/root/autodl-tmp/wam_project/cosmos-policy/research_runs/known_task_predicate_scoped_replay_20261008_v3_preserve_history/replay_evidence_scoped_routes.py": "5e15f4382693e7b6f73f26569d2dda0b91a6e0496b4fbe8b03e40f7a2115c254",
+    "/root/autodl-tmp/wam_project/cosmos-policy/outputs/known_task_continuous_evidence_utility_20261009_v4_competition_training/training_report.json": "4e4acfc80512c8a56db20d03ca099076c4d1f159a2cf918cb62665b951a02e9e",
+    "/root/autodl-tmp/wam_project/cosmos-policy/outputs/known_task_continuous_evidence_utility_20261009_v4_competition_training/source_sha256.json": "7721ca4bf39d8bd7edfff18294879c226b3e366b612f7c51d5b76cc22a48b1af",
+    "/root/autodl-tmp/wam_project/cosmos-policy/outputs/known_task_evidence_interface_recheck_20261008_v4_final_boundaries_roots/decision_journals.json": "bb1d0beea4d56a9b160395c4688731ffeee1cbfc0c3cbdfa838c03aebe69cae1",
+    "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_frozen_d18v8_development_20261004_v2_unobserved_explicit/training_bundle/paired_scenarios.json": "21227c7fbb881bed2b3ddea28f6769a7af98fdf8df4d4a1ed806e234281c45fc",
+    "/root/autodl-tmp/wam_project/cosmos-policy/research_runs/known_task_trusted_evidence_arbitration_20261005_v8/overlay/wam_reranking/candidate_effects.py": "55b11811e36269ac08927d53fe66f260a84ba0fed401766ffd25b633dd4e1c38",
+    "/root/autodl-tmp/wam_project/cosmos-policy/research_runs/known_task_trusted_evidence_arbitration_20261005_v8/overlay/wam_reranking/evidence_residual.py": "51cb2fba7e266435ba6cc5d5c74e0c266e7db1b42c2413ae5d279aef7ec3f5c2",
+    "/root/autodl-tmp/wam_project/cosmos-policy/research_runs/candidate_reranking_d21_main20_stage_qualification_20261003_v2_split_compat/prepare_d21_training_bundle_v7.py": "5e1d7078e2a804c9dc2f864e072f15bbc548604ce536e9beede065ec3acac51a",
+    "/root/autodl-tmp/wam_project/cosmos-policy/.venv/lib/python3.10/site-packages/libero/libero/benchmark/__init__.py": "9c07414d4c75f5de50d9c8b3fefbda81ae72b3eae158c1af1d115e77063efd18",
+    "/root/autodl-tmp/wam_project/cosmos-policy/.venv/lib/python3.10/site-packages/libero/libero/benchmark/libero_suite_task_map.py": "0c950df0a785aa55de968bb38ccd865d2017f71ddbe6f48cfd05ac0742b6d62d",
+    "/root/autodl-tmp/wam_project/cosmos-policy/.venv/lib/python3.10/site-packages/libero/libero/bddl_files/libero_90/KITCHEN_SCENE10_close_the_top_drawer_of_the_cabinet.bddl": "a0824cbe6b3146c00984f5a01307a3e39aac9ddc434ee4ff040b5536a0c48bbc",
+    "/root/autodl-tmp/wam_project/cosmos-policy/.venv/lib/python3.10/site-packages/libero/libero/bddl_files/libero_90/KITCHEN_SCENE1_put_the_black_bowl_on_the_plate.bddl": "9875b091f27560f75e556353e204e8fb27526e3ee9449c02ef1b127115055450",
+    "/root/autodl-tmp/wam_project/cosmos-policy/.venv/lib/python3.10/site-packages/libero/libero/bddl_files/libero_90/KITCHEN_SCENE3_turn_on_the_stove.bddl": "b081c85eec6ba5ede60bcb773e33cef284bd7befc96d4bbeeff48764d6fe16d6",
+    "/root/autodl-tmp/wam_project/cosmos-policy/.venv/lib/python3.10/site-packages/libero/libero/bddl_files/libero_90/KITCHEN_SCENE9_turn_on_the_stove.bddl": "e258902172935538f45757dfad6e5c25b2313138555cbf79e6119a4024948d13",
+    "/root/autodl-tmp/wam_project/cosmos-policy/.venv/lib/python3.10/site-packages/libero/libero/bddl_files/libero_90/LIVING_ROOM_SCENE1_pick_up_the_alphabet_soup_and_put_it_in_the_basket.bddl": "99ae5af0f77aca18d2eab39e4b302a9af59ae86766b8e7dc528c08a75fa12515",
+    "/root/autodl-tmp/wam_project/cosmos-policy/.venv/lib/python3.10/site-packages/libero/libero/bddl_files/libero_90/LIVING_ROOM_SCENE3_pick_up_the_cream_cheese_and_put_it_in_the_tray.bddl": "394de660979995c9dd1131bdbfa5fb25eb824828e60dee25a5b80c3cbfd5155a"
+  },
+  "task_metadata": {
+    "0": {
+      "suite": "libero90",
+      "actual_task": {
+        "name": "KITCHEN_SCENE10_close_the_top_drawer_of_the_cabinet",
+        "language": "close the top drawer of the cabinet",
+        "problem": "Libero",
+        "problem_folder": "libero_90",
+        "bddl_file": "KITCHEN_SCENE10_close_the_top_drawer_of_the_cabinet.bddl",
+        "init_states_file": "KITCHEN_SCENE10_close_the_top_drawer_of_the_cabinet.pruned_init"
+      },
+      "frozen_binding": {
+        "task_id": 0,
+        "language": "close the top drawer of the cabinet",
+        "target_object": "top_drawer",
+        "receptacle": "cabinet_frame"
+      },
+      "frozen_relation": {
+        "subject": "top drawer",
+        "anchor": "wooden cabinet frame",
+        "relation": "articulated"
+      },
+      "bddl_sha256": "a0824cbe6b3146c00984f5a01307a3e39aac9ddc434ee4ff040b5536a0c48bbc",
+      "binding_semantics_match": true
+    },
+    "9": {
+      "suite": "libero90",
+      "actual_task": {
+        "name": "KITCHEN_SCENE1_put_the_black_bowl_on_the_plate",
+        "language": "put the black bowl on the plate",
+        "problem": "Libero",
+        "problem_folder": "libero_90",
+        "bddl_file": "KITCHEN_SCENE1_put_the_black_bowl_on_the_plate.bddl",
+        "init_states_file": "KITCHEN_SCENE1_put_the_black_bowl_on_the_plate.pruned_init"
+      },
+      "frozen_binding": {
+        "task_id": 9,
+        "language": "put the black bowl on the plate",
+        "target_object": "akita_black_bowl_1",
+        "receptacle": "plate_1"
+      },
+      "frozen_relation": {
+        "subject": "black bowl",
+        "anchor": "plate",
+        "relation": "on"
+      },
+      "bddl_sha256": "9875b091f27560f75e556353e204e8fb27526e3ee9449c02ef1b127115055450",
+      "binding_semantics_match": true
+    },
+    "20": {
+      "suite": "libero90",
+      "actual_task": {
+        "name": "KITCHEN_SCENE3_turn_on_the_stove",
+        "language": "turn on the stove",
+        "problem": "Libero",
+        "problem_folder": "libero_90",
+        "bddl_file": "KITCHEN_SCENE3_turn_on_the_stove.bddl",
+        "init_states_file": "KITCHEN_SCENE3_turn_on_the_stove.pruned_init"
+      },
+      "frozen_binding": {
+        "task_id": 20,
+        "language": "turn on the stove",
+        "target_object": "flat_stove_1_button",
+        "receptacle": "flat_stove_1"
+      },
+      "frozen_relation": {
+        "subject": "stove button",
+        "anchor": "stove",
+        "relation": "articulated"
+      },
+      "bddl_sha256": "b081c85eec6ba5ede60bcb773e33cef284bd7befc96d4bbeeff48764d6fe16d6",
+      "binding_semantics_match": true
+    },
+    "44": {
+      "suite": "libero90",
+      "actual_task": {
+        "name": "KITCHEN_SCENE9_turn_on_the_stove",
+        "language": "turn on the stove",
+        "problem": "Libero",
+        "problem_folder": "libero_90",
+        "bddl_file": "KITCHEN_SCENE9_turn_on_the_stove.bddl",
+        "init_states_file": "KITCHEN_SCENE9_turn_on_the_stove.pruned_init"
+      },
+      "frozen_binding": {
+        "task_id": 44,
+        "language": "turn on the stove",
+        "target_object": "flat_stove_1_button",
+        "receptacle": "flat_stove_1"
+      },
+      "frozen_relation": {
+        "subject": "stove button",
+        "anchor": "stove",
+        "relation": "articulated"
+      },
+      "bddl_sha256": "e258902172935538f45757dfad6e5c25b2313138555cbf79e6119a4024948d13",
+      "binding_semantics_match": true
+    },
+    "46": {
+      "suite": "libero90",
+      "actual_task": {
+        "name": "LIVING_ROOM_SCENE1_pick_up_the_alphabet_soup_and_put_it_in_the_basket",
+        "language": "pick up the alphabet soup and put it in the basket",
+        "problem": "Libero",
+        "problem_folder": "libero_90",
+        "bddl_file": "LIVING_ROOM_SCENE1_pick_up_the_alphabet_soup_and_put_it_in_the_basket.bddl",
+        "init_states_file": "LIVING_ROOM_SCENE1_pick_up_the_alphabet_soup_and_put_it_in_the_basket.pruned_init"
+      },
+      "frozen_binding": {
+        "task_id": 46,
+        "language": "put alphabet soup in the basket",
+        "target_object": "alphabet_soup_1",
+        "receptacle": "basket_1"
+      },
+      "frozen_relation": {
+        "subject": "alphabet soup",
+        "anchor": "basket",
+        "relation": "inside"
+      },
+      "bddl_sha256": "99ae5af0f77aca18d2eab39e4b302a9af59ae86766b8e7dc528c08a75fa12515",
+      "binding_semantics_match": true
+    },
+    "57": {
+      "suite": "libero90",
+      "actual_task": {
+        "name": "LIVING_ROOM_SCENE3_pick_up_the_cream_cheese_and_put_it_in_the_tray",
+        "language": "pick up the cream cheese and put it in the tray",
+        "problem": "Libero",
+        "problem_folder": "libero_90",
+        "bddl_file": "LIVING_ROOM_SCENE3_pick_up_the_cream_cheese_and_put_it_in_the_tray.bddl",
+        "init_states_file": "LIVING_ROOM_SCENE3_pick_up_the_cream_cheese_and_put_it_in_the_tray.pruned_init"
+      },
+      "frozen_binding": {
+        "task_id": 57,
+        "language": "put cream cheese in the tray",
+        "target_object": "cream_cheese_1",
+        "receptacle": "wooden_tray_1"
+      },
+      "frozen_relation": {
+        "subject": "cream cheese",
+        "anchor": "tray",
+        "relation": "inside"
+      },
+      "bddl_sha256": "394de660979995c9dd1131bdbfa5fb25eb824828e60dee25a5b80c3cbfd5155a",
+      "binding_semantics_match": true
+    }
+  },
+  "summary": {
+    "exit_pools": 25,
+    "rejected_candidates": 100,
+    "by_task_pool": {
+      "9": 1,
+      "20": 1,
+      "46": 12,
+      "57": 11
+    },
+    "by_relationship_pool": {
+      "articulated": 1,
+      "inside": 23,
+      "on": 1
+    },
+    "by_condition_pool": {
+      "clean": 1,
+      "execution_contact_deviation": 9,
+      "object_shift": 15
+    },
+    "by_split_pool": {
+      "train": 18,
+      "val": 7
+    },
+    "by_candidate_stage": {
+      "grasp": 5,
+      "lift": 26,
+      "place": 34,
+      "transport": 35
+    },
+    "by_rejected_predicate_candidate": {
+      "grasped": 61,
+      "lifted": 69,
+      "target_pose_current": 5,
+      "target_reachable": 1
+    },
+    "by_rejection_origin_candidate": {
+      "execution_contact_consistent": 40,
+      "world_state_consistent": 96
+    },
+    "task_candidate_stages": {
+      "9": {
+        "lift": 4
+      },
+      "20": {
+        "grasp": 4
+      },
+      "46": {
+        "lift": 1,
+        "place": 27,
+        "transport": 20
+      },
+      "57": {
+        "grasp": 1,
+        "lift": 21,
+        "place": 7,
+        "transport": 15
+      }
+    },
+    "articulated_all_original_pools": 96,
+    "articulated_all_original_candidates": 384,
+    "articulated_raw_parser_stages": {
+      "approach": 93,
+      "grasp": 30,
+      "place": 140,
+      "transport": 121
+    },
+    "articulated_raw_required_predicates": {
+      "grasped": 121,
+      "lifted": 261,
+      "place_ready": 140,
+      "receptacle_visible": 140,
+      "target_pose_current": 123,
+      "target_reachable": 30,
+      "target_visible": 93
+    },
+    "articulated_typed_gate_required_predicates": {
+      "target_pose_current": 384,
+      "target_visible": 384
+    },
+    "articulated_candidates_with_pick_place_requirements_removed": 261,
+    "articulated_exit_pools": 1,
+    "articulated_pick_place_predicate_rejection_count": 0,
+    "rejected_predicate_occurrences": 136,
+    "rejected_fact_prior_value_occurrences": {
+      "unknown": 130,
+      "true": 6
+    },
+    "rejected_fact_transition_directness_occurrences": {
+      "false": 131,
+      "true": 5
+    },
+    "rejected_predicate_origin_joint_counts": {
+      "grasped|world_state_consistent": 45,
+      "target_pose_current|world_state_consistent": 5,
+      "lifted|execution_contact_consistent": 24,
+      "lifted|world_state_consistent": 45,
+      "grasped|execution_contact_consistent": 16,
+      "target_reachable|world_state_consistent": 1
+    },
+    "unique_pool_rejected_facts_prior_values": {
+      "unknown": 37,
+      "true": 3
+    },
+    "action_order_by_exit_candidate_stage": {
+      "lift": {
+        "candidates": 26,
+        "closed_at_entry": 25,
+        "later_close_then_up": 1,
+        "first_close_indices": {
+          "0": 25,
+          "14": 1
+        }
+      },
+      "grasp": {
+        "candidates": 5,
+        "closed_at_entry": 5,
+        "later_close_then_up": 0,
+        "first_close_indices": {
+          "0": 5
+        }
+      },
+      "place": {
+        "candidates": 34,
+        "closed_at_entry": 34,
+        "later_close_then_up": 0,
+        "first_close_indices": {
+          "0": 34
+        }
+      },
+      "transport": {
+        "candidates": 35,
+        "closed_at_entry": 35,
+        "later_close_then_up": 0,
+        "first_close_indices": {
+          "0": 35
+        }
+      }
+    },
+    "counter_units": {
+      "by_task_pool": "pools",
+      "by_relationship_pool": "pools",
+      "by_condition_pool": "pools",
+      "by_split_pool": "pools",
+      "by_candidate_stage": "candidates",
+      "by_rejected_predicate_candidate": "predicate occurrences; a candidate can have multiple reasons",
+      "by_rejection_origin_candidate": "predicate occurrences; not independent candidates",
+      "articulated_raw_required_predicates": "candidates containing each prerequisite before typed gate",
+      "articulated_typed_gate_required_predicates": "candidates containing each prerequisite after typed gate"
+    }
+  },
+  "verification": {
+    "journal_hash_matches_training_source_manifest": true,
+    "pair_metadata_hash_matches_training_source_manifest": true,
+    "all48_raw_result_file_hashes_verified": true,
+    "all768_original_plan_file_hashes_verified": true,
+    "exact25_unobserved_keyset_matches_report_and_journal": true,
+    "all_articulated_required_facts_exclude_pick_place": true,
+    "all100_exit_candidate_decisions_rejected": true
+  },
+  "computed_method": "Reconstruct immutable legacy action-stage parser from each original 16x7 plan and original cached forecast metadata. Apply the exact frozen typed_gate_effect only to inspect its existing requirements, not to reselect or modify decisions. Join to saved full journal rejection reasons and belief transitions. Read actual LIBERO90 benchmark task language and frozen entity/relation binding. Every original plan/raw-result hash is checked against saved training source_sha256. Cached visual proxies are used only to reproduce historical metadata; no physical fact is certified.",
+  "diagnostic_limitations": [
+    "Journal evaluator may report first blocking predicate rather than every unsatisfied prerequisite; counts are recorded rejection counts, not an exhaustive causal decomposition.",
+    "Legacy action stages are motion-pattern labels and can call an articulated contact action lift/transport; typed gate requirements, not the raw stage name, determine applicability.",
+    "A predicted grasp-then-lift command ordering alone proves no successful contact; it may identify a distinct within-block recovery supervision gap, not permit an unknown physical state through.",
+    "No visual quality, absolute observation/source binding, or witness registry certificate is invented."
+  ],
+  "compatibility_diagnostic": "Initial isolated helper import omitted existing LIBERO_CONFIG_PATH and stopped at a dataset-path prompt/EOF before diagnosis; corrected read-only process pointed to existing .libero config. No source files, protocol or model changed.",
+  "conclusion": {
+    "articulated_template_bug_explains_25_exits": false,
+    "articulated_template_bug_observed_in_remaining_gate": false,
+    "remaining_articulated_exit": "task20/state2/object_shift: target_pose_current stale by reliable world-state anomaly, not grasped/lifted/place_ready",
+    "rigid_exit_scope": "24 pools in black-bowl on-plate / alphabet-soup in-basket / cream-cheese in-tray tasks; motion-stage current holding prerequisites need evidence or a separately audited ordered action recovery semantics, not blanket deletion",
+    "next_step": "Inspect current/within-block evidence appropriate to the actually rejected predicates; do not modify task templates, DAG, thresholds or acceptance from this audit alone.",
+    "previously_certified_physical_state_was_not_always_lost": "130 of 136 recorded rejection predicate occurrences inherited UNKNOWN->UNKNOWN, rather than a known grasp/lift TRUE becoming invalid; 6 occurrences are previous TRUE pose/reachability. This is not proof of actual current contact or permission to proceed. It identifies where a root prior with unestablished holding facts and attribution provenance differs from a measured physical contradiction.",
+    "small_ordered_recovery_gap": {
+      "key": [
+        46,
+        5,
+        0,
+        "object_shift"
+      ],
+      "candidate_id": 0,
+      "first_close_step": 14,
+      "stage": "lift",
+      "note": "Only one of 100 rejected candidates has a later closing command followed by the upward-motion pattern. Do not auto-certify its grasp: the action-order signature is a supervision/design diagnostic only."
+    }
+  },
+  "rows": [
+    {
+      "key": [
+        9,
+        7,
+        0,
+        "object_shift"
+      ],
+      "split": "val",
+      "task_language": "put the black bowl on the plate",
+      "relation": "on",
+      "attribution_cause": "object_shift",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "f7d344110a631e5366af67bc245676cfdb811bd4d3b082abbd3d19c0f11e239b",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task9_state7_moment0/state_07_object_shift/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "6e865b4d9c37c8382b6dd89a84a5fc84feba34ab0f11499e4ede492d3405d4da",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task9_state7_moment0/state_07_object_shift/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "590feee55c6fef7ce0df8973cf559e3a88fc5f5a20036bab9edf20a54ea0febb",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task9_state7_moment0/state_07_object_shift/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "61c1e8f88734b985de66aaaaff7329cd0ce825cd0ba3d851c925dd3d0e10d5e9",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task9_state7_moment0/state_07_object_shift/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.722483893930912,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task9_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.722483893930912,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task9_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        20,
+        2,
+        0,
+        "object_shift"
+      ],
+      "split": "train",
+      "task_language": "turn on the stove",
+      "relation": "articulated",
+      "attribution_cause": "object_shift",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "grasp",
+          "raw_required_facts": {
+            "target_pose_current": 0.8,
+            "target_reachable": 0.8
+          },
+          "typed_gate_required_facts": {
+            "target_visible": 0.5,
+            "target_pose_current": 0.6
+          },
+          "semantic_removed_predicates": [
+            "target_reachable"
+          ],
+          "rejection_reasons": [
+            "target_pose_current=unknown_from_world_state_consistent@0.98"
+          ],
+          "rejection_predicates": [
+            "target_pose_current"
+          ],
+          "plan_sha256": "ea9e9eafc0fc18ce621efbbb05eb9100235d39150e4d9743f3df3e0bc29fc046",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task20_state2_moment0/state_02_object_shift/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "grasp",
+          "raw_required_facts": {
+            "target_pose_current": 0.8,
+            "target_reachable": 0.8
+          },
+          "typed_gate_required_facts": {
+            "target_visible": 0.5,
+            "target_pose_current": 0.6
+          },
+          "semantic_removed_predicates": [
+            "target_reachable"
+          ],
+          "rejection_reasons": [
+            "target_pose_current=unknown_from_world_state_consistent@0.98"
+          ],
+          "rejection_predicates": [
+            "target_pose_current"
+          ],
+          "plan_sha256": "318b98018c8d0c7076ad1b0f463221b5947133f62047818f57d9bb72c9b6f7ed",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task20_state2_moment0/state_02_object_shift/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "grasp",
+          "raw_required_facts": {
+            "target_pose_current": 0.8,
+            "target_reachable": 0.8
+          },
+          "typed_gate_required_facts": {
+            "target_visible": 0.5,
+            "target_pose_current": 0.6
+          },
+          "semantic_removed_predicates": [
+            "target_reachable"
+          ],
+          "rejection_reasons": [
+            "target_pose_current=unknown_from_world_state_consistent@0.98"
+          ],
+          "rejection_predicates": [
+            "target_pose_current"
+          ],
+          "plan_sha256": "653fd79c6b2e01674b43e06b2ded6b26733a3af2f26342396dcc65bcd2010cc0",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task20_state2_moment0/state_02_object_shift/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "grasp",
+          "raw_required_facts": {
+            "target_pose_current": 0.8,
+            "target_reachable": 0.8
+          },
+          "typed_gate_required_facts": {
+            "target_visible": 0.5,
+            "target_pose_current": 0.6
+          },
+          "semantic_removed_predicates": [
+            "target_reachable"
+          ],
+          "rejection_reasons": [
+            "target_pose_current=unknown_from_world_state_consistent@0.98"
+          ],
+          "rejection_predicates": [
+            "target_pose_current"
+          ],
+          "plan_sha256": "ac9b4193b36350141f1763a85332d5525b4716474adf86bf7bc6d72c53169fe4",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task20_state2_moment0/state_02_object_shift/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "target_pose_current": {
+          "value": "unknown",
+          "confidence": 0.9782522320747375,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task20_block2"
+          ],
+          "latest_transition": {
+            "predicate": "target_pose_current",
+            "old_value": "true",
+            "old_confidence": 0.7,
+            "new_value": "unknown",
+            "new_confidence": 0.9782522320747375,
+            "reason": "world_state_consistent",
+            "direct": true,
+            "propagation_path": [
+              "target_pose_current"
+            ],
+            "evidence_id": "libero90_task20_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "articulated_pick_place_prerequisites_removed_before_gate; remaining_pose_freshness_gap"
+    },
+    {
+      "key": [
+        46,
+        0,
+        0,
+        "execution_contact_deviation"
+      ],
+      "split": "train",
+      "task_language": "pick up the alphabet soup and put it in the basket",
+      "relation": "inside",
+      "attribution_cause": "execution_contact_deviation",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "9b3b82a9d048352d1b2f4e80d61ae05835dd27f2fb90961276d8a918fa9e3101",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state0_moment0/state_00_execution_contact_deviation/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "3a14cdef279b3068c1a68efdf2e3790a5a223c9aca6bdb56d6d0b1f557650860",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state0_moment0/state_00_execution_contact_deviation/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "ed471f55c4f3e836eba31ae2af09084e1d3d7e19d21ed7e1b899d271f4ee2299",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state0_moment0/state_00_execution_contact_deviation/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "a884b8bf366fb9186c1dfc05405c7189bbf499e6201a3481df69a0c32c18f1f8",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state0_moment0/state_00_execution_contact_deviation/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.7189192849397659,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7189192849397659,
+            "reason": "execution_contact_consistent",
+            "direct": false,
+            "propagation_path": [
+              "execution_consistent",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        46,
+        0,
+        0,
+        "object_shift"
+      ],
+      "split": "train",
+      "task_language": "pick up the alphabet soup and put it in the basket",
+      "relation": "inside",
+      "attribution_cause": "object_shift",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "3aa448171a2ef735e23cb6a19f08eae32c66a1156a204835ca3fb21c72ccee27",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state0_moment0/state_00_object_shift/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "9563d3e96605a452d33ced780ca0d6ff34cc781d350b5890fec64c73f6908d4f",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state0_moment0/state_00_object_shift/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "650a5070ecde83e020a338a0c4652c0aecb03b678247c8d1050163cd457ca4dc",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state0_moment0/state_00_object_shift/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "9d39dd528997fd0cf907f4ca547ee3050b260c117f7e6c8bd7fced435382e2f9",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state0_moment0/state_00_object_shift/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.7213954423367976,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7213954423367976,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        },
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.613186125986278,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.613186125986278,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        46,
+        2,
+        0,
+        "execution_contact_deviation"
+      ],
+      "split": "train",
+      "task_language": "pick up the alphabet soup and put it in the basket",
+      "relation": "inside",
+      "attribution_cause": "execution_contact_deviation",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.97"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "bf451934c8d2d66a683e405f2675fbe8509bf325480ee168f065a6df339d37c2",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state2_moment0/state_02_execution_contact_deviation/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.97"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "fe3863bfa22391840ca1865075f8c57758d050ee7a51feabb6d584fa68dcdef0",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state2_moment0/state_02_execution_contact_deviation/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.97"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "5c5be2dcd9d0ab89ae58a24e8b587af82e8693fd4a710d1bb9daa6f00d01efda",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state2_moment0/state_02_execution_contact_deviation/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.97"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "5a7f1a41398dcdee63ea4bfe9b6cda74b37736915e39f4dbd7ff7af6597dba07",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state2_moment0/state_02_execution_contact_deviation/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.7009219585359096,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7009219585359096,
+            "reason": "execution_contact_consistent",
+            "direct": false,
+            "propagation_path": [
+              "execution_consistent",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        46,
+        2,
+        0,
+        "object_shift"
+      ],
+      "split": "train",
+      "task_language": "pick up the alphabet soup and put it in the basket",
+      "relation": "inside",
+      "attribution_cause": "object_shift",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "1776e938c17227e5b1934a029b23306cdcb891d87b9246dae71998c9ee14d4b1",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state2_moment0/state_02_object_shift/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "d8905520ad05eae2f4cd9bb5caa293b8427fb4345fdced4c23196214d18ca264",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state2_moment0/state_02_object_shift/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "e67a2298a3f60f56cb18b6d24adff36e847409131bd45d2bb4af6f6f448bfe6d",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state2_moment0/state_02_object_shift/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "fad22ca81b59d52d3a953ee1e0ea9824a2995556fa6935bfee41c93b7bc70901",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state2_moment0/state_02_object_shift/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.7219855101406574,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7219855101406574,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        },
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.6136876836195587,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.6136876836195587,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        46,
+        3,
+        0,
+        "execution_contact_deviation"
+      ],
+      "split": "train",
+      "task_language": "pick up the alphabet soup and put it in the basket",
+      "relation": "inside",
+      "attribution_cause": "execution_contact_deviation",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.99"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "fe5975427c43ba2ee104339647269a5821366323ec470f327d8842edf7bcaa59",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state3_moment0/state_03_execution_contact_deviation/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.99"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "3b56448852ed33b2baf2e49d300734ea274ffacd1b4cbf59720fdf9d90ffb94c",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state3_moment0/state_03_execution_contact_deviation/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.99"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "d86a7e9142ca8eb2978c508553347499e6cf2c21f22096b95607194055ca2ce3",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state3_moment0/state_03_execution_contact_deviation/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.99"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "9ab815557b55c2ed39105f1b80dbc275cb7b3210ad8be17f5b00eec5d045cf00",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state3_moment0/state_03_execution_contact_deviation/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.7178096026182174,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7178096026182174,
+            "reason": "execution_contact_consistent",
+            "direct": false,
+            "propagation_path": [
+              "execution_consistent",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        46,
+        3,
+        0,
+        "object_shift"
+      ],
+      "split": "train",
+      "task_language": "pick up the alphabet soup and put it in the basket",
+      "relation": "inside",
+      "attribution_cause": "object_shift",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "eb5f650daf57dd8fe2dc4b63da10f9d67b262c0d71cabf99a3054a9f99807230",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state3_moment0/state_03_object_shift/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "1682c0af265578937c894b54d1611369d1466f5f4568960b1deb3de809ea77c3",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state3_moment0/state_03_object_shift/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "59fed31aefb29847fc9fbeeecc0d53e39740771a45271a6846f486f7234379d4",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state3_moment0/state_03_object_shift/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "99f99600f2c0c0d8aa945db2d28f16128df2e68e64ae5997ecaee0e13cb4b31a",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state3_moment0/state_03_object_shift/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.7223454420268535,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7223454420268535,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        },
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.6139936257228255,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.6139936257228255,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        46,
+        4,
+        0,
+        "execution_contact_deviation"
+      ],
+      "split": "train",
+      "task_language": "pick up the alphabet soup and put it in the basket",
+      "relation": "inside",
+      "attribution_cause": "execution_contact_deviation",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.96"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "8f33f76fe16850f9a2d8c1d7505b26c8fb77145501c00c72a08c43aa04b54ba7",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state4_moment0/state_04_execution_contact_deviation/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.96"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "7e362f09c9355ce6528f6715e6aeea34e1bc5b738f3d80b5cac9e73cd1aac419",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state4_moment0/state_04_execution_contact_deviation/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.96"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "d2a7d42c2aafb863c6cbde83645af6c0ac30e3cfdbca47abe0cdfd199e16a60d",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state4_moment0/state_04_execution_contact_deviation/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.96"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "4cbcda1923f24d2a8a6e2940bf9e4df474ba2122ab8c64d674dbcbaae0d747de",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state4_moment0/state_04_execution_contact_deviation/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.6943716977536678,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.6943716977536678,
+            "reason": "execution_contact_consistent",
+            "direct": false,
+            "propagation_path": [
+              "execution_consistent",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        46,
+        4,
+        0,
+        "object_shift"
+      ],
+      "split": "train",
+      "task_language": "pick up the alphabet soup and put it in the basket",
+      "relation": "inside",
+      "attribution_cause": "object_shift",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "3dc6b1dee4687c5bba512852344ebb637b40e6c466d760494fa5309e3c2db8eb",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state4_moment0/state_04_object_shift/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "bf845d38551cbcd310f5d9881630fd50b15501f623be4c7919a338073a818d5d",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state4_moment0/state_04_object_shift/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "6704d71d60a28ccf901d3ef79b8f2c9435ace1a24f3ba66be19bf3f69a4e9fe4",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state4_moment0/state_04_object_shift/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "2b75014ba7731849053517002be500947b70c20c8ed91b7dd0bc67941b9b64c0",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state4_moment0/state_04_object_shift/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.7217417228221893,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7217417228221893,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        },
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.6134804643988608,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.6134804643988608,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        46,
+        5,
+        0,
+        "execution_contact_deviation"
+      ],
+      "split": "train",
+      "task_language": "pick up the alphabet soup and put it in the basket",
+      "relation": "inside",
+      "attribution_cause": "execution_contact_deviation",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.97"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "bc2ceeced82fda4f24fc0a55e26bffa7dbf4d9720a706c214680fac53e95a8e9",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state5_moment0/state_05_execution_contact_deviation/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.97"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "06c8faf7cce442b0b6a1476244957106641baf4960779aa65a537a46699f16aa",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state5_moment0/state_05_execution_contact_deviation/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.97"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "a2be80c24ff4bf46f45db0867917dfcb06dc276d158b093e27fd8cadde4e2577",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state5_moment0/state_05_execution_contact_deviation/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_execution_contact_consistent@0.97"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "d028b9725471e2c721983810ea0bc52bf5ce0c4e845caa37b710040fddba1597",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state5_moment0/state_05_execution_contact_deviation/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.7005628018081187,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7005628018081187,
+            "reason": "execution_contact_consistent",
+            "direct": false,
+            "propagation_path": [
+              "execution_consistent",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        46,
+        5,
+        0,
+        "object_shift"
+      ],
+      "split": "train",
+      "task_language": "pick up the alphabet soup and put it in the basket",
+      "relation": "inside",
+      "attribution_cause": "object_shift",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@0.98"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "79e3a0c950c5560dfc4d17857b9ce1544adafc768db0752e6b1649c1dd2e449b",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state5_moment0/state_05_object_shift/candidate_0/actions.npy",
+          "closed_command_at_entry": false,
+          "first_close_step": 14,
+          "possible_grasp_then_lift_command_sequence": true,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_world_state_consistent@0.98"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "dc66ffdb7e9a99f1ffcaa66e647c769c6e50caabdc3549d17ed02b90fa1a0da6",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state5_moment0/state_05_object_shift/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_world_state_consistent@0.98"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "2ace2c5d361554c1e8a231d1d1d3f09eb33b0c0d971562d3922677727dcec98c",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state5_moment0/state_05_object_shift/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_world_state_consistent@0.98"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "19a466fd432600d30e15d32b3080c5200bc21376678dcc68a15bf30f2e43216d",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state5_moment0/state_05_object_shift/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.7088119944930076,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7088119944930076,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        },
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.6024901953190565,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.6024901953190565,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        46,
+        6,
+        0,
+        "execution_contact_deviation"
+      ],
+      "split": "val",
+      "task_language": "pick up the alphabet soup and put it in the basket",
+      "relation": "inside",
+      "attribution_cause": "execution_contact_deviation",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_world_state_consistent@0.70"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "6cf28fe0640f6136204242961ad4b38a36ba275e0fc1625b8813e2e560be60ef",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state6_moment0/state_06_execution_contact_deviation/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_world_state_consistent@0.70"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "f4752385d903dd9deb5d27609965874059ba53f88ea5764c271c72f5e47fe76e",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state6_moment0/state_06_execution_contact_deviation/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_world_state_consistent@0.70"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "0d9a7a94bee4b026aea4f34e2381fbe6fb2cc3570e7915ec4bef8437b405bc83",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state6_moment0/state_06_execution_contact_deviation/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_world_state_consistent@0.70"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "eb489055c277290bb77bda94756839a3b30d87e78a95f3be9aada7d77cfd50e0",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state6_moment0/state_06_execution_contact_deviation/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.6719716869294643,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0.4295732413083314,
+            "new_value": "unknown",
+            "new_confidence": 0.6719716869294643,
+            "reason": "execution_contact_consistent",
+            "direct": false,
+            "propagation_path": [
+              "execution_consistent",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        46,
+        6,
+        0,
+        "object_shift"
+      ],
+      "split": "val",
+      "task_language": "pick up the alphabet soup and put it in the basket",
+      "relation": "inside",
+      "attribution_cause": "object_shift",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "2196ae02a77d81be68115b67c83b31cfd92172ffd32c7808d5874550fad476d5",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state6_moment0/state_06_object_shift/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "53724daa51f6ebc1e148ebbcd378cedcbdd1a7fa6da4678da966bc2b1be02c9e",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state6_moment0/state_06_object_shift/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "763e94049b9e709893161bfdf22801bcc1131562703bde0a21d0e06723bb9cea",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state6_moment0/state_06_object_shift/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "95932e06115f13f163ce6d6136a8865ef9d82f79d066e46529140d785fdf64d7",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task46_state6_moment0/state_06_object_shift/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.7218225546181201,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7218225546181201,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        },
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.6135491714254021,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task46_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.6135491714254021,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task46_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        57,
+        0,
+        0,
+        "object_shift"
+      ],
+      "split": "train",
+      "task_language": "pick up the cream cheese and put it in the tray",
+      "relation": "inside",
+      "attribution_cause": "object_shift",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "5fe5187eb8ded82fb5c682327811768accb3f72ea8101c8dfbd1fd6363edac91",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state0_moment0/state_00_object_shift/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "65037e93f6586f6485328d15ac74ccca798f66f5240362076ed4ff975e01585f",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state0_moment0/state_00_object_shift/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "c952e5ba7b8de5c371e24f88e253c2448a968fb2584734e27b050a5625014f3c",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state0_moment0/state_00_object_shift/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "315b7d6da19c0a1b27b7626a87862c55cdd7ccffa241b82980812892e8a66a32",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state0_moment0/state_00_object_shift/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.7223924252390861,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7223924252390861,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        },
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.6140335614532232,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.6140335614532232,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        57,
+        1,
+        0,
+        "execution_contact_deviation"
+      ],
+      "split": "train",
+      "task_language": "pick up the cream cheese and put it in the tray",
+      "relation": "inside",
+      "attribution_cause": "execution_contact_deviation",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@0.90"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "08981cb973aaf89ed68447cecb8f67a2cd722922d8ed8d6cc6009d8cc53bb716",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state1_moment0/state_01_execution_contact_deviation/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@0.90"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "b6e7294297d7aa0516d2dadb588585ae2adb0aceb506f872199be6ceec63dbe6",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state1_moment0/state_01_execution_contact_deviation/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@0.90"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "38b93c77cd4db60995e8626e83edac117b44f115c3c1cb6292c5b71206824970",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state1_moment0/state_01_execution_contact_deviation/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@0.90"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "4289ee002b4f1e1b7469ac8553ff89b47dee015173837f7c7dda2519d6d86fcc",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state1_moment0/state_01_execution_contact_deviation/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.7685118526220321,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7685118526220321,
+            "reason": "execution_contact_consistent",
+            "direct": false,
+            "propagation_path": [
+              "execution_consistent",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        57,
+        1,
+        0,
+        "object_shift"
+      ],
+      "split": "train",
+      "task_language": "pick up the cream cheese and put it in the tray",
+      "relation": "inside",
+      "attribution_cause": "object_shift",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "grasp",
+          "raw_required_facts": {
+            "target_pose_current": 0.8,
+            "target_reachable": 0.8
+          },
+          "typed_gate_required_facts": {
+            "target_pose_current": 0.8,
+            "target_reachable": 0.8
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "target_pose_current=unknown_from_world_state_consistent@1.00",
+            "target_reachable=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "target_pose_current",
+            "target_reachable"
+          ],
+          "plan_sha256": "2919a2926c57b77f59983f0306837e4503e657302051ad3456548c5ca52741a5",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state1_moment0/state_01_object_shift/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "450bc3421359e052cbd859e79f8594e3c1613a0bba78049d020120faa2fd0a31",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state1_moment0/state_01_object_shift/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "7919f21c5aca09f6fa5462c7ccf6ec3cef3e12722a08b8943284fda3aa39bda8",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state1_moment0/state_01_object_shift/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "cc081200f21a56245bfb6fdbf04e6c85a8bca12280146c6b32935ce06c22c140",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state1_moment0/state_01_object_shift/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "target_pose_current": {
+          "value": "unknown",
+          "confidence": 0.9998201727867126,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "target_pose_current",
+            "old_value": "true",
+            "old_confidence": 0.7,
+            "new_value": "unknown",
+            "new_confidence": 0.9998201727867126,
+            "reason": "world_state_consistent",
+            "direct": true,
+            "propagation_path": [
+              "target_pose_current"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        },
+        "target_reachable": {
+          "value": "unknown",
+          "confidence": 0.8498471468687058,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "target_reachable",
+            "old_value": "true",
+            "old_confidence": 0.7,
+            "new_value": "unknown",
+            "new_confidence": 0.8498471468687058,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        },
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.7223700748383998,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7223700748383998,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        },
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.6140145636126398,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.6140145636126398,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        57,
+        2,
+        0,
+        "execution_contact_deviation"
+      ],
+      "split": "train",
+      "task_language": "pick up the cream cheese and put it in the tray",
+      "relation": "inside",
+      "attribution_cause": "execution_contact_deviation",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@0.99"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "9b2382d2b0538918f7d0c7a219ea3dbfb4a3fe2b6b4117621bc611d318b4c0ad",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state2_moment0/state_02_execution_contact_deviation/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@0.99"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "0e03bc110f51ae410fb835a8f7ddd5175e5a4c06c86a04737d1a20319e1560e0",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state2_moment0/state_02_execution_contact_deviation/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@0.99"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "77944e8f6117dcb81501c0b9d07571e97adf546eabf5f8469c8b0226f2d0db55",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state2_moment0/state_02_execution_contact_deviation/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@0.99"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "c61830320a9f190e2e128173a675bfb13f8839781a0a2e91692274f95f6f9ed5",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state2_moment0/state_02_execution_contact_deviation/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.843560916185379,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.843560916185379,
+            "reason": "execution_contact_consistent",
+            "direct": false,
+            "propagation_path": [
+              "execution_consistent",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        57,
+        2,
+        0,
+        "object_shift"
+      ],
+      "split": "train",
+      "task_language": "pick up the cream cheese and put it in the tray",
+      "relation": "inside",
+      "attribution_cause": "object_shift",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "0f7675153f5d9bfa77f14d28f575bdbf7da1aaceb2abff629591e9067e2475f1",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state2_moment0/state_02_object_shift/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "f38430035ca89eee2d924127e72a415e751cfa824f93e822f3fcf3941ffdbe35",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state2_moment0/state_02_object_shift/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "e47348dcc4fa58c1e130319a7862b2c9c2532b7a20a810d0ba5abf4ae0ba6343",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state2_moment0/state_02_object_shift/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "65af32a4db21fbd9dbae401a5a5b9083a4024728cb190220d88b5869ab1c1595",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state2_moment0/state_02_object_shift/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.7224378150701523,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7224378150701523,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        },
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.6140721428096294,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.6140721428096294,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        57,
+        4,
+        0,
+        "object_shift"
+      ],
+      "split": "train",
+      "task_language": "pick up the cream cheese and put it in the tray",
+      "relation": "inside",
+      "attribution_cause": "object_shift",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "c78e51dca0fb6e0286887f1a7ba2d6e4dc1caece782d5de6fe5554762c3fa5b3",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state4_moment0/state_04_object_shift/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "dbb7d4a716b67ef225699aa2d28653952b5247236ddc75c6bf07feb43c0799bc",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state4_moment0/state_04_object_shift/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "219f4e3bbc72491124097b809aceb4b85b724fb9b7c5ac66cc79a56e8eef5cc8",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state4_moment0/state_04_object_shift/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "632a2b11026d0b7bcbcebc14fc80e2b8d65ae46fc93a6980badb1ef859c6edda",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state4_moment0/state_04_object_shift/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.6140922753959893,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.6140922753959893,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        },
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.7224615004658699,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7224615004658699,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        57,
+        5,
+        0,
+        "object_shift"
+      ],
+      "split": "train",
+      "task_language": "pick up the cream cheese and put it in the tray",
+      "relation": "inside",
+      "attribution_cause": "object_shift",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "028b6dddb61203d012cd34e0276e8130e8b95fc90ed834e0b9bf6b5cdec1aa43",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state5_moment0/state_05_object_shift/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "7b34b877650106689701c849bf0cdc7d61e1714cc6341279331fc162af40489a",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state5_moment0/state_05_object_shift/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "ef00b0327ac41f9740a5f34e6c0d03efe8f7777d453f7b7e68def7365a493b2e",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state5_moment0/state_05_object_shift/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "421ba8af17493b7e24ded9bd6e5729b89d2f802bbdc8f9c5b73c2ab1244767a2",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state5_moment0/state_05_object_shift/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.6133499686345457,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.6133499686345457,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        },
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.7215881983935832,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7215881983935832,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        57,
+        6,
+        0,
+        "clean"
+      ],
+      "split": "val",
+      "task_language": "pick up the cream cheese and put it in the tray",
+      "relation": "inside",
+      "attribution_cause": "execution_contact_deviation",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@0.72"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "1dad4e58910e9a661b6e0841b903f35a94ea9fc14fcc4bc6de5b6bfc43aa3d63",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state6_moment0/state_06_clean/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@0.72"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "018c50ee29925e0a3930de3eece68b3bc1f5d88ebc3db4cf95b7194545764aa8",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state6_moment0/state_06_clean/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@0.72"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "9a5eb8adafd6159957edc6070cd3e75fe495a67e6c22c4f7a1454e55547ccd43",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state6_moment0/state_06_clean/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@0.72"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "4afaa833222ffd67594ad2e1a9b5b3a59fba08ba50f99fe23d8f9a1520f18c04",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state6_moment0/state_06_clean/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.6136204093694687,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.6136204093694687,
+            "reason": "execution_contact_consistent",
+            "direct": false,
+            "propagation_path": [
+              "execution_consistent",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        57,
+        6,
+        0,
+        "execution_contact_deviation"
+      ],
+      "split": "val",
+      "task_language": "pick up the cream cheese and put it in the tray",
+      "relation": "inside",
+      "attribution_cause": "execution_contact_deviation",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "d331262cde8c49fa105adce2d065bb6e773aead9a148e634b84041d65499a777",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state6_moment0/state_06_execution_contact_deviation/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "4db25a37654b7fd404f189dfc9c4264f49f913691e1ccb95b0bf9da3f3e7da4c",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state6_moment0/state_06_execution_contact_deviation/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "25d980b0b9c9eb99e971246325600caafe106336c779bc9e9b9efd84e580b2c8",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state6_moment0/state_06_execution_contact_deviation/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_execution_contact_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "30e24538753b7dbba39cd0e507825289e28889eff89ae9ecb54e96e80e49ca70",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state6_moment0/state_06_execution_contact_deviation/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.8494463950395584,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.8494463950395584,
+            "reason": "execution_contact_consistent",
+            "direct": false,
+            "propagation_path": [
+              "execution_consistent",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        57,
+        6,
+        0,
+        "object_shift"
+      ],
+      "split": "val",
+      "task_language": "pick up the cream cheese and put it in the tray",
+      "relation": "inside",
+      "attribution_cause": "object_shift",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "009e18611f85ef6307a7ede9a2f9129376c8588d2be094c45a9576d41777413d",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state6_moment0/state_06_object_shift/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "627b98d558e19dca734c44cf1d230de071b45c448f67d151fe4ec7814723e560",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state6_moment0/state_06_object_shift/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "2937bcc01917ba9006d70985f3e92cf13822f6193294833289598c8d1f30bec0",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state6_moment0/state_06_object_shift/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "transport",
+          "raw_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.8,
+            "lifted": 0.75
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00",
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped",
+            "lifted"
+          ],
+          "plan_sha256": "c0960fbc692c3174b2c6cbb7f7fc55c263f6f2d590ee15c05c41d14c638a0a06",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state6_moment0/state_06_object_shift/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.6140369290858506,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.6140369290858506,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        },
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.7223963871598242,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7223963871598242,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    },
+    {
+      "key": [
+        57,
+        7,
+        0,
+        "object_shift"
+      ],
+      "split": "val",
+      "task_language": "pick up the cream cheese and put it in the tray",
+      "relation": "inside",
+      "attribution_cause": "object_shift",
+      "fallback": "requery",
+      "candidates": [
+        {
+          "candidate_id": 0,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "43a1fe69d1c55b8ddb6749753b650a887def268590411861e4f3d7a27c5f99b5",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state7_moment0/state_07_object_shift/candidate_0/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 1,
+          "stage": "place",
+          "raw_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "typed_gate_required_facts": {
+            "lifted": 0.75,
+            "receptacle_visible": 0.6,
+            "place_ready": 0.7
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "lifted=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "lifted"
+          ],
+          "plan_sha256": "6ff1e9b385f8e95238e897337a929ddf19f3eca57045e1723a00394edb8ab0eb",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state7_moment0/state_07_object_shift/candidate_1/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 2,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "45181bde28d30c7925fabc698f7eae65ad82374cd6204ef4fd02f0f57c344fea",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state7_moment0/state_07_object_shift/candidate_2/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        },
+        {
+          "candidate_id": 3,
+          "stage": "lift",
+          "raw_required_facts": {
+            "grasped": 0.85
+          },
+          "typed_gate_required_facts": {
+            "grasped": 0.85
+          },
+          "semantic_removed_predicates": [],
+          "rejection_reasons": [
+            "grasped=unknown_from_world_state_consistent@1.00"
+          ],
+          "rejection_predicates": [
+            "grasped"
+          ],
+          "plan_sha256": "edb9f4cacb6906bdabdef1cea3f28f8bc97926b8d00cb2bcc2f65a6c17c5e1f2",
+          "plan_path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/candidate_reranking_d21_formal_192_20261001_v7_balanced/outcomes/task57_state7_moment0/state_07_object_shift/candidate_3/actions.npy",
+          "closed_command_at_entry": true,
+          "first_close_step": 0,
+          "possible_grasp_then_lift_command_sequence": false,
+          "plan_sequence_is_physical_certificate": false
+        }
+      ],
+      "current_facts_relevant": {
+        "lifted": {
+          "value": "unknown",
+          "confidence": 0.6139499197080731,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "lifted",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.6139499197080731,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped",
+              "lifted"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        },
+        "grasped": {
+          "value": "unknown",
+          "confidence": 0.7222940231859684,
+          "source": "attribution",
+          "updated_at_block": 3,
+          "evidence_ids": [
+            "libero90_task57_block2"
+          ],
+          "latest_transition": {
+            "predicate": "grasped",
+            "old_value": "unknown",
+            "old_confidence": 0,
+            "new_value": "unknown",
+            "new_confidence": 0.7222940231859684,
+            "reason": "world_state_consistent",
+            "direct": false,
+            "propagation_path": [
+              "target_pose_current",
+              "target_reachable",
+              "grasped"
+            ],
+            "evidence_id": "libero90_task57_block2"
+          }
+        }
+      },
+      "semantic_diagnosis": "rigid_pick_place_stage_prerequisites_potentially_applicable; actual_current_or_within_block_evidence_not_certified"
+    }
+  ]
+}

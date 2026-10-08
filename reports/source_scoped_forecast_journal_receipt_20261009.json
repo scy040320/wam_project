@@ -1,0 +1,20 @@
+{
+  "schema": "source_scoped_forecast_input_receipt_v1",
+  "role": "read_only_audit_entry_freeze",
+  "date": "2026-10-09",
+  "journal": {
+    "path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/known_task_evidence_interface_recheck_20261008_v4_final_boundaries_roots/decision_journals.json",
+    "sha256": "bb1d0beea4d56a9b160395c4688731ffeee1cbfc0c3cbdfa838c03aebe69cae1",
+    "receipt_time_semantics": "frozen at this audit entry; no claim of an earlier independent signature"
+  },
+  "accepted_prior_report": {
+    "path": "/root/autodl-tmp/wam_project/cosmos-policy/outputs/known_task_evidence_interface_recheck_20261008_v4_final_boundaries_roots/root_replay_report.json",
+    "sha256": "17d1b0c832f23a17caddc1f4c8f89bf841ea07025528eac0ba2b635859d80529",
+    "matches_previously_synchronized_local_report": true,
+    "local_path": "F:/南大课题/课题转向/候选动作重排序实验结果/当前证据与预测隔离修复_20261008/旧估计语义与参考保护复验/root_replay_report.json"
+  },
+  "physical_state_certified": false,
+  "inputs_only": true,
+  "model_fitted": false,
+  "deployed": false
+}

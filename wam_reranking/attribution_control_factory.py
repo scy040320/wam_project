@@ -202,7 +202,7 @@ def _shuffle_map(pools, seed):
     rng=random.Random(seed)
     for split in ("train","val"):
         members=sorted(grouped[split],key=_pool_key)
-        def group(p):return (str(p.identity["task"]),str(p.identity["state"]))
+        def group(p):return (str(p.identity["suite"]),str(p.identity["task"]),str(p.identity["state"]))
         edges=[]
         for receiver in members:
             possible=[i for i,p in enumerate(members) if group(p)!=group(receiver)]
@@ -230,8 +230,16 @@ def _substitute(receiver,donor):
     original=donor.attribution
     # The recipient's ACTUAL quality cannot be replaced by donor quality.
     cause=CoarseCause.UNKNOWN if receiver.attribution.evidence_quality.cross_view_conflict else original.projected_cause
+    # A quality-forced final route cannot retain confidence of a different
+    # donor class. Preserve the corresponding existing direct probability;
+    # this is label/confidence correspondence, not calibration or modification
+    # of the donor's probability values. A different class slot can naturally
+    # be numerically higher or lower; that change is explicitly reported.
+    confidence=float(original.class_probs[cause.value])
+    if not np.isfinite(confidence) or not 0<=confidence<=1:
+        raise ValueError("Shuffled projected class requires its original direct confidence")
     return replace(original,evidence_quality=receiver.attribution.evidence_quality,
-        source_block_id=receiver.attribution.source_block_id,projected_cause=cause)
+        source_block_id=receiver.attribution.source_block_id,projected_cause=cause,confidence=confidence)
 
 
 def _changed_facts(prior,after):
@@ -349,6 +357,11 @@ def build_complete_attribution_controls(pools:Sequence[ControlPool],*,seed=0):
                 shuffled_missing_donor="no_complete_split_local_cross_task_state_bijection_masked" if mode=="shuffled" and donor is None else None,
                 shuffled_distribution_preserving_pool_bijection=mode=="shuffled" and donor is not None,
                 recipient_quality_forced_unknown_projection=bool(donor is not None and pool.attribution.evidence_quality.cross_view_conflict),
+                shuffled_selected_confidence_from_original_direct_projected_class=donor is not None,
+                shuffled_confidence_calibrated=False,shuffled_probability_values_modified=False,
+                shuffled_original_selected_confidence=None if donor is None else donor.attribution.confidence,
+                shuffled_controlled_selected_confidence=None if donor is None else ctx.attribution.confidence,
+                shuffled_selected_confidence_increased_by_class_projection=bool(donor is not None and ctx.attribution.confidence>donor.attribution.confidence),
                 no_dag_same_nodes=set(graph.nodes)==set(pool.graph.nodes),graph_edges=list(graph.edges),
                 intervention_scope="current_verified_block_update_from_common_prior",
                 not_a_history_reconstructed_closed_loop_ablation=True,

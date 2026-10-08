@@ -182,6 +182,34 @@ class AttributionControlsTests(unittest.TestCase):
         self.assertTrue(v["metadata"]["masked_adapter_used"])
         self.assertEqual(v["metadata"]["shuffled_missing_donor"],"no_complete_split_local_cross_task_state_bijection_masked")
 
+    def test_shuffle_normal_donor_confidence_uses_receiver_forced_unknown_direct_slot(self):
+        receiver=pool(cause=CoarseCause.UNKNOWN,quality=EvidenceQuality(False,False,True,True))
+        donor=pool(task=57,state=11,cause=CoarseCause.NORMAL)
+        probs={c.value:.0025 for c in CoarseCause};probs["normal"]=.99
+        donor=replace(donor,attribution=replace(donor.attribution,class_probs=probs,confidence=.99))
+        run=build_complete_attribution_controls((receiver,donor))
+        controlled=next(p for p in run["pools"] if p["pool_id"]==receiver.pool_id)["controls"]["shuffled"]
+        self.assertIs(controlled["context"].attribution.projected_cause,CoarseCause.UNKNOWN)
+        self.assertEqual(controlled["context"].attribution.confidence,.0025)
+        self.assertEqual(controlled["context"].attribution.class_probs,probs)
+        self.assertEqual(controlled["context"].attribution.evidence_quality,receiver.attribution.evidence_quality)
+        self.assertTrue(controlled["metadata"]["shuffled_selected_confidence_from_original_direct_projected_class"])
+        self.assertFalse(controlled["metadata"]["shuffled_confidence_calibrated"])
+        self.assertFalse(controlled["metadata"]["shuffled_probability_values_modified"])
+        self.assertFalse(controlled["metadata"]["shuffled_selected_confidence_increased_by_class_projection"])
+        self.assertEqual(controlled["metadata"]["shuffled_original_selected_confidence"],.99)
+
+    def test_shuffle_same_bare_task_state_in_different_suites_is_distinct_group(self):
+        first=pool();second=replace(pool(),pool_id="same_ids_other_suite",
+            identity=dict(first.identity,suite="fixture_other_suite"))
+        run=build_complete_attribution_controls((first,second))
+        self.assertTrue(run["shuffled_complete_prediction_bijection_available"])
+        for recipient in run["pools"]:
+            donor=recipient["controls"]["shuffled"]["metadata"]["donor_identity"]
+            self.assertNotEqual(donor["suite"],recipient["identity"]["suite"])
+            self.assertEqual((donor["task"],donor["state"]),
+                (recipient["identity"]["task"],recipient["identity"]["state"]))
+
     def test_shuffle_multiple_blocks_is_bijection_not_donor_replication(self):
         a=pool();b=replace(pool(),pool_id="another_block",identity=dict(a.identity,observed_block_id="block4"))
         c=pool(task=57,state=11);d=replace(c,pool_id="other_second",identity=dict(c.identity,observed_block_id="block4"))
